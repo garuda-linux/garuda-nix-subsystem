@@ -1,0 +1,5 @@
+*.qcow2
+.envrc
+node_modules/
+package.json
+package-lock.json

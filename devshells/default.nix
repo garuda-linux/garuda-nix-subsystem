@@ -9,7 +9,7 @@ let
   mkShells = final: prev:
     let
       overlayFinal = prev // final // { callPackage = prev.newScope final; };
-      system = prev.stdenv.hostPlatform.system;
+      inherit (prev.stdenv.hostPlatform) system;
     in
     {
       default = overlayFinal.mkShell {

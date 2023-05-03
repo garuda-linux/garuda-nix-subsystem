@@ -1,15 +1,16 @@
 { inputs, ... }: { config, lib, pkgs, flake-inputs, ... }:
 {
   _module.args.flake-inputs = inputs;
-  imports = [ ./nyx.nix ];
-
-  ## Network
-  networking.networkmanager.enable = lib.mkDefault true;
+  imports = [
+    ./locales.nix
+    ./networking.nix
+    ./nyx.nix
+    ./sound.nix
+  ];
 
   ## OS
   boot.tmp.useTmpfs = lib.mkDefault true;
 
-  services.earlyoom.enable = lib.mkDefault true;
   services.locate = {
     enable = true;
     localuser = null;
@@ -28,6 +29,15 @@
 
   # Kernel
   boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_cachyos;
+  boot.kernelParams = [
+    "iommu=pt"
+    "nopti"
+    "nowatchdog"
+    "rootflags=noatime"
+    "split_lock_detect=off" # https://www.phoronix.com/news/Linux-Splitlock-Hurts-Gaming
+    "systemd.gpt_auto=0" # https://github.com/NixOS/nixpkgs/issues/35681#issuecomment-370202008
+    "tsx=on"
+  ];
 
   # General nix settings
   nix = {
@@ -43,8 +53,14 @@
     };
     settings = {
       # Allow using flakes
-      experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
+      experimental-features = [ "nix-command" "flakes" ];
+
+      allowed-users = [ "@wheel" ];
+      trusted-users = [ "@wheel" ];
+
+      # Max number of parallel jobs
+      max-jobs = "auto";
     };
     nixPath = [ "nixpkgs=${flake-inputs.nixpkgs}" "nyx=${flake-inputs.chaotic}" ];
   };

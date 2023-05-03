@@ -6,14 +6,14 @@
   };
 
   outputs = { chaotic, ... }@inputs: rec {
-    nixpkgs = chaotic.inputs.nixpkgs;
+    inherit (chaotic.inputs) nixpkgs;
 
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
     formatter.aarch64-linux = nixpkgs.legacyPackages.aarch64-linux.nixpkgs-fmt;
 
     devShells = import ./devshells { inherit inputs nixpkgs formatter; };
 
-    internal = import ./internal { inputs = inputs // { nixpkgs = nixpkgs; }; };
+    internal = import ./internal { inputs = inputs // { inherit nixpkgs; }; };
   };
 
   nixConfig = {
