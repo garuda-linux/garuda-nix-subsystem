@@ -13,7 +13,9 @@
 
     devShells = import ./devshells { inherit inputs nixpkgs formatter; };
 
-    internal = import ./internal { inputs = inputs // { inherit nixpkgs; }; };
+    internal = import ./internal { inputs = inputs // { inherit nixpkgs; }; inherit lib; };
+
+    lib = import ./lib { inherit inputs nixpkgs internal; };
   };
 
   nixConfig = {

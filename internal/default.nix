@@ -1,8 +1,8 @@
-{ inputs, ... }@fromFlake:
+{ inputs, lib, ... }@fromFlake:
 rec {
   modules = import ./modules { inherit inputs; };
-  inherit ((inputs.nixpkgs.lib.nixosSystem {
+  inherit ((lib.garudaSystem {
     system = "x86_64-linux";
-    modules = [ modules.default ./testing/vm.nix ];
+    modules = [ ./testing/vm.nix ];
   }).config.system.build) vm;
 }

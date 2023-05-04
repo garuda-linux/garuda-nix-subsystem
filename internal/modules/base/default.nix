@@ -27,8 +27,6 @@
     wget
   ];
 
-  # Kernel
-  boot.kernelPackages = lib.mkDefault pkgs.linuxPackages_cachyos;
   boot.kernelParams = [
     "iommu=pt"
     "nopti"
@@ -101,6 +99,6 @@
     nssmdns = true;
   };
 
-    # Bluetooth
-    hardware.bluetooth.enable = true;
+  # Bluetooth
+  hardware.bluetooth.enable = true;
 }
