@@ -14,7 +14,7 @@ in
         default = false;
         type = types.bool;
         description = mdDoc ''
-          Enables performance tweaks like ananicy-cpp.
+          If set to true, this module will enable a few performance tweaks.
         '';
       };
   };

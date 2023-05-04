@@ -2,10 +2,10 @@
 {
   _module.args.flake-inputs = inputs;
   imports = [
-    ./locales.nix
     ./networking.nix
     ./nyx.nix
     ./sound.nix
+    ./boot.nix
   ];
 
   ## OS
@@ -90,4 +90,17 @@
     autoPrune.enable = lib.mkDefault true;
     autoPrune.flags = lib.mkDefault [ "-a" ];
   };
+
+
+  # Power profiles daemon
+  services.power-profiles-daemon.enable = true;
+
+  # LAN discovery
+  services.avahi = {
+    enable = true;
+    nssmdns = true;
+  };
+
+    # Bluetooth
+    hardware.bluetooth.enable = true;
 }

@@ -6,8 +6,6 @@ in
   # To-do: move those to config {} ?
   imports = [
     ./apps.nix
-    ./boot.nix
-    ./gaming.nix
     ./misc.nix
     ./shells.nix
   ];
@@ -22,8 +20,6 @@ in
       };
   };
   config = lib.mkIf cfg.enable {
-
-
     services.xserver.enable = true;
     services.xserver.displayManager.sddm.enable = true;
     services.xserver.desktopManager.plasma5.enable = true;
@@ -48,7 +44,6 @@ in
           ];
         })
         noto-fonts
-        noto-fonts-cjk
         noto-fonts-emoji
       ];
       fontconfig = {
@@ -80,18 +75,6 @@ in
       QT_STYLE_OVERRIDE = "kvantum";
       SDL_AUDIODRIVER = "pipewire";
     };
-
-    # Power profiles daemon
-    services.power-profiles-daemon.enable = true;
-
-    # LAN discovery
-    services.avahi = {
-      enable = true;
-      nssmdns = true;
-    };
-
-    # Bluetooth
-    hardware.bluetooth.enable = true;
 
     # GPU acceleration
     hardware.opengl = {

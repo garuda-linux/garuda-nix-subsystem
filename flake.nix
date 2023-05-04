@@ -1,5 +1,5 @@
 {
-  description = "Garuda Linux NixOS subsystem flake";
+  description = "Garuda Linux Nix subsystem flake";
 
   inputs = {
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";

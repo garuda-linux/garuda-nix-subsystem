@@ -9,7 +9,7 @@ with lib;
       mkOption {
         default = true;
         description = ''
-          If set to true, chaotic's nyx will have its binary cache automatically enabled and managed.
+          If set to true, a default configuration for Pipewire will be used.
         '';
       };
   };

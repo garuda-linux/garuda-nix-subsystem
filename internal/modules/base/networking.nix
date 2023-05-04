@@ -9,17 +9,15 @@ with lib;
       mkOption {
         default = true;
         description = ''
-          This enables networking related settings for Garuda.
+          If set to true, reasonable defaults for networking will be set.
         '';
       };
   };
   config = {
     networking = mkDefault {
-      nameservers = [ "1.1.1.1" "1.0.0.1" ];
       networkmanager = {
         enable = true;
-        unmanaged = [ "lo" "docker0" ];
-        wifi.backend = "iwd";
+        unmanaged = [ "lo" "docker0" "virbr0" ];
       };
       # Enable nftables instead of iptables
       nftables.enable = true;
