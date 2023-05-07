@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }: 
+{ lib, pkgs, ... }:
 let
   # use substitute-all-files to replace /usr/bin with /run/current-system/sw/bin
   dr460nized-kde-theme = pkgs.dr460nized-kde-theme.overrideAttrs (oldAttrs: {
@@ -27,7 +27,7 @@ in
 
   console.keyMap = "de";
   services.xserver.layout = "de";
-  
+
   security.pam.services.systemd-user.makeHomeDir = true;
   # /etc/skel equivalent
   security.pam.makeHomeDir.skelDirectory = "${dr460nized-kde-theme}/skel";

@@ -3,6 +3,7 @@
   _module.args.flake-inputs = inputs;
   imports = [
     ./networking.nix
+    ./mount-garuda.nix
     ./nyx.nix
     ./sound.nix
     ./boot.nix
