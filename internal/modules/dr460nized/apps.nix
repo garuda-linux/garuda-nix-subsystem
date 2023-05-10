@@ -12,7 +12,7 @@
     dr460nized-kde-theme
     exa
     ffmpegthumbnailer
-    # fastfetch once PR is merged
+    fastfetch
     firedragon
     libinput-gestures
     libreoffice-qt

@@ -2,11 +2,11 @@
 let
   modulesPerFile = {
     base = import ./base fromFlakes;
-    dr460nized = import ./dr460nized fromFlakes;
+    dr460nized = import ./dr460nized;
   };
 
   default = { ... }: {
-    imports = builtins.attrValues modulesPerFile ++ [ inputs.chaotic.nixosModules.default ];
+    imports = [ inputs.chaotic.nixosModules.default ] ++ builtins.attrValues modulesPerFile;
   };
 in
 modulesPerFile // { inherit default; }

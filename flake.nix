@@ -3,6 +3,8 @@
 
   inputs = {
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+    flake-programs-sqlite.url = "github:wamserma/flake-programs-sqlite";
+    flake-programs-sqlite.inputs.nixpkgs.follows = "chaotic/nixpkgs";
   };
 
   outputs = { chaotic, ... }@inputs: rec {

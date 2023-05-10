@@ -1,4 +1,5 @@
 { pkgs
+, flake-inputs
 , ...
 }:
 {
@@ -36,6 +37,7 @@
       "wget" = "wget -c";
     };
     command-not-found.enable = true;
+    command-not-found.dbPath = flake-inputs.flake-programs-sqlite.packages.${pkgs.system}.programs-sqlite;
     fish = {
       enable = true;
       vendor = {
