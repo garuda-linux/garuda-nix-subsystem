@@ -1,15 +1,13 @@
 { config, lib, pkgs, utils, ... }:
 let
   cfg = config.garuda.dr460nized;
+  to_import = [ 
+    import ./apps.nix
+    import ./misc.nix
+  ];
+  do_import = { ... }: lib.mkIf cfg.enable { imports = to_import; };
 in
 {
-  # To-do: move those to config {} ?
-  imports = [
-    ./apps.nix
-    ./misc.nix
-    ./shells.nix
-  ];
-
   options = {
     garuda.dr460nized.enable =
       lib.mkOption {
@@ -82,5 +80,5 @@ in
       driSupport32Bit = true;
       enable = true;
     };
-  };
+  } // { inherit do_import; };
 }

@@ -7,6 +7,7 @@
     ./nyx.nix
     ./sound.nix
     ./boot.nix
+    ./shells.nix
   ];
 
   ## OS

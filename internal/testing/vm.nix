@@ -21,7 +21,7 @@
   # /etc/skel equivalent
   security.pam.makeHomeDir.skelDirectory = "${pkgs.dr460nized-kde-theme}/skel";
 
-  time.timezone = "Europe/Berlin";
+  time.timeZone = "Europe/Berlin";
 
   system.stateVersion = "23.05";
 }
