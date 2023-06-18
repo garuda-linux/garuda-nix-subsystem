@@ -4,7 +4,7 @@ let
 in
 {
   # To-do: move those to config {} ?
-  imports = lib.mkIf cfg.enable [
+  imports = [
     ./apps.nix
     ./misc.nix
     ./shells.nix
