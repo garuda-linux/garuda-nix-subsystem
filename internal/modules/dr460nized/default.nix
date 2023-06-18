@@ -4,7 +4,7 @@ let
 in
 {
   # To-do: move those to config {} ?
-  imports = [
+  imports = lib.mkIf cfg.enable [
     ./apps.nix
     ./misc.nix
     ./shells.nix
@@ -13,7 +13,7 @@ in
   options = {
     garuda.dr460nized.enable =
       lib.mkOption {
-        default = true;
+        default = false;
         description = ''
           If enabled, Garuda Linux's dr460nized config will be used.
         '';
