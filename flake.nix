@@ -2,13 +2,19 @@
   description = "Garuda Linux Nix subsystem flake";
 
   inputs = {
+    # If you need to, override this to use a different nixpkgs version.
+    # By default, we follow chaotic's nixpkgs-unstable branch.
+    garuda-nixpkgs.follows = "chaotic/nixpkgs";
+
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+
     flake-programs-sqlite.url = "github:wamserma/flake-programs-sqlite";
-    flake-programs-sqlite.inputs.nixpkgs.follows = "chaotic/nixpkgs";
+    # You should not change this
+    flake-programs-sqlite.inputs.nixpkgs.follows = "garuda-nixpkgs";
   };
 
-  outputs = { chaotic, ... }@inputs: rec {
-    inherit (chaotic.inputs) nixpkgs;
+  outputs = { garuda-nixpkgs, ... }@inputs: rec {
+    nixpkgs = garuda-nixpkgs;
 
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
     formatter.aarch64-linux = nixpkgs.legacyPackages.aarch64-linux.nixpkgs-fmt;
