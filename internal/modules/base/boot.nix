@@ -1,4 +1,4 @@
-{ garuda-lib, ... }: 
+{ garuda-lib, ... }:
 with garuda-lib;
 {
   boot = {

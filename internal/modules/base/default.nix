@@ -12,6 +12,7 @@ with garuda-lib;
     ./sound.nix
     ./boot.nix
     ./shells.nix
+    ./garuda-user.nix
   ];
   config = {
     _module.args.flake-inputs = inputs;

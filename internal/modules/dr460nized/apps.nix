@@ -3,7 +3,7 @@
 , garuda-lib
 , config
 , ...
-}: 
+}:
 with garuda-lib;
 lib.mkIf config.garuda.dr460nized.enable {
   environment.systemPackages = with pkgs; gExcludableArray "defaultpackages" [

@@ -3,7 +3,7 @@ let
   cfg = config.garuda.networking;
 in
 with lib;
-with garuda-lib
+with garuda-lib;
 {
   options = {
     garuda.networking.enable =

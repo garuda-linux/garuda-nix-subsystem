@@ -2,24 +2,25 @@
 with garuda-lib;
 let
   cfg = config.garuda.dr460nized;
-  to_import = [ 
-    import ./apps.nix
-    import ./misc.nix
-  ];
+  to_import = [ import ./apps.nix import ./misc.nix ];
 in
 {
-  imports = [
-    ./apps.nix
-    ./misc.nix
-  ];
+  imports = [ ./apps.nix ./misc.nix ];
   options = {
-    garuda.dr460nized.enable =
-      lib.mkOption {
+    garuda.dr460nized = {
+      enable = lib.mkOption {
         default = false;
         description = ''
           If enabled, Garuda Linux's dr460nized config will be used.
         '';
       };
+      themePackage = lib.mkOption {
+        default = pkgs.dr460nized-kde-theme;
+        description = ''
+          The theme package to use.
+        '';
+      };
+    };
   };
   config = lib.mkIf cfg.enable {
     services.xserver.enable = gDefault true;
@@ -38,20 +39,18 @@ in
 
     # Define the default fonts Fira Sans & Jetbrains Mono Nerd Fonts
     fonts = {
-      fonts = with pkgs; gExcludableArray "defaultpackages" [
-        fira
-        (nerdfonts.override {
-          fonts = [
-            "JetBrainsMono"
-          ];
-        })
-        noto-fonts
-        noto-fonts-emoji
-      ];
+      fonts = with pkgs;
+        gExcludableArray "defaultpackages" [
+          fira
+          (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+          noto-fonts
+          noto-fonts-emoji
+        ];
       fontconfig = {
         cache32Bit = gDefault true;
         defaultFonts = {
-          monospace = gDefault [ "JetBrains Mono Nerd Font" "Noto Fonts Emoji" ];
+          monospace =
+            gDefault [ "JetBrains Mono Nerd Font" "Noto Fonts Emoji" ];
           sansSerif = gDefault [ "Fira" "Noto Fonts Emoji" ];
           serif = gDefault [ "Fira" "Noto Fonts Emoji" ];
         };
@@ -84,5 +83,12 @@ in
       driSupport32Bit = gDefault true;
       enable = gDefault true;
     };
+
+    # Default theme
+    security.pam.services.systemd-user.makeHomeDir = gDefault true;
+    security.pam.makeHomeDir.skelDirectory = gDefault
+      "${pkgs.dr460nized-kde-theme}/skel";
+    # Make sure that the home directories are not created by something that is not pam
+    garuda.imported-users.createHome = gDefault false;
   };
 }
