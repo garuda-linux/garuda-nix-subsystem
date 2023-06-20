@@ -1,7 +1,7 @@
-{ inputs, ... }@fromFlakes:
+{ inputs, lib, ... }@fromFlakes:
 let
   modulesPerFile = {
-    base = import ./base fromFlakes;
+    base = import ./base { inherit inputs; flake-lib = lib; };
     dr460nized = import ./dr460nized;
   };
 

@@ -1,12 +1,14 @@
 { pkgs
 , flake-inputs
+, garuda-lib
 , ...
 }:
+with garuda-lib;
 {
   # Use micro as editor
   environment.sessionVariables = {
-    EDITOR = "${pkgs.micro}/bin/micro";
-    VISUAL = "${pkgs.micro}/bin/micro";
+    EDITOR = gDefault "${pkgs.micro}/bin/micro";
+    VISUAL = gDefault "${pkgs.micro}/bin/micro";
   };
 
   # Programs & global config
@@ -36,13 +38,13 @@
       "vdir" = "vdir --color=auto";
       "wget" = "wget -c";
     };
-    command-not-found.enable = true;
-    command-not-found.dbPath = flake-inputs.flake-programs-sqlite.packages.${pkgs.system}.programs-sqlite;
+    command-not-found.enable = gDefault true;
+    command-not-found.dbPath = gDefault flake-inputs.flake-programs-sqlite.packages.${pkgs.system}.programs-sqlite;
     fish = {
-      enable = true;
+      enable = gDefault true;
       vendor = {
-        completions.enable = true;
-        config.enable = true;
+        completions.enable = gDefault true;
+        config.enable = gDefault true;
       };
       shellAbbrs = {
         "cls" = "clear";
@@ -78,7 +80,9 @@
       };
       shellInit = ''
         set fish_greeting
-        fastfetch --load-config neofetch
+        if type -q fastfetch
+          fastfetch --load-config neofetch
+        end
       '';
     };
   };

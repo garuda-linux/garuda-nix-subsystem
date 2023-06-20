@@ -1,8 +1,12 @@
 { lib
 , pkgs
+, garuda-lib
+, config
 , ...
-}: {
-  environment.systemPackages = with pkgs; [
+}: 
+with garuda-lib;
+lib.mkIf config.garuda.dr460nized.enable {
+  environment.systemPackages = with pkgs; gExcludableArray "defaultpackages" [
     acpi
     appimage-run
     applet-window-appmenu

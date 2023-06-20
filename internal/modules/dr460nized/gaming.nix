@@ -1,4 +1,5 @@
 { pkgs
+, garuda-lib
 , ...
 }: {
   # Gaming packages

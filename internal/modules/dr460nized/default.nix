@@ -1,13 +1,17 @@
-{ config, lib, pkgs, utils, ... }:
+{ config, lib, pkgs, utils, garuda-lib, ... }:
+with garuda-lib;
 let
   cfg = config.garuda.dr460nized;
   to_import = [ 
     import ./apps.nix
     import ./misc.nix
   ];
-  do_import = { ... }: lib.mkIf cfg.enable { imports = to_import; };
 in
 {
+  imports = [
+    ./apps.nix
+    ./misc.nix
+  ];
   options = {
     garuda.dr460nized.enable =
       lib.mkOption {
@@ -18,9 +22,9 @@ in
       };
   };
   config = lib.mkIf cfg.enable {
-    services.xserver.enable = true;
-    services.xserver.displayManager.sddm.enable = true;
-    services.xserver.desktopManager.plasma5.enable = true;
+    services.xserver.enable = gDefault true;
+    services.xserver.displayManager.sddm.enable = gDefault true;
+    services.xserver.desktopManager.plasma5.enable = gDefault true;
 
     environment.plasma5.excludePackages = with pkgs; [
       # Pulls in 600 mb worth of mbrola (via espeak), which is a bit silly
@@ -30,11 +34,11 @@ in
     ];
 
     # Allow GTK applications to show an appmenu on KDE
-    chaotic.appmenu-gtk3-module.enable = true;
+    chaotic.appmenu-gtk3-module.enable = gDefault true;
 
     # Define the default fonts Fira Sans & Jetbrains Mono Nerd Fonts
     fonts = {
-      fonts = with pkgs; [
+      fonts = with pkgs; gExcludableArray "defaultpackages" [
         fira
         (nerdfonts.override {
           fonts = [
@@ -45,40 +49,40 @@ in
         noto-fonts-emoji
       ];
       fontconfig = {
-        cache32Bit = true;
+        cache32Bit = gDefault true;
         defaultFonts = {
-          monospace = [ "JetBrains Mono Nerd Font" "Noto Fonts Emoji" ];
-          sansSerif = [ "Fira" "Noto Fonts Emoji" ];
-          serif = [ "Fira" "Noto Fonts Emoji" ];
+          monospace = gDefault [ "JetBrains Mono Nerd Font" "Noto Fonts Emoji" ];
+          sansSerif = gDefault [ "Fira" "Noto Fonts Emoji" ];
+          serif = gDefault [ "Fira" "Noto Fonts Emoji" ];
         };
         # This fixes emoji stuff
-        enable = true;
+        enable = gDefault true;
       };
       fontDir = {
-        enable = true;
-        decompressFonts = true;
+        enable = gDefault true;
+        decompressFonts = gDefault true;
       };
     };
 
     # These need to be enabled for complete functionality
     programs = {
-      kdeconnect.enable = true;
-      partition-manager.enable = true;
+      kdeconnect.enable = gDefault true;
+      partition-manager.enable = gDefault true;
     };
 
     # Enable Kvantum for theming
     environment.variables = {
-      ALSOFT_DRIVERS = "pipewire";
-      MOZ_USE_XINPUT2 = "1";
-      QT_STYLE_OVERRIDE = "kvantum";
-      SDL_AUDIODRIVER = "pipewire";
+      ALSOFT_DRIVERS = gDefault "pipewire";
+      MOZ_USE_XINPUT2 = gDefault "1";
+      QT_STYLE_OVERRIDE = gDefault "kvantum";
+      SDL_AUDIODRIVER = gDefault "pipewire";
     };
 
     # GPU acceleration
     hardware.opengl = {
-      driSupport = true;
-      driSupport32Bit = true;
-      enable = true;
+      driSupport = gDefault true;
+      driSupport32Bit = gDefault true;
+      enable = gDefault true;
     };
-  } // { inherit do_import; };
+  };
 }

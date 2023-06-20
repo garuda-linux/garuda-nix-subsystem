@@ -11,7 +11,7 @@ in
   options.garuda.garuda-chroot = {
     enable = mkOption
       {
-        default = true;
+        default = false;
         type = types.bool;
         description = mdDoc ''
           Enables mounting of the Garuda Linux root partition.

@@ -1,8 +1,9 @@
-{ config, lib, flake-inputs, ... }:
+{ config, lib, flake-inputs, garuda-lib, ... }:
 let
   cfg = config.garuda.networking;
 in
 with lib;
+with garuda-lib
 {
   options = {
     garuda.networking.enable =
@@ -13,20 +14,20 @@ with lib;
         '';
       };
   };
-  config = {
-    networking = mkDefault {
+  config = lib.mkIf cfg.enable {
+    networking = {
       networkmanager = {
-        enable = true;
+        enable = gDefault true;
         unmanaged = [ "lo" "docker0" "virbr0" ];
       };
       # Enable nftables instead of iptables
-      nftables.enable = true;
+      nftables.enable = gDefault true;
       # Disable non-NetworkManager
-      useDHCP = false;
+      useDHCP = gDefault false;
     };
 
     # Enable wireless database
-    hardware.wirelessRegulatoryDatabase = true;
+    hardware.wirelessRegulatoryDatabase = gDefault true;
 
     # Enable BBR & cake
     boot.kernelModules = [ "tcp_bbr" ];

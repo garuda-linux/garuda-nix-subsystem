@@ -1,7 +1,8 @@
 { lib
 , pkgs
+, config
 , ...
-}: {
+}: lib.mkIf config.garuda.dr460nized.enable {
   # Run appimages with appimage-run
   boot.binfmt.registrations = lib.genAttrs [ "appimage" "AppImage" ] (ext: {
     interpreter = "/run/current-system/sw/bin/appimage-run";
