@@ -1,0 +1,99 @@
+#!/bin/bash
+
+set -e
+
+BTRFS_UUID=$(findmnt -n -o UUID /)
+BOOT_UUID=$(findmnt -n -o UUID /boot/efi)
+
+if [ ! -d "/boot/efi" ]; then
+    echo "Error: /boot/efi does not exist"
+    exit 1
+fi
+
+MNT_DIR=$(mktemp -d)
+
+mount UUID=$BTRFS_UUID $MNT_DIR
+
+btrfs subvolume create $MNT_DIR/@nix
+btrfs subvolume create $MNT_DIR/@nixos
+
+umount $MNT_DIR
+MNT_DIR=$(mktemp -d)
+
+mkdir /nix
+echo "UUID=$BTRFS_UUID /nix btrfs subvol=@nix,nodatacow 0 0" >> /etc/fstab
+
+mount -a
+
+mount -o subvol=@nixos UUID=$BTRFS_UUID $MNT_DIR
+mkdir "$MNT_DIR"{/boot,/home,/nix}
+mount -o subvol=@nix UUID=$BTRFS_UUID $MNT_DIR/nix
+mount UUID=$BOOT_UUID $MNT_DIR/boot
+
+sh <(curl -L https://nixos.org/nix/install) < /dev/null --daemon
+
+cat >> /etc/nix/nix.conf << EOF
+experimental-features = nix-command flakes
+extra-trusted-public-keys = nyx.chaotic.cx-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8= chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=
+extra-substituters = https://nyx.chaotic.cx
+EOF
+
+HOSTNAME=$(cat /etc/hostname)
+USERNAME="$SUDO_USER"
+USERID="$SUDO_UID"
+# Read /etc/shadow to get the user's password hash
+USERPASS=$(grep "$USERNAME" /etc/shadow | cut -d: -f2)
+
+mkdir -p "$MNT_DIR/etc/nixos"
+cat > "$MNT_DIR/etc/nixos/flake.nix" << EOF
+{
+  description = "Garuda Linux Nix Subsystem Flake";
+
+  inputs = {
+    garuda.url = "gitlab:garuda-linux/garuda-nix-subsystem";
+  };
+
+  outputs = { self, garuda }:
+    let
+      system = "x86_64-linux";
+    in
+    {
+      nixosConfigurations.$HOSTNAME = garuda.lib.garudaSystem {
+        inherit system;
+        modules = [ ./configuration.nix ];
+      };
+    };
+}
+EOF
+cat > "$MNT_DIR/etc/nixos/garuda-managed.nix" <<- EOF
+{ lib, ... }:
+let
+in
+{
+  # DO NOT MODIFY THIS FILE!
+  # This file is managed by the Garuda Nix Subsystem
+  # Any changes made to this file will be overwritten
+  # Instead, please set garuda.subsystem.imported-users.enable = false if you are not interested in automatic user management.
+  garuda.subsystem.enable = true;
+  garuda.subsystem.version = 1;
+  garuda.subsystem.UUID = "$BTRFS_UUID";
+  garuda.subsystem.imported-users.users."tne".uid = $USERID;
+  garuda.subsystem.imported-users.users."tne".passwordHash = "$USERPASS";
+}
+EOF
+cat > "$MNT_DIR/etc/nixos/configuration.nix" <<- EOF
+{ config, pkgs, lib, ... }:
+with lib;
+{
+  imports = [
+    ./hardware-configuration.nix
+    ./garuda-managed.nix
+  ];
+  garuda.dr460nized.enable = true;
+  networking.hostName = "$HOSTNAME";
+
+  system.stateVersion = "23.05";
+}
+EOF
+
+/nix/var/nix/profiles/default/bin/nix-shell -p 'let nixos = (import <nixpkgs/nixos> { configuration = {}; }).config.system.build; in [ nixos.nixos-install nixos.nixos-generate-config nixos.nixos-enter nix ]' --run "nixos-generate-config --root '$MNT_DIR' && nixos-install --root '$MNT_DIR' --flake '$MNT_DIR/etc/nixos#$HOSTNAME'"

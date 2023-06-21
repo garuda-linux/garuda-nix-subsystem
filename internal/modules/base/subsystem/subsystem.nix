@@ -20,6 +20,9 @@ in
       type = types.bool;
       default = true;
     };
+    UUID = mkOption {
+      type = types.str;
+    };
   };
 
   config = lib.mkIf (cfg.enable && cfg.version == 1) {
