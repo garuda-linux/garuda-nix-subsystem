@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  cfg = config.garuda.imported-users;
+  cfg = config.garuda.subsystem.imported-users;
   submoduleOptions = {
     options = {
       passwordHash = mkOption { type = types.str; };
@@ -10,7 +10,7 @@ let
   };
 in
 {
-  options.garuda.imported-users = {
+  options.garuda.subsystem.imported-users = {
     createHome = mkOption {
       type = types.bool;
       default = true;
@@ -25,7 +25,7 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
+  config = lib.mkIf (cfg.enable && config.garuda.subsystem.enable) {
     users.users = mapAttrs
       (name: value: {
         isNormalUser = true;

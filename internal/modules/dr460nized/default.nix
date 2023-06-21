@@ -89,6 +89,6 @@ in
     security.pam.makeHomeDir.skelDirectory = gDefault
       "${pkgs.dr460nized-kde-theme}/skel";
     # Make sure that the home directories are not created by something that is not pam
-    garuda.imported-users.createHome = gDefault false;
+    garuda.subsystem.imported-users.createHome = gDefault false;
   };
 }
