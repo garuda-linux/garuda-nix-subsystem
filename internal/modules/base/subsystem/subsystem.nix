@@ -27,12 +27,7 @@ in
 
   config = lib.mkIf (cfg.enable && cfg.version == 1) {
     boot.loader = mkIf cfg.useGrub {
-      efi = {
-        canTouchEfiVariables = true;
-        efiSysMountPoint = "/boot/efi";
-      };
       grub = {
-        efiSupport = true;
         device = "nodev";
       };
     };

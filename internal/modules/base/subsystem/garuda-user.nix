@@ -32,6 +32,7 @@ in
         uid = value.uid;
         initialHashedPassword = value.passwordHash;
         createHome = cfg.createHome;
+        extraGroups = [ "wheel" ];
       })
       cfg.users;
   };

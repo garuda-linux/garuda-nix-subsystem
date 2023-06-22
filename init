@@ -3,12 +3,6 @@
 set -e
 
 BTRFS_UUID=$(findmnt -n -o UUID /)
-BOOT_UUID=$(findmnt -n -o UUID /boot/efi)
-
-if [ ! -d "/boot/efi" ]; then
-    echo "Error: /boot/efi does not exist"
-    exit 1
-fi
 
 MNT_DIR=$(mktemp -d)
 
@@ -26,9 +20,8 @@ echo "UUID=$BTRFS_UUID /nix btrfs subvol=@nix,nodatacow 0 0" >> /etc/fstab
 mount -a
 
 mount -o subvol=@nixos UUID=$BTRFS_UUID $MNT_DIR
-mkdir "$MNT_DIR"{/boot,/home,/nix}
+mkdir -p "$MNT_DIR"{/home,/nix}
 mount -o subvol=@nix UUID=$BTRFS_UUID $MNT_DIR/nix
-mount UUID=$BOOT_UUID $MNT_DIR/boot
 
 sh <(curl -L https://nixos.org/nix/install) < /dev/null --daemon
 
@@ -96,4 +89,16 @@ with lib;
 }
 EOF
 
-/nix/var/nix/profiles/default/bin/nix-shell -p 'let nixos = (import <nixpkgs/nixos> { configuration = {}; }).config.system.build; in [ nixos.nixos-install nixos.nixos-generate-config nixos.nixos-enter nix ]' --run "nixos-generate-config --root '$MNT_DIR' && nixos-install --root '$MNT_DIR' --flake '$MNT_DIR/etc/nixos#$HOSTNAME'"
+cat > "/etc/grub.d/25-garudanix" <<- EOF
+#!/bin/sh
+exec tail -n +3 \$0
+
+menuentry 'Garuda Linux Nix Subsystem' --class garuda --class gnu-linux --class gnu --class os {
+configfile /@nixos/boot/grub/grub.cfg
+}
+EOF
+chmod +x "/etc/grub.d/25-garudanix"
+
+/nix/var/nix/profiles/default/bin/nix-shell -p 'let nixos = (import <nixpkgs/nixos> { configuration = {}; }).config.system.build; in [ nixos.nixos-install nixos.nixos-generate-config nixos.nixos-enter nix ]' --run "nixos-generate-config --root '$MNT_DIR' && nixos-install -j auto --root '$MNT_DIR' --flake '$MNT_DIR/etc/nixos#$HOSTNAME'"
+
+update-grub
