@@ -1,4 +1,4 @@
-{ config, lib, flake-inputs, garuda-lib, ... }:
+{ config, lib, garuda-lib, ... }:
 let
   cfg = config.garuda.networking;
 in

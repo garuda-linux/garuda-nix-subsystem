@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 with lib;
 let
   cfg = config.garuda.subsystem.imported-users;
@@ -29,9 +29,9 @@ in
     users.users = mapAttrs
       (name: value: {
         isNormalUser = true;
-        uid = value.uid;
+        inherit (value) uid;
         initialHashedPassword = value.passwordHash;
-        createHome = cfg.createHome;
+        inherit (cfg) createHome;
         extraGroups = [ "wheel" ];
       })
       cfg.users;

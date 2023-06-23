@@ -1,4 +1,4 @@
-{ config, lib, pkgs, utils, garuda-lib, ... }:
+{ config, lib, pkgs, garuda-lib, ... }:
 with garuda-lib;
 let
   cfg = config.garuda.dr460nized;

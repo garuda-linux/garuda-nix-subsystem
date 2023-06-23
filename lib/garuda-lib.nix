@@ -1,13 +1,12 @@
-{ nixpkgs, ... }@fromFlake: { config, pkgs, lib, ... }:
+{ ... }: { config, lib, ... }:
 rec {
   # gDefault, set a priority of 950, which should be our default so the user can override our settings, yet we can override nixpkgs
-  gDefault = arg: lib.mkOverride 950 arg;
+  gDefault = lib.mkOverride 950;
   # Remove excluded options from the output array
-  gExcludableArray = name: array: lib.filter
+  gExcludableArray = name: lib.filter
     (x: !(config.garuda.excludes."${name}".excludeAll or false) &&
       !(lib.lists.any (y: builtins.unsafeDiscardStringContext x == builtins.unsafeDiscardStringContext y) (config.garuda.excludes."${name}".exclude or [ ]))
-    )
-    array;
+    );
   # Define options = [] for the exclusion variable
   gCreateExclusionOption = name: {
     "${name}" = {

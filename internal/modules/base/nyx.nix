@@ -1,4 +1,4 @@
-{ config, lib, flake-inputs, ... }:
+{ config, lib, ... }:
 let
   cfg = config.garuda.chaotic-nyx.cache;
 in
