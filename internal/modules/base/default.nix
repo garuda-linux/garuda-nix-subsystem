@@ -6,12 +6,15 @@ with garuda-lib;
 {
   options.garuda.excludes = gCreateExclusionOption "defaultpackages" // gCreateExclusionOption "kernelparameters";
   imports = [
-    ./networking.nix
-    ./mount-garuda.nix
-    ./nyx.nix
-    ./sound.nix
     ./boot.nix
+    # ./gaming.nix
+    ./hardware.nix
+    ./mount-garuda.nix
+    ./networking.nix
+    ./nyx.nix
+    ./programs.nix
     ./shells.nix
+    ./sound.nix
     ./subsystem/subsystem.nix
   ];
   config = {
@@ -21,19 +24,17 @@ with garuda-lib;
     ## OS
     boot.tmp.useTmpfs = gDefault true;
 
-    services.locate = {
-      enable = gDefault true;
-      localuser = gDefault null;
-      locate = gDefault pkgs.plocate;
-    };
-
     environment.systemPackages = with pkgs; gExcludableArray "defaultpackages" [
       curl
+      exa
+      fastfetch
       git
       htop
       killall
       micro
       screen
+      tldr
+      ugrep
       wget
     ];
 
@@ -49,21 +50,29 @@ with garuda-lib;
 
     # General nix settings
     nix = {
+      # Make builds run with low priority so my system stays responsive
+      daemonCPUSchedPolicy = "idle";
+      daemonIOSchedClass = "idle";
+
       # Do garbage collections whenever there is less than 3GB free space left
       extraOptions = ''
-        min-free = ${toString (1024 * 1024 * 1024 * 3)}
+        max-free = ${toString (1024 * 1024 * 1024)}
+        min-free = ${toString (100 * 1024 * 1024)}
       '';
+
       # Do daily garbage collections
       gc = {
         automatic = gDefault true;
         dates = gDefault "daily";
         options = gDefault "--delete-older-than 7d";
       };
-      settings = {
-        # Allow using flakes
-        auto-optimise-store = gDefault true;
-        experimental-features = gDefault [ "nix-command" "flakes" ];
 
+      settings = {
+        # Allow using flakes & automatically optimize the nix store
+        auto-optimise-store = gDefault true;
+        experimental-features = gDefault [ "nix-command" "flakes" "recursive-nix" "ca-derivations" ];
+
+        # Users allowed to use Nix
         allowed-users = [ "@wheel" ];
         trusted-users = [ "@wheel" ];
 
@@ -92,16 +101,23 @@ with garuda-lib;
       fi
     '';
 
-    ## Service config
-    # Docker
-    virtualisation.docker = {
-      autoPrune.enable = gDefault true;
-      autoPrune.flags = gDefault [ "-a" ];
+    # Clean results periodically
+    systemd.services.nix-clean-result = {
+      description = "Auto clean all result symlinks created by nixos-rebuild test";
+      serviceConfig.Type = "oneshot";
+      script = ''
+        "${config.nix.package.out}/bin/nix-store" --gc --print-roots | "${pkgs.gawk}/bin/awk" 'match($0, /^(.*\/result) -> \/nix\/store\/[^-]+-nixos-system/, a) { print a[1] }' | xargs -r -d\\n rm
+      '';
+      before = [ "nix-gc.service" ];
+      wantedBy = [ "nix-gc.service" ];
     };
 
+    ## Service config
+    # Bluetooth
+    hardware.bluetooth.enable = gDefault true;
 
-    # Power profiles daemon
-    services.power-profiles-daemon.enable = gDefault true;
+    # Handle ACPI events
+    services.acpid.enable = gDefault true;
 
     # LAN discovery
     services.avahi = {
@@ -109,7 +125,33 @@ with garuda-lib;
       nssmdns = gDefault true;
     };
 
-    # Bluetooth
-    hardware.bluetooth.enable = gDefault true;
+    # Ciscard blocks that are not in use by the filesystem
+    services.fstrim.enable = gDefault true;
+
+    # Firmware updater for machine hardware
+    services.fwupd.enable = gDefault true;
+
+    # Limit systemd journal size
+    services.journald.extraConfig = gDefault ''
+      SystemMaxUse=50M
+      RuntimeMaxUse=10M
+    '';
+
+    # Enable locating files via locate
+    services.locate = gDefault {
+      enable = true;
+      localuser = null;
+      interval = "hourly";
+      locate = pkgs.plocate;
+    };
+
+    # Power profiles daemon
+    services.power-profiles-daemon.enable = gDefault true;
+
+    # Docker
+    virtualisation.docker = gDefault {
+      autoPrune.enable = true;
+      autoPrune.flags = [ "-a" ];
+    };
   };
 }

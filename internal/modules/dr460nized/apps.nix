@@ -7,19 +7,13 @@
 with garuda-lib;
 lib.mkIf config.garuda.dr460nized.enable {
   environment.systemPackages = with pkgs; gExcludableArray "defaultpackages" [
-    acpi
-    appimage-run
     applet-window-appmenu
     applet-window-title
     beautyline-icons
-    btop
     dr460nized-kde-theme
-    exa
     ffmpegthumbnailer
-    fastfetch
     firedragon
     libinput-gestures
-    libreoffice-qt
     libsForQt5.applet-window-buttons
     libsForQt5.kdegraphics-thumbnailers
     libsForQt5.kimageformats
@@ -28,7 +22,6 @@ lib.mkIf config.garuda.dr460nized.enable {
     sshfs
     sweet
     sweet-nova
-    tldr
     vlc
     xdg-desktop-portal
   ];

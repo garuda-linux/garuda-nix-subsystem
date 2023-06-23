@@ -20,8 +20,6 @@ with garuda-lib;
         enable = gDefault true;
         unmanaged = [ "lo" "docker0" "virbr0" ];
       };
-      # Enable nftables instead of iptables
-      nftables.enable = gDefault true;
       # Disable non-NetworkManager
       useDHCP = gDefault false;
     };

@@ -44,6 +44,7 @@ in
           fira
           (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
           noto-fonts
+          noto-fonts-cjk
           noto-fonts-emoji
         ];
       fontconfig = {
@@ -75,13 +76,6 @@ in
       MOZ_USE_XINPUT2 = gDefault "1";
       QT_STYLE_OVERRIDE = gDefault "kvantum";
       SDL_AUDIODRIVER = gDefault "pipewire";
-    };
-
-    # GPU acceleration
-    hardware.opengl = {
-      driSupport = gDefault true;
-      driSupport32Bit = gDefault true;
-      enable = gDefault true;
     };
 
     # Default theme
