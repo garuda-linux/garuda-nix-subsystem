@@ -70,8 +70,8 @@ in
   garuda.subsystem.enable = true;
   garuda.subsystem.version = 1;
   garuda.subsystem.UUID = "$BTRFS_UUID";
-  garuda.subsystem.imported-users.users."tne".uid = $USERID;
-  garuda.subsystem.imported-users.users."tne".passwordHash = "$USERPASS";
+  garuda.subsystem.imported-users.users."$USERNAME".uid = $USERID;
+  garuda.subsystem.imported-users.users."$USERNAME".passwordHash = "$USERPASS";
 }
 EOF
 cat > "$MNT_DIR/etc/nixos/configuration.nix" <<- EOF
