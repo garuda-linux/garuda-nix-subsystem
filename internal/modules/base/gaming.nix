@@ -10,7 +10,7 @@ with garuda-lib;
 {
   options = {
     garuda.gaming.enable =
-      mkOption {
+      lib.mkOption {
         default = true;
         description = ''
           If set to true, reasonable defaults for networking will be set.
@@ -18,7 +18,7 @@ with garuda-lib;
       };
   };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     # Gaming packages
     environment.systemPackages = with pkgs; [
       lutris
@@ -57,8 +57,6 @@ with garuda-lib;
     chaotic.gamescope = gDefault {
       enable = true;
       package = pkgs.gamescope_git;
-      args = [ "--rt" "--prefer-vk-device 1022:1630" ];
-      env = { "__GLX_VENDOR_LIBRARY_NAME" = "amd"; };
       session = {
         enable = true;
         args = [ "--rt" ];

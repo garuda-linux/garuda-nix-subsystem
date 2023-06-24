@@ -1,9 +1,11 @@
 { config
+, garuda-lib
 , lib
 , pkgs
 , ...
 }:
 with lib;
+with garuda-lib;
 let
   cfg = config.garuda.performance-tweaks;
 in
@@ -21,7 +23,7 @@ in
 
   config = mkIf cfg.enable {
     # Automatically tune nice levels
-    services.ananicy = {
+    services.ananicy = gDefault {
       enable = true;
       package = pkgs.ananicy-cpp;
     };
@@ -32,27 +34,27 @@ in
     ];
 
     # Get notifications about earlyoom actions
-    services.systembus-notify.enable = true;
+    services.systembus-notify.enable = gDefault true;
 
     # 90% ZRAM as swap
-    zramSwap = {
+    zramSwap = gDefault {
       algorithm = "zstd";
       enable = true;
       memoryPercent = 90;
     };
 
     # Earlyoom to prevent OOM situations
-    services.earlyoom = {
+    services.earlyoom = gDefault {
       enable = true;
       enableNotifications = true;
       freeMemThreshold = 5;
     };
 
     # Tune the Zen kernel
-    programs.cfs-zen-tweaks.enable = true;
+    programs.cfs-zen-tweaks.enable = gDefault true;
 
     ## A few other kernel tweaks
-    boot.kernel.sysctl = {
+    boot.kernel.sysctl = gDefault {
       "kernel.nmi_watchdog" = 0;
       "kernel.sched_cfs_bandwidth_slice_us" = 3000;
       "net.core.rmem_max" = 2500000;

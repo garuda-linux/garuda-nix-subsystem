@@ -1,4 +1,4 @@
-{ garuda-lib 
+{ garuda-lib
 , pkgs
 , ...
 }:
@@ -15,10 +15,12 @@ with garuda-lib;
     bash.shellAliases = {
       # General useful things & theming
       "bat" = "bat --style header --style snip --style changes";
+      "cat" = "bat --style header --style snip --style changes";
       "cls" = "clear";
       "dd" = "dd progress=status";
       "dir" = "dir --color=auto";
       "egrep" = "egrep --color=auto";
+      "fastfetch" = "fastfetch -l nixos";
       "fgrep" = "fgrep --color=auto";
       "gcommit" = "git commit -m";
       "gitlog" = "git log --oneline --graph --decorate --all";
@@ -28,6 +30,7 @@ with garuda-lib;
       "gpush" = "git push";
       "ip" = "ip --color=auto";
       "jctl" = "journalctl -p 3 -xb";
+      "ls" = "exa -al --color=always --group-directories-first --icons";
       "micro" = "micro -colorscheme geany -autosu true -mkparents true";
       "psmem" = "ps auxf | sort -nr -k 4";
       "psmem10" = "ps auxf | sort -nr -k 4 | head -1";
@@ -63,9 +66,11 @@ with garuda-lib;
       };
       shellAliases = {
         "bat" = "bat --style header --style snip --style changes";
+        "cat" = "bat --style header --style snip --style changes";
         "dd" = "dd progress=status";
         "dir" = "dir --color=auto";
         "egrep" = "egrep --color=auto";
+        "fastfetch" = "fastfetch -l nixos";
         "fgrep" = "fgrep --color=auto";
         "gitlog" = "git log --oneline --graph --decorate --all";
         "ip" = "ip --color=auto";
@@ -79,9 +84,7 @@ with garuda-lib;
       };
       shellInit = ''
         set fish_greeting
-        if type -q fastfetch
-          fastfetch --load-config neofetch
-        end
+        fastfetch -l nixos --load-config neofetch
       '';
     };
   };
