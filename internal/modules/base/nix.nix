@@ -8,7 +8,7 @@
 with garuda-lib;
 {
   # General nix settings
-  nix = gDefault {
+  nix = {
     # Make builds run with low priority so my system stays responsive
     daemonCPUSchedPolicy = "idle";
     daemonIOSchedClass = "idle";
@@ -21,14 +21,14 @@ with garuda-lib;
 
     # Do daily garbage collections
     gc = {
-      automatic = true;
+      automatic = gDefault true;
       dates = "daily";
       options = "--delete-older-than 7d";
     };
 
     settings = {
       # Allow using flakes & automatically optimize the nix store
-      auto-optimise-store = true;
+      auto-optimise-store = gDefault true;
       experimental-features = [ "nix-command" "flakes" ];
 
       # Users allowed to use Nix
@@ -36,7 +36,7 @@ with garuda-lib;
       trusted-users = [ "@wheel" ];
 
       # Max number of parallel jobs
-      max-jobs = "auto";
+      max-jobs = gDefault "auto";
     };
     nixPath = [ "nixpkgs=${flake-inputs.nixpkgs}" "nyx=${flake-inputs.chaotic}" ];
   };
@@ -45,7 +45,7 @@ with garuda-lib;
   nixpkgs.config.allowUnfree = gDefault true;
 
   # Print a diff when running system updates
-  system.activationScripts.diff = gDefault ''
+  system.activationScripts.diff = ''
     if [[ -e /run/current-system ]]; then
       (
         for i in {1..3}; do
@@ -61,7 +61,7 @@ with garuda-lib;
   '';
 
   # Clean results periodically
-  systemd.services.nix-clean-result = gDefault {
+  systemd.services.nix-clean-result = {
     description = "Auto clean all result symlinks created by nixos-rebuild test";
     serviceConfig.Type = "oneshot";
     script = ''

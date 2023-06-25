@@ -20,14 +20,14 @@ with garuda-lib;
   services.fwupd.enable = gDefault true;
 
   # Limit systemd journal size
-  services.journald.extraConfig = gDefault ''
+  services.journald.extraConfig = ''
     SystemMaxUse=50M
     RuntimeMaxUse=10M
   '';
 
   # Enable locating files via locate
-  services.locate = gDefault {
-    enable = true;
+  services.locate = {
+    enable = gDefault true;
     localuser = null;
     interval = "hourly";
     locate = pkgs.plocate;
@@ -37,8 +37,8 @@ with garuda-lib;
   services.power-profiles-daemon.enable = gDefault true;
 
   # Docker
-  virtualisation.docker = gDefault {
-    autoPrune.enable = true;
+  virtualisation.docker = {
+    autoPrune.enable = gDefault true;
     autoPrune.flags = [ "-a" ];
   };
 }

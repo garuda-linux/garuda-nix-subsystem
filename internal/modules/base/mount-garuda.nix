@@ -19,7 +19,7 @@ in
       };
     root = mkOption
       {
-        default = "/var/lib/machines";
+        default = "/var/lib/machines/garuda";
         type = types.str;
         description = mdDoc ''
           Specifies where the Garuda Linux root partition should be mounted
@@ -35,7 +35,7 @@ in
       };
     boot-uuid = mkOption
       {
-        default = "/var/lib/machines";
+        default = "";
         type = types.str;
         description = mdDoc ''
           Provide the UUID of the Garuda boot partition
@@ -43,7 +43,7 @@ in
       };
     user = mkOption
       {
-        default = "/var/lib/machines";
+        default = "nico";
         type = types.str;
         description = mdDoc ''
           The default user of the Garuda / NixOS subsystem

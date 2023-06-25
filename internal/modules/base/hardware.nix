@@ -2,16 +2,16 @@
 with garuda-lib;
 {
   # Microcode and firmware updates
-  hardware = gDefault {
+  hardware = {
     cpu = {
-      amd.updateMicrocode = true;
-      intel.updateMicrocode = true;
+      amd.updateMicrocode = gDefault true;
+      intel.updateMicrocode = gDefault true;
     };
-    enableRedistributableFirmware = true;
+    enableRedistributableFirmware = gDefault true;
     opengl = {
-      driSupport =  true;
-      driSupport32Bit =  true;
-      enable =  true;
+      driSupport = gDefault true;
+      driSupport32Bit = gDefault true;
+      enable = gDefault true;
     };
   };
 }

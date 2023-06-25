@@ -23,9 +23,24 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
-    services.xserver.enable = gDefault true;
-    services.xserver.displayManager.sddm.enable = gDefault true;
-    services.xserver.desktopManager.plasma5.enable = gDefault true;
+    services.xserver = {
+      desktopManager.plasma5.enable = gDefault true;
+      displayManager = {
+        sddm = {
+          autoNumlock = gDefault true;
+          enable = gDefault true;
+          settings = {
+            General = {
+              CursorTheme = gDefault "Sweet-cursors";
+              Font = gDefault "Fira Sans";
+            };
+          };
+          theme = gDefault "Sweet";
+        };
+      };
+      enable = gDefault true;
+      excludePackages = [ pkgs.xterm ];
+    };
 
     environment.plasma5.excludePackages = with pkgs; [
       # Pulls in 600 mb worth of mbrola (via espeak), which is a bit silly
@@ -70,7 +85,7 @@ in
       partition-manager.enable = gDefault true;
     };
 
-    # Enable Kvantum for theming
+    # Enable Kvantum for theming & Pipewire
     environment.variables = {
       ALSOFT_DRIVERS = gDefault "pipewire";
       MOZ_USE_XINPUT2 = gDefault "1";
@@ -78,10 +93,13 @@ in
       SDL_AUDIODRIVER = gDefault "pipewire";
     };
 
-    # Default theme
-    security.pam.services.systemd-user.makeHomeDir = gDefault true;
-    security.pam.makeHomeDir.skelDirectory = gDefault
-      "${pkgs.dr460nized-kde-theme}/skel";
+    # Set /etc/skel directory to pull theming from
+    security.pam = {
+      services.systemd-user.makeHomeDir = gDefault true;
+      makeHomeDir.skelDirectory = gDefault
+        "${pkgs.dr460nized-kde-theme}/skel";
+    };
+
     # Make sure that the home directories are not created by something that is not pam
     garuda.subsystem.imported-users.createHome = gDefault false;
   };

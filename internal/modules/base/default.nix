@@ -4,6 +4,7 @@
     ./boot.nix
     ./gaming.nix
     ./hardware.nix
+    ./locales.nix
     ./mount-garuda.nix
     ./networking.nix
     ./nix.nix

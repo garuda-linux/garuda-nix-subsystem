@@ -40,8 +40,8 @@ with garuda-lib;
     programs.gamemode.enable = gDefault true;
 
     # Instant replays
-    services.replay-sorcery = gDefault {
-      enable = true;
+    services.replay-sorcery = {
+      enable = gDefault true;
       autoStart = false;
       settings = {
         videoQuality = "auto";
@@ -49,23 +49,23 @@ with garuda-lib;
     };
 
     # Enable Steam
-    programs.steam = gDefault {
-      enable = true;
+    programs.steam = {
+      enable = gDefault true;
       gamescopeSession.enable = true;
     };
 
     # Unstable gamescope from Chaotic-Nyx
-    chaotic.gamescope = gDefault {
-      enable = true;
+    chaotic.gamescope = {
+      enable = gDefault true;
       package = pkgs.gamescope_git;
       session = {
-        enable = true;
+        enable = gDefault true;
         args = [ "--rt" ];
       };
     };
 
     # Fix League of Legends
-    boot.kernel.sysctl = gDefault {
+    boot.kernel.sysctl = {
       "abi.vsyscall32" = 0;
     };
   };
