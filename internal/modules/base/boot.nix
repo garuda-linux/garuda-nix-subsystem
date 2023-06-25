@@ -1,5 +1,6 @@
 { config
 , garuda-lib
+, lib
 , ...
 }:
 with garuda-lib;
@@ -11,7 +12,7 @@ with garuda-lib;
       systemd.strip = true;
       verbose = false;
     };
-    kernelParams = gExcludableArray "kernelparameters" [ "acpi_call" "quiet" ];
+    kernelParams = gExcludableArray config "kernelparameters" [ "acpi_call" "quiet" ];
     plymouth = gDefault {
       enable = true;
       theme = "bgrt";

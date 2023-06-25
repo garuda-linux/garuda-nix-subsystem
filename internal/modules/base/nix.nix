@@ -2,6 +2,7 @@
 , flake-inputs
 , garuda-lib
 , pkgs
+, lib
 , ...
 }:
 with garuda-lib;
@@ -28,7 +29,7 @@ with garuda-lib;
     settings = {
       # Allow using flakes & automatically optimize the nix store
       auto-optimise-store = true;
-      experimental-features = [ "nix-command" "flakes" "recursive-nix" "ca-derivations" ];
+      experimental-features = [ "nix-command" "flakes" ];
 
       # Users allowed to use Nix
       allowed-users = [ "@wheel" ];

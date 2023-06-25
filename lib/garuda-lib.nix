@@ -1,9 +1,56 @@
-{ ... }: { config, lib, ... }:
-rec {
+{ nixpkgs, ... }:
+let
+  lib = nixpkgs.lib;
   # gDefault, set a priority of 950, which should be our default so the user can override our settings, yet we can override nixpkgs
   gDefault = lib.mkOverride 950;
+  # This is terrible, but a perfect example of the sunk cost fallacy
+  isUniqueVariable = type: 
+  with lib.types;
+  let
+    uniqueTypes = [ "bool" "str" "raw" "int" "float" "number" "nonEmptyStr" "package" "pkgs" "path" "uniq" "unique" "enum" "intBetween" ];
+    uniqueTypeSpecial = [ "strMatching " "unsignedInt" "signedInt" ];
+  in
+  if builtins.elem type.name uniqueTypes then
+    true
+  else if builtins.any (x: lib.strings.hasPrefix x type.name) uniqueTypeSpecial then
+    true
+  else
+    false;
+
+  isNonUniqueVariable = type:
+  with lib.types;
+  let
+    nonUnique = [ "listOf" "attrsOf" "lazyAttrsOf" ];
+  in
+  if builtins.elem type.name nonUnique then
+    true
+  else
+    false;
+
+  setDefaultAttrs = path: options: value:
+    let
+      attrbypath = lib.attrByPath path null options;
+      combined_path = lib.showOption path;
+    in
+    # Already overridden
+    if builtins.trace combined_path (value) ? _type && value._type == "override" then
+      if !(attrbypath ? type) || isNonUniqueVariable attrbypath.type then
+        builtins.trace "nonUnique variable ${combined_path} used with an override, be careful!" value
+      else
+        value
+    # This is an attribute, recurse
+    else if lib.isAttrs value then
+      lib.mapAttrs (name: innerValue: setDefaultAttrs (path ++ [name]) options innerValue) value
+    # This is a value
+    else if attrbypath != null && builtins.trace (isUniqueVariable attrbypath.type) (false) then
+      gDefault value
+    else
+      value;
+in
+rec {
+  inherit gDefault;
   # Remove excluded options from the output array
-  gExcludableArray = name: lib.filter
+  gExcludableArray = config: name: lib.filter
     (x: !(config.garuda.excludes."${name}".excludeAll or false) &&
       !(lib.lists.any (y: builtins.unsafeDiscardStringContext x == builtins.unsafeDiscardStringContext y) (config.garuda.excludes."${name}".exclude or [ ]))
     );
@@ -22,4 +69,5 @@ rec {
       };
     };
   };
+  gDefaultAttrs = setDefaultAttrs [];
 }

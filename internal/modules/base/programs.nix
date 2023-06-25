@@ -1,10 +1,10 @@
-{ garuda-lib, pkgs, ... }:
+{ garuda-lib, pkgs, config, ... }:
 with garuda-lib;
 {
   options.garuda.excludes = gCreateExclusionOption "defaultpackages";
   config = {
     # Default applications
-    environment.systemPackages = with pkgs; gExcludableArray "defaultpackages" [
+    environment.systemPackages = with pkgs; gExcludableArray config "defaultpackages" [
       curl
       exa
       fastfetch

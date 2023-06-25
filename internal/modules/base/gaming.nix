@@ -1,6 +1,7 @@
 { config
 , garuda-lib
 , pkgs
+, lib
 , ...
 }:
 let
@@ -11,7 +12,7 @@ with garuda-lib;
   options = {
     garuda.gaming.enable =
       lib.mkOption {
-        default = true;
+        default = false;
         description = ''
           If set to true, reasonable defaults for networking will be set.
         '';

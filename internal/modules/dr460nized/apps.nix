@@ -6,7 +6,7 @@
 }:
 with garuda-lib;
 lib.mkIf config.garuda.dr460nized.enable {
-  environment.systemPackages = with pkgs; gExcludableArray "defaultpackages" [
+  environment.systemPackages = with pkgs; gExcludableArray config "defaultpackages" [
     applet-window-appmenu
     applet-window-title
     beautyline-icons

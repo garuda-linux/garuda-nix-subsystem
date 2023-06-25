@@ -40,7 +40,7 @@ in
     # Define the default fonts Fira Sans & Jetbrains Mono Nerd Fonts
     fonts = {
       fonts = with pkgs;
-        gExcludableArray "defaultpackages" [
+        gExcludableArray config "defaultpackages" [
           fira
           (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
           noto-fonts
