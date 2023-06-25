@@ -2,10 +2,9 @@
 with garuda-lib;
 let
   cfg = config.garuda.dr460nized;
-  to_import = [ import ./apps.nix import ./misc.nix ];
 in
 {
-  imports = [ ./apps.nix ./misc.nix ];
+  imports = [ ./apps.nix ];
   options = {
     garuda.dr460nized = {
       enable = lib.mkOption {

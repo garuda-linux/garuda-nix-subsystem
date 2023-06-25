@@ -1,4 +1,4 @@
-{ inputs, flake-lib, ... }: { config, lib, pkgs, flake-inputs, ... }:
+{ inputs, ... }: { flake-inputs, ... }:
 {
   imports = [
     ./boot.nix

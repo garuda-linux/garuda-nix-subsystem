@@ -2,7 +2,6 @@
 , flake-inputs
 , garuda-lib
 , pkgs
-, lib
 , ...
 }:
 with garuda-lib;
@@ -49,13 +48,12 @@ with garuda-lib;
     if [[ -e /run/current-system ]]; then
       (
         for i in {1..3}; do
-          garuda_diff_result=$(${config.nix.package}/bin/nix store diff-closures /run/current-system "$systemConfig" 2>&1)
-          if [ $? -eq 0 ] && [ ! -z "$garuda_diff_result" ]; then
-            printf '%s\n' "$result"
+          result=$(${config.nix.package}/bin/nix store diff-closures /run/current-system "$systemConfig" 2>&1)
+          if [ $? -eq 0 ]; then
+            printf '%s' "$result"
             break
           fi
         done
-        unset garuda_diff_result
       )
     fi
   '';

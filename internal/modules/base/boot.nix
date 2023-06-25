@@ -1,6 +1,5 @@
 { config
 , garuda-lib
-, lib
 , ...
 }:
 with garuda-lib;
