@@ -6,6 +6,8 @@ let
     options = {
       passwordHash = mkOption { type = types.str; };
       uid = mkOption { type = types.int; };
+      home = mkOption { type = types.str; };
+      wheel = mkOption { type = types.bool; };
     };
   };
 in
@@ -32,7 +34,7 @@ in
         inherit (value) uid;
         initialHashedPassword = value.passwordHash;
         inherit (cfg) createHome;
-        extraGroups = [ "wheel" ];
+        extraGroups = lib.mkIf value.wheel [ "wheel" ];
       })
       cfg.users;
   };

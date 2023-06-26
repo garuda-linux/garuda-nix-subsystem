@@ -4,28 +4,28 @@ let
   # gDefault, set a priority of 950, which should be our default so the user can override our settings, yet we can override nixpkgs
   gDefault = lib.mkOverride 950;
   # This is terrible, but a perfect example of the sunk cost fallacy
-  isUniqueVariable = type: 
-  with lib.types;
-  let
-    uniqueTypes = [ "bool" "str" "raw" "int" "float" "number" "nonEmptyStr" "package" "pkgs" "path" "uniq" "unique" "enum" "intBetween" ];
-    uniqueTypeSpecial = [ "strMatching " "unsignedInt" "signedInt" ];
-  in
-  if builtins.elem type.name uniqueTypes then
-    true
-  else if builtins.any (x: lib.strings.hasPrefix x type.name) uniqueTypeSpecial then
-    true
-  else
-    false;
+  isUniqueVariable = type:
+    with lib.types;
+    let
+      uniqueTypes = [ "bool" "str" "raw" "int" "float" "number" "nonEmptyStr" "package" "pkgs" "path" "uniq" "unique" "enum" "intBetween" ];
+      uniqueTypeSpecial = [ "strMatching " "unsignedInt" "signedInt" ];
+    in
+    if builtins.elem type.name uniqueTypes then
+      true
+    else if builtins.any (x: lib.strings.hasPrefix x type.name) uniqueTypeSpecial then
+      true
+    else
+      false;
 
   isNonUniqueVariable = type:
-  with lib.types;
-  let
-    nonUnique = [ "listOf" "attrsOf" "lazyAttrsOf" ];
-  in
-  if builtins.elem type.name nonUnique then
-    true
-  else
-    false;
+    with lib.types;
+    let
+      nonUnique = [ "listOf" "attrsOf" "lazyAttrsOf" ];
+    in
+    if builtins.elem type.name nonUnique then
+      true
+    else
+      false;
 
   setDefaultAttrs = path: options: value:
     let
@@ -40,7 +40,7 @@ let
         value
     # This is an attribute, recurse
     else if lib.isAttrs value then
-      lib.mapAttrs (name: innerValue: setDefaultAttrs (path ++ [name]) options innerValue) value
+      lib.mapAttrs (name: innerValue: setDefaultAttrs (path ++ [ name ]) options innerValue) value
     # This is a value
     else if attrbypath != null && builtins.trace (isUniqueVariable attrbypath.type) (false) then
       gDefault value
@@ -69,5 +69,7 @@ rec {
       };
     };
   };
-  gDefaultAttrs = setDefaultAttrs [];
+  gDefaultAttrs = setDefaultAttrs [ ];
+  # Subsystem version
+  version = 1;
 }

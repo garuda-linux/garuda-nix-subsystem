@@ -19,7 +19,7 @@
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
     formatter.aarch64-linux = nixpkgs.legacyPackages.aarch64-linux.nixpkgs-fmt;
 
-    devShells = import ./devshells { inherit inputs nixpkgs formatter; };
+    devShells = import ./devshells { inherit inputs nixpkgs formatter lib; };
 
     internal = import ./internal { inputs = inputs // { inherit nixpkgs; }; inherit lib; };
 

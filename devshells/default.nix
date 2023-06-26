@@ -2,6 +2,7 @@
 , nixpkgs
 , self ? inputs.self
 , formatter
+, lib
 }:
 
 # The following shells are used to help our maintainers and CI/CDs.
@@ -10,10 +11,29 @@ let
     let
       overlayFinal = prev // final // { callPackage = prev.newScope final; };
       inherit (prev.stdenv.hostPlatform) system;
+      version = "1";
+      installer = overlayFinal.callPackage ./installer.nix
+        {
+          all-packages = overlayFinal;
+          garuda-lib = lib;
+          inherit system;
+        };
+      garuda-update = overlayFinal.callPackage ./gns-update.nix
+        {
+          all-packages = overlayFinal;
+          garuda-lib = lib;
+          inherit system self;
+        };
     in
     {
       default = overlayFinal.mkShell {
         buildInputs = [ formatter."${system}" ];
+      };
+      gns-install = overlayFinal.mkShell {
+        buildInputs = [ installer garuda-update ];
+      };
+      gns-update = overlayFinal.mkShell {
+        buildInputs = [ garuda-update ];
       };
     };
 in

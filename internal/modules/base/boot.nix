@@ -6,7 +6,7 @@ with garuda-lib;
 {
   boot = {
     consoleLogLevel = gDefault 0;
-    initrd =  {
+    initrd = {
       systemd.enable = gDefault true;
       systemd.strip = gDefault true;
       verbose = gDefault false;

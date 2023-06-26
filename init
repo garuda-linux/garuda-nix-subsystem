@@ -1,104 +1,43 @@
 #!/bin/bash
-
 set -e
 
-BTRFS_UUID=$(findmnt -n -o UUID /)
+# Elevate once and stop asking for the password constantly
+if [[ $EUID -ne 0 ]]; then
+    exec sudo /usr/bin/garuda-nix-subsystem "$@"
+    exit 1
+fi
 
-MNT_DIR=$(mktemp -d)
+BTRFS_UUID="$(findmnt -n -o UUID /)"
+MNT_DIR="$(mktemp -d)"
 
-mount UUID=$BTRFS_UUID $MNT_DIR
+mount "UUID=$BTRFS_UUID" "$MNT_DIR"
 
-btrfs subvolume create $MNT_DIR/@nix
-btrfs subvolume create $MNT_DIR/@nixos
+if ! [ -d "$MNT_DIR/@nix" ]; then
+  if [ -d "/nix" ]; then
+    echo -e "\033[1;31mError: /nix already exists. Please uninstall and fully remove any nix installations before you continue. ❌\033[0m";
+    exit 1
+  fi
+  echo -e "\033[1;33m-->\033[1;34m Creating nix subvolume\033[0m"
+  btrfs subvolume create $MNT_DIR/@nix
+fi
 
-umount $MNT_DIR
-MNT_DIR=$(mktemp -d)
+umount "$MNT_DIR"
+rmdir "$MNT_DIR"
 
-mkdir /nix
+echo -e "\033[1;33m-->\033[1;34m Mounting nix subvolume\033[0m"
+mkdir -p /nix
 echo "UUID=$BTRFS_UUID /nix btrfs subvol=@nix,nodatacow 0 0" >> /etc/fstab
-
 mount -a
 
-mount -o subvol=@nixos UUID=$BTRFS_UUID $MNT_DIR
-mkdir -p "$MNT_DIR"{/home,/nix}
-mount -o subvol=@nix UUID=$BTRFS_UUID $MNT_DIR/nix
-
+echo -e "\n\033[1;33m-->\033[1;34m Installing Nix 🍵\033[0m\n"
 sh <(curl -L https://nixos.org/nix/install) < /dev/null --daemon
 
+echo -e "\n\033[1;33m-->\033[1;34m Configuring Nix\033[0m"
 cat >> /etc/nix/nix.conf << EOF
 experimental-features = nix-command flakes
 extra-trusted-public-keys = nyx.chaotic.cx-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8= chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=
 extra-substituters = https://nyx.chaotic.cx
 EOF
 
-HOSTNAME=$(cat /etc/hostname)
-USERNAME="$SUDO_USER"
-USERID="$SUDO_UID"
-# Read /etc/shadow to get the user's password hash
-USERPASS=$(grep "$USERNAME" /etc/shadow | cut -d: -f2)
-
-mkdir -p "$MNT_DIR/etc/nixos"
-cat > "$MNT_DIR/etc/nixos/flake.nix" << EOF
-{
-  description = "Garuda Linux Nix Subsystem Flake";
-
-  inputs = {
-    garuda.url = "gitlab:garuda-linux/garuda-nix-subsystem";
-  };
-
-  outputs = { self, garuda }:
-    let
-      system = "x86_64-linux";
-    in
-    {
-      nixosConfigurations.$HOSTNAME = garuda.lib.garudaSystem {
-        inherit system;
-        modules = [ ./configuration.nix ];
-      };
-    };
-}
-EOF
-cat > "$MNT_DIR/etc/nixos/garuda-managed.nix" <<- EOF
-{ lib, ... }:
-let
-in
-{
-  # DO NOT MODIFY THIS FILE!
-  # This file is managed by the Garuda Nix Subsystem
-  # Any changes made to this file will be overwritten
-  # Instead, please set garuda.subsystem.imported-users.enable = false if you are not interested in automatic user management.
-  garuda.subsystem.enable = true;
-  garuda.subsystem.version = 1;
-  garuda.subsystem.UUID = "$BTRFS_UUID";
-  garuda.subsystem.imported-users.users."$USERNAME".uid = $USERID;
-  garuda.subsystem.imported-users.users."$USERNAME".passwordHash = "$USERPASS";
-}
-EOF
-cat > "$MNT_DIR/etc/nixos/configuration.nix" <<- EOF
-{ config, pkgs, lib, ... }:
-with lib;
-{
-  imports = [
-    ./hardware-configuration.nix
-    ./garuda-managed.nix
-  ];
-  garuda.dr460nized.enable = true;
-  networking.hostName = "$HOSTNAME";
-
-  system.stateVersion = "23.05";
-}
-EOF
-
-cat > "/etc/grub.d/25-garudanix" <<- EOF
-#!/bin/sh
-exec tail -n +3 \$0
-
-menuentry 'Garuda Linux Nix Subsystem' --class garuda --class gnu-linux --class gnu --class os {
-configfile /@nixos/boot/grub/grub.cfg
-}
-EOF
-chmod +x "/etc/grub.d/25-garudanix"
-
-/nix/var/nix/profiles/default/bin/nix-shell -p 'let nixos = (import <nixpkgs/nixos> { configuration = {}; }).config.system.build; in [ nixos.nixos-install nixos.nixos-generate-config nixos.nixos-enter nix ]' --run "nixos-generate-config --root '$MNT_DIR' && nixos-install -j auto --root '$MNT_DIR' --flake '$MNT_DIR/etc/nixos#$HOSTNAME'"
-
-update-grub
+echo -e "\033[1;33m-->\033[1;34m Launching installer 🍵\033[0m"
+/nix/var/nix/profiles/default/bin/nix develop --accept-flake-config gitlab:garuda-linux/garuda-nix-subsystem#gns-install -c "gns-install"

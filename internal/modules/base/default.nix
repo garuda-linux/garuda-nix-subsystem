@@ -3,6 +3,7 @@
   imports = [
     ./boot.nix
     ./gaming.nix
+    ./garuda-update.nix
     ./hardware.nix
     ./locales.nix
     ./mount-garuda.nix
