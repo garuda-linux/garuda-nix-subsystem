@@ -59,6 +59,11 @@ all-packages.writeShellApplication {
 
     MNT_DIR="''${MNT_DIR:-""}"
 
+    if [ ! -f "$MNT_DIR/etc/nixos/garuda-managed.json" ]; then
+      echo -e "\033[1;31mError: Garuda Nix Subsystem is not configured for automatic management. (Missing garuda-managed.json) ❌\033[0m";
+      exit 1
+    fi
+
     if [ -v HOSTNAME ]; then
       HOSTNAME=$(jq -r '.hostname' "$MNT_DIR/etc/nixos/garuda-managed.json")
     fi

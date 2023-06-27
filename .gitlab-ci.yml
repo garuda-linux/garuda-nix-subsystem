@@ -1,0 +1,38 @@
+stages:
+  - update
+  - tag
+
+variables:
+  GIT_STRATEGY: clone
+  GIT_AUTHOR_NAME: "Gitlab CI"
+  GIT_AUTHOR_EMAIL: "ci@garudalinux.org"
+  REPO_URL: $CI_SERVER_PROTOCOL://gitlab-ci-token:$ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git
+
+update:
+  stage: update
+  image: nixpkgs/nix-flakes
+  script:
+    - nix flake update
+    - "nix build .#internal.vm --dry-run"
+    - git config --global user.name "$GIT_AUTHOR_NAME"
+    - git config --global user.email "$GIT_AUTHOR_EMAIL"
+    - git add flake.lock
+    - "git commit -m 'chore: Bump flakes'"
+    - git push "$REPO_URL" HEAD:main
+  only:
+    variables:
+      - $UPDATE == "true"
+    refs:
+      - main
+
+tag:
+  stage: tag
+  image: nixpkgs/nix-flakes
+  script:
+    - git tag -f v1
+    - git push -f $REPO_URL v1
+  only:
+    refs:
+      - main
+    variables:
+      - $UPDATE != "true"
