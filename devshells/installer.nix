@@ -70,10 +70,12 @@ all-packages.writeShellApplication {
     if [[ $EUID -ne 0 ]]; then
         exit 1
     fi
+
+    unset TMPDIR
+
     BTRFS_UUID="$(findmnt -n -o UUID /)"
     MNT_DIR="$(mktemp -d)"
     HOSTNAME="$(cat /etc/hostname)"
-    export TMPDIR=
 
     mount "UUID=$BTRFS_UUID" "$MNT_DIR"
     if ! [ -d "$MNT_DIR/@nix-subsystem" ]; then

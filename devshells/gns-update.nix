@@ -36,7 +36,7 @@ all-packages.writeShellApplication {
       exit 1
     fi
 
-    export TMPDIR=
+    unset TMPDIR
 
     INSTALLING="''${GNS_INSTALLING:-false}"
     if [[ $INSTALLING == "true" ]]; then
