@@ -95,6 +95,7 @@ all-packages.writeShellApplication {
 
     if [ -f "$MNT_DIR/etc/nixos/garuda-managed.json" ]; then
       echo -e "\033[1;31mError: Garuda Nix Subsystem is already installed on this system. ❌\033[0m";
+      exit 1
     fi
 
     createOriginalConfiguration
