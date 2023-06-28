@@ -13,7 +13,6 @@ update:
   image: nixpkgs/nix-flakes
   script:
     - nix flake update
-    - "nix build .#internal.vm --dry-run"
     - git config --global user.name "$GIT_AUTHOR_NAME"
     - git config --global user.email "$GIT_AUTHOR_EMAIL"
     - git add flake.lock
@@ -29,8 +28,9 @@ tag:
   stage: tag
   image: nixpkgs/nix-flakes
   script:
+    - "nix build .#internal.vm --dry-run"
     - git tag -f v1
-    - git push -f $REPO_URL v1
+    - git push --atomic -f $REPO_URL v1 HEAD:refs/heads/stable
   only:
     refs:
       - main

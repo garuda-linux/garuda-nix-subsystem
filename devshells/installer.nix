@@ -21,7 +21,7 @@ all-packages.writeShellApplication {
       description = "Garuda Linux Nix Subsystem Flake";
 
       inputs = {
-        garuda.url = "gitlab:garuda-linux/garuda-nix-subsystem";
+        garuda.url = "gitlab:garuda-linux/garuda-nix-subsystem/stable";
       };
 
       outputs = { self, garuda }:
