@@ -42,5 +42,12 @@ in
         };
       })
       subsystem.v1.users);
+    time.timeZone = mkIf (subsystem.v1 ? timezone) (gDefault subsystem.v1.timezone);
+    console.keyMap = mkIf (subsystem.v1 ? keymap) (gDefault subsystem.v1.keymap);
+    services.xserver.layout = mkIf (subsystem.v1 ? keymap) (gDefault subsystem.v1.keymap);
+    i18n = {
+      defaultLocale = mkIf (subsystem.v1 ? locale && subsystem.v1.locale ? LANG) (gDefault subsystem.v1.locale.LANG);
+      extraLocaleSettings = mkIf (subsystem.v1 ? locale) (lib.mapAttrs (name: value: gDefault value) (subsystem.v1.locale));
+    };
   };
 }

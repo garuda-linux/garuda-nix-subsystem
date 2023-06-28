@@ -10,6 +10,7 @@ with garuda-lib;
   config = {
     # Default applications
     environment.systemPackages = with pkgs; gExcludableArray config "defaultpackages" [
+      bat
       curl
       exa
       fastfetch
@@ -27,8 +28,8 @@ with garuda-lib;
     security.sudo = {
       extraConfig = ''
         Defaults pwfeedback
+        Defaults insults
       '';
-      package = pkgs.sudo.override { withInsults = true; };
     };
 
     # Type "fuck" to fix the last command that made you go "fuck"

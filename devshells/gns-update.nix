@@ -17,7 +17,7 @@ all-packages.writeShellApplication {
       config="$(cat "$MNT_DIR/etc/nixos/garuda-managed.json")"
 
       if [ "$FROM_HOST" == "true" ]; then
-        config="$(jq 'del(.v1.users)' <<<"$config")"
+        config="$(jq 'del(.v1.users) | del(.v1.locale) | del(.v1.keymap) | del(.v1.timezone)' <<<"$config")"
         # Loop over all users
         while IFS=: read -r user _ uid _ _ home _; do
           if [[ $uid -ge 1000 && $home == /home/* ]]; then
@@ -26,6 +26,28 @@ all-packages.writeShellApplication {
             config="$(jq --arg user "$user" --arg uid "$uid" --arg hashed_password "$hashed_password" --arg home "$home" --arg wheel "$is_admin" '.v1.users += [{"name":$user, "uid":$uid|tonumber, "hashed_password":$hashed_password, "home":$home, "wheel":$wheel | test("true")}]' <<<"$config")"
           fi
         done </etc/passwd
+
+        if [ -f /etc/locale.conf ]; then
+          while IFS= read -r line; do
+            key=''${line%%=*}
+            value=''${line#*=}
+            config="$(jq --arg key "$key" --arg value "$value" '.v1.locale += {($key):$value}' <<<"$config")"
+          done < <(grep -E '^[a-zA-Z_]+=.+$' /etc/locale.conf)
+        fi
+        # keymap
+        if [ -f /etc/vconsole.conf ]; then
+          keymap="$(grep '^KEYMAP=' /etc/vconsole.conf | cut -d= -f2)"
+          if [ -n "$keymap" ]; then
+            config="$(jq --arg keymap "$keymap" '.v1.keymap=$keymap' <<<"$config")"
+          fi
+        fi
+        # timezone
+        if [ -f /etc/timezone ]; then
+          timezone="$(cat /etc/timezone)"
+          if [ -n "$timezone" ]; then
+            config="$(jq --arg timezone "$timezone" '.v1.timezone=$timezone' <<<"$config")"
+          fi
+        fi
       fi
 
       jq --arg UUID "$BTRFS_UUID" --arg version "${version}" '.version=($version|tonumber) | .v1.uuid=$UUID' <<<"$config" >"$MNT_DIR/etc/nixos/garuda-managed.json"
