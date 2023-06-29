@@ -16,11 +16,11 @@
         "yuzu-ea-git-src": "yuzu-ea-git-src"
       },
       "locked": {
-        "lastModified": 1687964877,
-        "narHash": "sha256-LIKe3h80fXU995Pif0F2jTB4dzQKKSf82VXYwc1YP9U=",
+        "lastModified": 1688066595,
+        "narHash": "sha256-xJtmWW8wGK6EZWd13GvJD6NavW0z9uwj6h5tDOqBnaQ=",
         "owner": "chaotic-cx",
         "repo": "nyx",
-        "rev": "fe358e3175baa65b18574876c8a7400e5ea61193",
+        "rev": "7b5c3ed23c2b7b94976fa82cf32afe4fd31d149a",
         "type": "github"
       },
       "original": {
@@ -53,11 +53,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1687980762,
-        "narHash": "sha256-qtvSGnbxOptvQB7uAXFeN19t2gfjgJ6Cabkc9+k66Bo=",
+        "lastModified": 1688048704,
+        "narHash": "sha256-266cl+oLvmt9XENVVzaTDHVGrivdJfq65heoLW5/uTQ=",
         "owner": "wamserma",
         "repo": "flake-programs-sqlite",
-        "rev": "d7cf03f2625ed753dd3dfeca8c898dd24b733fe1",
+        "rev": "1d04d40a3bd7f9d54de2a4f202839ba4b221de1f",
         "type": "github"
       },
       "original": {
