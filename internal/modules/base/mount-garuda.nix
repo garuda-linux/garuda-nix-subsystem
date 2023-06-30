@@ -54,49 +54,49 @@ in
   config = mkIf cfg.enable {
     fileSystems."${cfg.root}" =
       {
-        device = "/dev/disk/by-label/OS";
+        device = "/dev/disk/by-uuid/${cfg.root-uuid}";
         fsType = "btrfs";
         options = [ "subvol=@" "compress=zstd" "noatime" ];
       };
     fileSystems."${cfg.root}/home" =
       {
-        device = "/dev/disk/by-label/OS";
+        device = "/dev/disk/by-uuid/${cfg.root-uuid}";
         fsType = "btrfs";
         options = [ "subvol=@home" "compress=zstd" "noatime" ];
       };
     fileSystems."${cfg.root}/root" =
       {
-        device = "/dev/disk/by-label/OS";
+        device = "/dev/disk/by-uuid/${cfg.root-uuid}";
         fsType = "btrfs";
         options = [ "subvol=@root" "compress=zstd" "noatime" ];
       };
     fileSystems."${cfg.root}/srv" =
       {
-        device = "/dev/disk/by-label/OS";
+        device = "/dev/disk/by-uuid/${cfg.root-uuid}";
         fsType = "btrfs";
         options = [ "subvol=@srv" "compress=zstd" "noatime" ];
       };
     fileSystems."${cfg.root}/var/cache" =
       {
-        device = "/dev/disk/by-label/OS";
+        device = "/dev/disk/by-uuid/${cfg.root-uuid}";
         fsType = "btrfs";
         options = [ "subvol=@cache" "compress=zstd" "noatime" ];
       };
     fileSystems."${cfg.root}/var/log" =
       {
-        device = "/dev/disk/by-label/OS";
+        device = "/dev/disk/by-uuid/${cfg.root-uuid}";
         fsType = "btrfs";
         options = [ "subvol=@log" "compress=zstd" "noatime" ];
       };
     fileSystems."${cfg.root}/var/tmp" =
       {
-        device = "/dev/disk/by-label/OS";
+        device = "/dev/disk/by-uuid/${cfg.root-uuid}";
         fsType = "btrfs";
         options = [ "subvol=@tmp" "compress=zstd" "noatime" ];
       };
     fileSystems."${cfg.root}/boot/efi" =
       {
-        device = "/dev/disk/by-uuid/5772-1FF9";
+        device = "/dev/disk/by-uuid/${cfg.boot-uuid}";
         fsType = "vfat";
         options = [ "noatime" ];
       };
@@ -137,7 +137,7 @@ in
       enable = true;
       environment = {
         DISPLAY = ":0.0";
-        PULSE_SERVER = "unix:/run/user/host/pulse/native";
+        PULSE_SERVER = "unix:/run/user/hostt/pulse/native";
         SYSTEMD_NSPAWN_UNIFIED_HIERARCHY = "1";
       };
       overrideStrategy = "asDropin";
