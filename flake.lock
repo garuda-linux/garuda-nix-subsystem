@@ -53,11 +53,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1688226728,
-        "narHash": "sha256-fYzt4gbojS5EVLRa+aZbf30olaAi6pJrcCIZHFi+oIk=",
+        "lastModified": 1688291534,
+        "narHash": "sha256-otj8476PEMMFD5hnzSoUlySAF4B9BvTBEl4Mh5LWUZs=",
         "owner": "wamserma",
         "repo": "flake-programs-sqlite",
-        "rev": "7cd682e9351a455a608faa234a25e2bd13e2d52b",
+        "rev": "b3707a8053c5c60a7fa1243a2c8e279bbcdb33be",
         "type": "github"
       },
       "original": {
@@ -80,6 +80,27 @@
         "owner": "ValveSoftware",
         "ref": "master",
         "repo": "gamescope",
+        "type": "github"
+      }
+    },
+    "home-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "garuda-nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1688302761,
+        "narHash": "sha256-YIYKeX3YfoAIg9DTe6cl1ga87rDCNDZugdGuqsvEN30=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "c85d9137db45a1c9c161f4718b13cc3bd4cbd173",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "master",
+        "repo": "home-manager",
         "type": "github"
       }
     },
@@ -175,7 +196,8 @@
         "garuda-nixpkgs": [
           "chaotic",
           "nixpkgs"
-        ]
+        ],
+        "home-manager": "home-manager"
       }
     },
     "sway-git-src": {

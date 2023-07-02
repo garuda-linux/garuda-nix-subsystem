@@ -9,15 +9,13 @@ let
 in
 with garuda-lib;
 {
-  options = {
-    garuda.gaming.enable =
-      lib.mkOption {
-        default = false;
-        description = ''
-          Installs and enables some gaming packages and services.
-        '';
-      };
-  };
+  options.garuda.gaming.enable = lib.mkOption {
+      default = false;
+      type = lib.types.bool;
+      description = ''
+        Installs and enables some gaming packages and services.
+      '';
+    };
 
   config = lib.mkIf cfg.enable {
     # Gaming packages

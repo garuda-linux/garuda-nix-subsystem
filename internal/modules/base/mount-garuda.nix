@@ -43,7 +43,7 @@ in
       };
     user = mkOption
       {
-        default = "nico";
+        default = null;
         type = types.str;
         description = mdDoc ''
           The default user of the Garuda / NixOS subsystem

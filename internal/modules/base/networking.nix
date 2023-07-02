@@ -9,6 +9,7 @@ with garuda-lib;
     garuda.networking.enable =
       mkOption {
         default = true;
+        type = types.bool;
         description = ''
           If set to true, reasonable defaults for networking will be set.
         '';

@@ -9,6 +9,7 @@ with garuda-lib;
     garuda.audio.pipewire.enable =
       mkOption {
         default = true;
+        type = types.bool;
         description = ''
           If set to true, a default configuration for Pipewire will be used.
         '';

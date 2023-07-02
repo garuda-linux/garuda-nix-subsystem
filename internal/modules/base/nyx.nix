@@ -8,6 +8,7 @@ with lib;
     garuda.chaotic-nyx.cache.enable =
       mkOption {
         default = true;
+        type = types.bool;
         description = ''
           If set to true, Chaotic's Nyx will have its binary cache automatically enabled and managed.
         '';

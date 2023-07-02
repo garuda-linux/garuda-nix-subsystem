@@ -30,7 +30,7 @@
 
     devShells = import ./devshells { inherit inputs nixpkgs formatter lib; };
 
-    internal = import ./internal { inputs = inputs // { inherit nixpkgs; }; inherit lib; };
+    internal = import ./internal { inputs = inputs // { inherit nixpkgs; }; inherit home-manager; inherit lib; };
 
     lib = import ./lib { inherit inputs nixpkgs internal; };
   };
