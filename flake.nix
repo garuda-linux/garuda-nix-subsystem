@@ -2,18 +2,27 @@
   description = "Garuda Linux Nix subsystem flake";
 
   inputs = {
-    # If you need to, override this to use a different nixpkgs version.
-    # By default, we follow chaotic's nixpkgs-unstable branch.
-    garuda-nixpkgs.follows = "chaotic/nixpkgs";
-
+    # The Chaotic's Nyx
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
 
-    flake-programs-sqlite.url = "github:wamserma/flake-programs-sqlite";
-    # You should not change this
-    flake-programs-sqlite.inputs.nixpkgs.follows = "garuda-nixpkgs";
+    # If you need to, override this to use a different nixpkgs version
+    # by default we follow chaotic's nixpkgs-unstable branch
+    garuda-nixpkgs.follows = "chaotic/nixpkgs";
+
+    # Needed for find-the-command
+    flake-programs-sqlite = {
+      url = "github:wamserma/flake-programs-sqlite";
+      inputs.nixpkgs.follows = "garuda-nixpkgs";
+    };
+
+    # Home configuration management
+    home-manager = {
+      inputs.nixpkgs.follows = "garuda-nixpkgs";
+      url = "github:nix-community/home-manager/master";
+    };
   };
 
-  outputs = { garuda-nixpkgs, ... }@inputs: rec {
+  outputs = { garuda-nixpkgs, home-manager, ... }@inputs: rec {
     nixpkgs = garuda-nixpkgs;
 
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;

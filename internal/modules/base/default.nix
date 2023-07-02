@@ -5,6 +5,7 @@
     ./gaming.nix
     ./garuda-update.nix
     ./hardware.nix
+    ./home-manager.nix
     ./locales.nix
     ./mount-garuda.nix
     ./networking.nix
