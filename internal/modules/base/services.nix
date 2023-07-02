@@ -13,7 +13,7 @@ with garuda-lib;
     nssmdns = gDefault true;
   };
 
-  # Ciscard blocks that are not in use by the filesystem
+  # Discard blocks that are not in use by the filesystem
   services.fstrim.enable = gDefault true;
 
   # Firmware updater for machine hardware

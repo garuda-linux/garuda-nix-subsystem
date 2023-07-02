@@ -32,9 +32,6 @@ with garuda-lib;
       '';
     };
 
-    # Type "fuck" to fix the last command that made you go "fuck"
-    programs.thefuck.enable = gDefault true;
-
     # Run Appimages with appimage-run
     boot.binfmt.registrations = lib.genAttrs [ "appimage" "AppImage" ] (ext: {
       interpreter = "/run/current-system/sw/bin/appimage-run";

@@ -40,8 +40,8 @@ with garuda-lib;
       "vdir" = "vdir --color=auto";
       "wget" = "wget -c";
     };
-    #command-not-found.enable = gDefault false;
-    #command-not-found.dbPath = gDefault flake-inputs.flake-programs-sqlite.packages.${pkgs.system}.programs-sqlite;
+    command-not-found.enable = gDefault true;
+    command-not-found.dbPath = gDefault flake-inputs.flake-programs-sqlite.packages.${pkgs.system}.programs-sqlite;
     fish = {
       enable = gDefault true;
       vendor = {

@@ -14,7 +14,7 @@ with garuda-lib;
       lib.mkOption {
         default = false;
         description = ''
-          If set to true, reasonable defaults for networking will be set.
+          Installs and enables some gaming packages and services.
         '';
       };
   };
@@ -51,7 +51,7 @@ with garuda-lib;
     # Enable Steam
     programs.steam = {
       enable = gDefault true;
-      gamescopeSession.enable = true;
+      gamescopeSession.enable = gDefault true;
     };
 
     # Unstable gamescope from Chaotic-Nyx

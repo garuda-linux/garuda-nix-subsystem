@@ -14,7 +14,7 @@ with garuda-lib;
       lib.mkOption {
         default = true;
         description = ''
-          If set to true, reasonable defaults for networking will be set.
+          If set to true, reasonable defaults for hardware will be set.
         '';
       };
   };

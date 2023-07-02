@@ -35,7 +35,7 @@ in
       };
     boot-uuid = mkOption
       {
-        default = "";
+        default = null;
         type = types.str;
         description = mdDoc ''
           Provide the UUID of the Garuda boot partition
