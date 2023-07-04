@@ -1,6 +1,7 @@
 { config
 , garuda-lib
 , pkgs
+, lib
 , ...
 }:
 let
@@ -39,7 +40,7 @@ with garuda-lib;
     };
 
     # Filesystem deduplication in the background
-    services.beesd.filesystems = lib.mkIf cfg.btrfs-maintenance.enable {
+    services.beesd.filesystems = lib.mkIf (cfg.btrfs-maintenance.deduplication && cfg.btrfs-maintenance.enable) {
       root = {
         extraOptions = [ "--loadavg-target" "1.0" ];
         hashTableSizeMB = 2048;
@@ -59,7 +60,7 @@ with garuda-lib;
 
     # Limit systemd journal size
     services.journald.extraConfig = ''
-      SystemMaxUse=50M
+      SystemMaxUse=500M
       RuntimeMaxUse=10M
     '';
 

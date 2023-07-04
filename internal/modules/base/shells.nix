@@ -1,5 +1,6 @@
 { garuda-lib
 , pkgs
+, flake-inputs
 , ...
 }:
 with garuda-lib;
