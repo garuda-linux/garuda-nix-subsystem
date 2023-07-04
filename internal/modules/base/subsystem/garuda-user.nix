@@ -16,6 +16,7 @@ in
     createHome = mkOption {
       type = types.bool;
       default = true;
+      internal = true;
     };
     users = mkOption {
       type = types.attrsOf (types.submodule submoduleOptions);
@@ -25,9 +26,14 @@ in
       type = types.bool;
       default = true;
     };
-    shared-home = mkOption {
-      type = types.bool;
-      default = false;
+    shared-home = {
+      enable = mkOption {
+        type = types.bool;
+        default = false;
+      };
+      uuid = mkOption {
+        type = types.str;
+      };
     };
   };
 
@@ -37,17 +43,9 @@ in
         isNormalUser = true;
         inherit (value) uid;
         initialHashedPassword = value.passwordHash;
-        inherit (cfg) createHome;
+        createHome = cfg.createHome || cfg.shared-home.enable;
         extraGroups = lib.mkIf value.wheel [ "wheel" ];
       })
       cfg.users;
-
-    # Mount Garuda's home partition to our Nix subvolume
-    fileSystems."/home" = lib.mkIf cfg.shared-home
-      {
-        device = "/dev/disk/by-uuid/${cfg.uuid}";
-        fsType = "btrfs";
-        options = [ "subvol=@home" "compress=zstd" "noatime" ];
-      };
   };
 }

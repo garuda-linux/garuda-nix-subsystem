@@ -8,6 +8,7 @@ in
 {
   imports = [
     ./garuda-user.nix
+    ./shared-home.nix
   ];
 
   options.garuda.subsystem = {
@@ -42,6 +43,7 @@ in
         };
       })
       subsystem.v1.users);
+    garuda.subsystem.imported-users.shared-home.uuid = subsystem.v1.uuid;
     time.timeZone = mkIf (subsystem.v1 ? timezone) (gDefault subsystem.v1.timezone);
     console.keyMap = mkIf (subsystem.v1 ? keymap) (gDefault subsystem.v1.keymap);
     services.xserver.layout = mkIf (subsystem.v1 ? keymap) (gDefault subsystem.v1.keymap);
