@@ -7,9 +7,8 @@ in
   config.systemd = lib.mkIf (cfg.enable && users.shared-home.enable) ({
     mounts = [{
       what = "UUID=${users.shared-home.uuid}";
-      options = "subvol=@home,compress=zstd,noatime,noauto";
+      options = "subvol=@home,compress=zstd,noatime,noauto,nofail";
       where = "/run/garuda/sharedhome/new";
-      after = [ "multi-user.target" ];
     }] ++ (builtins.concatLists (
       (lib.attrsets.mapAttrsToList
         (name: value: [
@@ -17,9 +16,9 @@ in
           {
             what = "/run/garuda/sharedhome/old/${name}/.config";
             where = "/run/garuda/sharedhome/new/${name}/.config";
-            options = "bind,noauto";
+            options = "bind,noauto,nofail";
             unitConfig = {
-              RequiresMountsFor = [ "/run/garuda/sharedhome/new"];
+              RequiresMountsFor = [ "/run/garuda/sharedhome/new" ];
             };
             requires = [ "garuda-sharedhome-${name}-init.service" ];
             after = [ "garuda-sharedhome-${name}-init.service" ];
@@ -28,9 +27,9 @@ in
           {
             what = "/run/garuda/sharedhome/old/${name}/.local";
             where = "/run/garuda/sharedhome/new/${name}/.local";
-            options = "bind,noauto";
+            options = "bind,noauto,nofail";
             unitConfig = {
-              RequiresMountsFor = [ "/run/garuda/sharedhome/new"];
+              RequiresMountsFor = [ "/run/garuda/sharedhome/new" ];
             };
             requires = [ "garuda-sharedhome-${name}-init.service" ];
             after = [ "garuda-sharedhome-${name}-init.service" ];
@@ -39,9 +38,9 @@ in
           {
             what = "/run/garuda/sharedhome/old/${name}/.cache";
             where = "/run/garuda/sharedhome/new/${name}/.cache";
-            options = "bind,noauto";
+            options = "bind,noauto,nofail";
             unitConfig = {
-              RequiresMountsFor = [ "/run/garuda/sharedhome/new"];
+              RequiresMountsFor = [ "/run/garuda/sharedhome/new" ];
             };
             requires = [ "garuda-sharedhome-${name}-init.service" ];
             after = [ "garuda-sharedhome-${name}-init.service" ];
@@ -50,7 +49,9 @@ in
           {
             what = "/run/garuda/sharedhome/new/${name}";
             where = "/home/${name}";
-            options = "bind,noauto";
+            options = "bind,noauto,nofail";
+            before = [ "multi-user.target" ];
+            wantedBy = [ "multi-user.target" ];
             unitConfig = {
               RequiresMountsFor = [
                 "/run/garuda/sharedhome/new/${name}/.cache"
@@ -65,14 +66,15 @@ in
       (lib.attrsets.mapAttrsToList
         (name: value: {
           "garuda-sharedhome-${name}-init" = {
-            serviceConfig.Type = "oneshot";
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+            };
             script = ''
               set -e
-              # Mount the old home directory to /run/garuda/sharedhome/$name
+              # Mount the old home directory to /run/garuda/sharedhome/old/$name
               "${pkgs.coreutils}/bin/mkdir" -p "/run/garuda/sharedhome/old/${name}"
-              if ! "${pkgs.util-linux}/bin/mountpoint" -q "/run/garuda/sharedhome/old/${name}"; then
-                "${pkgs.util-linux}/bin/mount" --bind "/home/${name}" "/run/garuda/sharedhome/old/${name}"
-              fi
+              "${pkgs.util-linux}/bin/mount" --bind "/home/${name}" "/run/garuda/sharedhome/old/${name}"
               ${lib.optionalString (users.createHome) ''
                 "${pkgs.linux-pam}/bin/mkhomedir_helper" "${name}"
               ''}
@@ -81,14 +83,5 @@ in
         })
         users.users)
     ));
-    automounts = lib.attrsets.mapAttrsToList
-      (name: value: {
-        where = "/home/${name}";
-        automountConfig.DirectoryMode = "0700";
-        enable = true;
-        before = [ "multi-user.target" ];
-        wantedBy = [ "multi-user.target" ];
-      })
-      users.users;
   });
 }
