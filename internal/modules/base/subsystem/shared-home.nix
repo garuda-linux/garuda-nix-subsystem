@@ -4,7 +4,7 @@ let
   users = config.garuda.subsystem.imported-users;
 in
 {
-  config.systemd = lib.mkIf users.shared-home.enable ({
+  config.systemd = lib.mkIf (cfg.enable && users.shared-home.enable) ({
     mounts = [{
       what = "UUID=${users.shared-home.uuid}";
       options = "subvol=@home,compress=zstd,noatime,noauto";
@@ -86,6 +86,8 @@ in
         where = "/home/${name}";
         automountConfig.DirectoryMode = "0700";
         enable = true;
+        before = [ "multi-user.target" ];
+        wantedBy = [ "multi-user.target" ];
       })
       users.users;
   });

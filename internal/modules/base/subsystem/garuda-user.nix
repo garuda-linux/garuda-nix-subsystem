@@ -29,7 +29,7 @@ in
     shared-home = {
       enable = mkOption {
         type = types.bool;
-        default = false;
+        default = true;
       };
       uuid = mkOption {
         type = types.str;
