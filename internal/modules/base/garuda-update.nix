@@ -12,7 +12,7 @@ let
         exit 1
       fi
       echo -e "\033[1;33m-->\033[1;34m Downloading the latest version of the updater 🍵\033[0m"
-      /nix/var/nix/profiles/default/bin/nix develop --accept-flake-config gitlab:garuda-linux/garuda-nix-subsystem/v1#gns-update -c "gns-update"
+      /nix/var/nix/profiles/default/bin/nix develop --refresh --accept-flake-config gitlab:garuda-linux/garuda-nix-subsystem/v1#gns-update -c "gns-update"
     '';
   };
 in

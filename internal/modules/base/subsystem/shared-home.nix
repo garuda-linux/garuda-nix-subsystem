@@ -9,6 +9,7 @@ in
       what = "UUID=${users.shared-home.uuid}";
       options = "subvol=@home,compress=zstd,noatime,noauto,nofail";
       where = "/run/garuda/sharedhome/new";
+      wantedBy = lib.mkForce [ ];
     }] ++ (builtins.concatLists (
       (lib.attrsets.mapAttrsToList
         (name: value: [
@@ -22,6 +23,7 @@ in
             };
             requires = [ "garuda-sharedhome-${name}-init.service" ];
             after = [ "garuda-sharedhome-${name}-init.service" ];
+            wantedBy = lib.mkForce [ ];
           }
           # Mount the .local
           {
@@ -33,6 +35,7 @@ in
             };
             requires = [ "garuda-sharedhome-${name}-init.service" ];
             after = [ "garuda-sharedhome-${name}-init.service" ];
+            wantedBy = lib.mkForce [ ];
           }
           # Mount the .cache
           {
@@ -44,19 +47,20 @@ in
             };
             requires = [ "garuda-sharedhome-${name}-init.service" ];
             after = [ "garuda-sharedhome-${name}-init.service" ];
+            wantedBy = lib.mkForce [ ];
           }
           # Mount the new home directory to /home/$name
           {
             what = "/run/garuda/sharedhome/new/${name}";
             where = "/home/${name}";
-            options = "bind,noauto,nofail";
+            options = "rbind,noauto,nofail";
             before = [ "multi-user.target" ];
             wantedBy = [ "multi-user.target" ];
             unitConfig = {
               RequiresMountsFor = [
-                "/run/garuda/sharedhome/new/${name}/.cache"
                 "/run/garuda/sharedhome/new/${name}/.config"
                 "/run/garuda/sharedhome/new/${name}/.local"
+                "/run/garuda/sharedhome/new/${name}/.cache"
               ];
             };
           }
@@ -66,19 +70,26 @@ in
       (lib.attrsets.mapAttrsToList
         (name: value: {
           "garuda-sharedhome-${name}-init" = {
+            unitConfig = {
+              RequiresMountsFor = [
+                "/run/garuda/sharedhome/new"
+              ];
+            };
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = true;
             };
             script = ''
               set -e
+              ${lib.optionalString (!users.createHome) ''
+                # Create home directory if necessary
+                "${pkgs.linux-pam}/bin/mkhomedir_helper" "${name}" 0022 "${config.security.pam.makeHomeDir.skelDirectory}"
+              ''}
               # Mount the old home directory to /run/garuda/sharedhome/old/$name
               "${pkgs.coreutils}/bin/mkdir" -p "/run/garuda/sharedhome/old/${name}"
-              "${pkgs.util-linux}/bin/mount" --bind "/home/${name}" "/run/garuda/sharedhome/old/${name}"
-              ${lib.optionalString (users.createHome) ''
-                "${pkgs.linux-pam}/bin/mkhomedir_helper" "${name}"
-              ''}
+              "${pkgs.util-linux}/bin/mount" --bind --make-private "/home/${name}" "/run/garuda/sharedhome/old/${name}"
             '';
+            wantedBy = lib.mkForce [ ];
           };
         })
         users.users)

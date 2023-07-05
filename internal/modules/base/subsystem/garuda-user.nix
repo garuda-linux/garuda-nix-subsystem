@@ -43,7 +43,7 @@ in
         isNormalUser = true;
         inherit (value) uid;
         initialHashedPassword = value.passwordHash;
-        createHome = cfg.createHome || cfg.shared-home.enable;
+        createHome = cfg.createHome;
         extraGroups = lib.mkIf value.wheel [ "wheel" ];
       })
       cfg.users;
