@@ -53,6 +53,7 @@ in
 
     # Define the default fonts Fira Sans & Jetbrains Mono Nerd Fonts
     fonts = {
+      enableDefaultFonts = gDefault false;
       fonts = with pkgs;
         gExcludableArray config "defaultpackages" [
           fira
@@ -68,6 +69,7 @@ in
             gDefault [ "JetBrains Mono Nerd Font" "Noto Fonts Emoji" ];
           sansSerif = gDefault [ "Fira" "Noto Fonts Emoji" ];
           serif = gDefault [ "Fira" "Noto Fonts Emoji" ];
+          emoji = gDefault [ "Noto Fonts Emoji" ];
         };
         # This fixes emoji stuff
         enable = gDefault true;

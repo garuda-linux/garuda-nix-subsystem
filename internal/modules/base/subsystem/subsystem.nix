@@ -55,7 +55,7 @@ in
       defaultLocale = mkIf (subsystem.v1 ? locale && subsystem.v1.locale ? LANG) (gDefault subsystem.v1.locale.LANG);
       extraLocaleSettings = mkIf (subsystem.v1 ? locale) (lib.mapAttrs (name: value: gDefault value) (subsystem.v1.locale));
     };
-    systemd.mounts   =  [{
+    systemd.mounts = [{
       what = "UUID=${subsystem.v1.uuid}";
       options = "subvol=@,compress=zstd,noatime,noauto,nofail";
       where = "/run/garuda/subsystem/root";
