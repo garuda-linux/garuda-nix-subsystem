@@ -72,4 +72,16 @@ rec {
   gDefaultAttrs = setDefaultAttrs [ ];
   # Subsystem version
   version = 1;
+  # Generate /etc/skel from pkg
+  gGenerateSkel = pkgs: skel: name: derivation {
+    name = "skel-${name}";
+    src = skel;
+    builder = pkgs.writeShellScript "build-skel-${name}" ''
+      PATH="${pkgs.rsync}/bin:${pkgs.coreutils}/bin"
+      set -e
+      mkdir -p "$out/"{.cache,.config,.local/share}
+      rsync -a "$src/" "$out"
+    '';
+    inherit (pkgs.hostPlatform) system;
+  };
 }

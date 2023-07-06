@@ -18,6 +18,7 @@ with garuda-lib;
       htop
       killall
       micro
+      rsync
       screen
       tldr
       ugrep

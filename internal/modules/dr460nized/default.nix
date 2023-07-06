@@ -95,8 +95,7 @@ in
     # Set /etc/skel directory to pull theming from
     security.pam = {
       services.systemd-user.makeHomeDir = gDefault true;
-      makeHomeDir.skelDirectory = gDefault
-        "${pkgs.dr460nized-kde-theme}/skel";
+      makeHomeDir.skelDirectory = gDefault "${gGenerateSkel pkgs "${pkgs.dr460nized-kde-theme}/skel" "dr460nized"}";
     };
 
     # Make sure that the home directories are not created by something that is not pam
