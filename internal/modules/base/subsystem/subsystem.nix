@@ -23,6 +23,10 @@ in
       type = types.bool;
       default = true;
     };
+    import-networkmanager = mkOption {
+      type = types.bool;
+      default = true;
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -50,6 +54,18 @@ in
     i18n = {
       defaultLocale = mkIf (subsystem.v1 ? locale && subsystem.v1.locale ? LANG) (gDefault subsystem.v1.locale.LANG);
       extraLocaleSettings = mkIf (subsystem.v1 ? locale) (lib.mapAttrs (name: value: gDefault value) (subsystem.v1.locale));
+    };
+    systemd.mounts   =  [{
+      what = "UUID=${subsystem.v1.uuid}";
+      options = "subvol=@,compress=zstd,noatime,noauto,nofail";
+      where = "/run/garuda/subsystem/root";
+      wantedBy = lib.mkForce [ ];
+    }] ++ lib.lists.optional cfg.import-networkmanager {
+      what = "/run/garuda/subsystem/root/etc/NetworkManager/system-connections";
+      options = "bind,noauto,nofail";
+      where = "/etc/NetworkManager/system-connections";
+      before = [ "NetworkManager.service" ];
+      wantedBy = lib.mkForce [ "NetworkManager.service" ];
     };
   };
 }
