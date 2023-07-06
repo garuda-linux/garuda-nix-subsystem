@@ -67,5 +67,8 @@ in
       before = [ "NetworkManager.service" ];
       wantedBy = lib.mkForce [ "NetworkManager.service" ];
     };
+
+    virtualisation.vmware.guest.enable = lib.mkIf (subsystem.v1 ? hardware) (gDefault (subsystem.v1.hardware.virt == "vmware"));
+    virtualisation.virtualbox.guest.enable = lib.mkIf (subsystem.v1 ? hardware) (gDefault (subsystem.v1.hardware.virt == "oracle"));
   };
 }

@@ -48,9 +48,17 @@ all-packages.writeShellApplication {
             config="$(jq --arg timezone "$timezone" '.v1.timezone=$timezone' <<<"$config")"
           fi
         fi
+
+        packages="$(pacman -Qq garuda-nvidia-config garuda-nvidia-prime-config 2> /dev/null | xargs || true)"
+        if [[ "$packages" =~ (^| )garuda-nvidia-prime-config($| ) ]]; then
+          config="$(jq '.v1.hardware.nvidia=prime' <<<"$config")"
+        elif [[ "$packages" =~ (^| )garuda-nvidia-config($| ) ]]; then
+          config="$(jq '.v1.hardware.nvidia=nvidia' <<<"$config")"
+        fi
       fi
 
-      jq --arg UUID "$BTRFS_UUID" --arg version "${version}" '.version=($version|tonumber) | .v1.uuid=$UUID' <<<"$config" >"$MNT_DIR/etc/nixos/garuda-managed.json"
+      VIRT="$(systemd-detect-virt || echo "none")"
+      jq --arg UUID "$BTRFS_UUID" --arg VIRT "$VIRT" --arg version "${version}" '.version=($version|tonumber) | .v1.uuid=$UUID | .v1.hardware.virt=$VIRT' <<<"$config" >"$MNT_DIR/etc/nixos/garuda-managed.json"
     }
 
     if [[ $EUID -ne 0 ]]; then
