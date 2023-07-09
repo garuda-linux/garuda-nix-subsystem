@@ -6,6 +6,8 @@
 }:
 let
   cfg = config.garuda;
+  cfgSubsystem = config.garuda.subsystem;
+  subsystem = builtins.fromJSON (builtins.readFile cfgSubsystem.config);
 in
 with garuda-lib;
 {
@@ -44,7 +46,7 @@ with garuda-lib;
       root = {
         extraOptions = [ "--loadavg-target" "1.0" ];
         hashTableSizeMB = 2048;
-        spec = "${config.system.fileSystems."/".device}";
+        spec = "UUID=${subsystem.v1.uuid}";
         verbosity = "crit";
       };
     };
