@@ -10,6 +10,7 @@ lib.mkIf config.garuda.dr460nized.enable {
     applet-window-appmenu
     applet-window-title
     beautyline-icons
+    blurredwallpaper
     dr460nized-kde-theme
     ffmpegthumbnailer
     firedragon

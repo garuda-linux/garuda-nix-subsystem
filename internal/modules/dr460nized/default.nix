@@ -34,7 +34,7 @@ in
               Font = gDefault "Fira Sans";
             };
           };
-          theme = gDefault "Sweet";
+          theme = gDefault "Dr460nized-Sugar-Candy";
         };
       };
       enable = gDefault true;
