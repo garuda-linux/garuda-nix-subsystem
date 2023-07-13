@@ -52,16 +52,6 @@ with garuda-lib;
       gamescopeSession.enable = gDefault true;
     };
 
-    # Unstable gamescope from Chaotic-Nyx
-    chaotic.gamescope = {
-      enable = gDefault true;
-      package = pkgs.gamescope_git;
-      session = {
-        enable = gDefault true;
-        args = [ "--rt" ];
-      };
-    };
-
     # Fix League of Legends
     boot.kernel.sysctl = {
       "abi.vsyscall32" = 0;
