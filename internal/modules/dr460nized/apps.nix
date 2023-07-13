@@ -13,7 +13,7 @@ lib.mkIf config.garuda.dr460nized.enable {
     blurredwallpaper
     dr460nized-kde-theme
     ffmpegthumbnailer
-    firedragon
+    # firedragon currently unavailable
     libinput-gestures
     libsForQt5.applet-window-buttons
     libsForQt5.kdegraphics-thumbnailers
