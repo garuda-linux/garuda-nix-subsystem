@@ -16,11 +16,11 @@
         "yuzu-ea-git-src": "yuzu-ea-git-src"
       },
       "locked": {
-        "lastModified": 1689358529,
-        "narHash": "sha256-jZK6HuNuxXDyqwgI0zaOjvyX0jVwR8n3M1xLHyG/sFQ=",
+        "lastModified": 1689431989,
+        "narHash": "sha256-T1JrkE2M/h+b1bJ9VTYaPlTfoVnPOAVX1kuvt0lPc5U=",
         "owner": "chaotic-cx",
         "repo": "nyx",
-        "rev": "d4845c495b096c8ca36a3d0a88b973f01e224ed1",
+        "rev": "c4e0c7740d9e76c30f43c9430084817948d7cbdb",
         "type": "github"
       },
       "original": {
@@ -53,11 +53,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1689365730,
-        "narHash": "sha256-WjCuBeCQtUgjVcSVoFWRKl55zBKoiVkja7x5NHcn8lQ=",
+        "lastModified": 1689453159,
+        "narHash": "sha256-FCJ47+OkC3ytMWR+y1rPdbpAPDD4tSp0QKKyr9rZcs0=",
         "owner": "wamserma",
         "repo": "flake-programs-sqlite",
-        "rev": "dd0801e7987dcf429554eb002a2bd6dcaaf2ee1c",
+        "rev": "558689e55ef50744f11cf845fae9b2c3b450a73e",
         "type": "github"
       },
       "original": {
@@ -90,11 +90,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1689362769,
-        "narHash": "sha256-5V7Z7T9019pGsFnYH6va5h6Wveq8FKmXa/xLfj0DhNI=",
+        "lastModified": 1689447223,
+        "narHash": "sha256-A5vQBtWYamvGf3c2IEhAmwIkXBzuzrkpnMYbLvc+lEY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "c1cdce3d89741d402d8fd2c93e3d2643ff85b053",
+        "rev": "f5b03feb33629cb2b6dd513935637e8cc718a5ba",
         "type": "github"
       },
       "original": {
