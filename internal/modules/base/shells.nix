@@ -61,6 +61,7 @@ with garuda-lib;
         "gpush" = "git push";
         "reb" = " sudo nixos-rebuild switch -L";
         "roll" = "sudo nixos-rebuild switch --rollback";
+        "run" = "nix run nixpkgs#";
         "su" = "sudo su -";
         "tarnow" = "tar acf ";
         "test" = "sudo nixos-rebuild switch --test";
@@ -87,7 +88,7 @@ with garuda-lib;
       };
       shellInit = ''
         set fish_greeting
-        fastfetch -l nixos --load-config neofetch
+        fastfetch -l nixos --load-config paleofetch
       '';
     };
   };

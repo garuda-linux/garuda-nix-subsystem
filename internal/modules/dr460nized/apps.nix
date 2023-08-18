@@ -302,7 +302,7 @@ lib.mkIf config.garuda.dr460nized.enable {
         "text/x-tex"
       ];
     in
-    (lib.genAttrs code (_: [ "code.desktop" ]))
+    (lib.genAttrs code (_: [ "kate.desktop" ]))
     // (lib.genAttrs archives (_: [ "ark.desktop" ]))
     // (lib.genAttrs audioVideo (_: [ "vlc.desktop" ]))
     // (lib.genAttrs documents (_: [ "okular.desktop" ]))
