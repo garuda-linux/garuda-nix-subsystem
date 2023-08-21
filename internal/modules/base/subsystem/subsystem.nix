@@ -7,7 +7,7 @@ let
 in
 {
   imports = [
-    ./garuda-user.nix
+    ./imported-users.nix
     ./shared-home.nix
   ];
 

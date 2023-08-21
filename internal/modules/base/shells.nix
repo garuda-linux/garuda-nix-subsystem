@@ -88,7 +88,6 @@ with garuda-lib;
       };
       shellInit = ''
         set fish_greeting
-        fastfetch -l nixos --load-config paleofetch
       '';
     };
   };

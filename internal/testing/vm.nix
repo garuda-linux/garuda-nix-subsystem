@@ -7,7 +7,6 @@
     isNormalUser = true;
     extraGroups = [ "wheel" ];
     password = "garuda";
-    createHome = false;
   };
 
   garuda.dr460nized.enable = true;
@@ -16,10 +15,6 @@
 
   console.keyMap = "de";
   services.xserver.layout = "de";
-
-  security.pam.services.systemd-user.makeHomeDir = true;
-  # /etc/skel equivalent
-  security.pam.makeHomeDir.skelDirectory = "${pkgs.dr460nized-kde-theme}/skel";
 
   time.timeZone = "Europe/Berlin";
 

@@ -2,9 +2,11 @@
 {
   imports = [
     ./boot.nix
+    ./create-home.nix
     ./gaming.nix
     ./garuda-update.nix
     ./hardware.nix
+    ./home-manager/home-manager.nix
     ./locales.nix
     ./mount-garuda.nix
     ./networking.nix

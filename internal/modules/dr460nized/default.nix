@@ -53,8 +53,8 @@ in
 
     # Define the default fonts Fira Sans & Jetbrains Mono Nerd Fonts
     fonts = {
-      enableDefaultFonts = gDefault false;
-      fonts = with pkgs;
+      enableDefaultPackages = gDefault false;
+      packages = with pkgs;
         gExcludableArray config "defaultpackages" [
           fira
           (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
@@ -94,13 +94,6 @@ in
       SDL_AUDIODRIVER = gDefault "pipewire";
     };
 
-    # Set /etc/skel directory to pull theming from
-    security.pam = {
-      services.systemd-user.makeHomeDir = gDefault true;
-      makeHomeDir.skelDirectory = gDefault "${gGenerateSkel pkgs "${pkgs.dr460nized-kde-theme}/skel" "dr460nized"}";
-    };
-
-    # Make sure that the home directories are not created by something that is not pam
-    garuda.subsystem.imported-users.createHome = gDefault false;
+    garuda.create-home.skel = gDefault "${gGenerateSkel pkgs "${pkgs.dr460nized-kde-theme}/skel" "dr460nized"}";
   };
 }

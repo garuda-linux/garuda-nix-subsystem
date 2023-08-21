@@ -13,11 +13,6 @@ let
 in
 {
   options.garuda.subsystem.imported-users = {
-    createHome = mkOption {
-      type = types.bool;
-      default = true;
-      internal = true;
-    };
     users = mkOption {
       type = types.attrsOf (types.submodule submoduleOptions);
       default = { };
@@ -43,7 +38,6 @@ in
         isNormalUser = true;
         inherit (value) uid;
         initialHashedPassword = value.passwordHash;
-        createHome = cfg.createHome;
         extraGroups = lib.mkIf value.wheel [ "wheel" ];
       })
       cfg.users;

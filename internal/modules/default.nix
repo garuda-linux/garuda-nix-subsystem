@@ -6,7 +6,7 @@ let
   };
 
   default = { ... }: {
-    imports = [ inputs.chaotic.nixosModules.default ] ++ builtins.attrValues modulesPerFile;
+    imports = [ inputs.chaotic.nixosModules.default inputs.home-manager.nixosModules.home-manager ] ++ builtins.attrValues modulesPerFile;
   };
 in
 modulesPerFile // { inherit default; }

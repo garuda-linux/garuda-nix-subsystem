@@ -81,15 +81,12 @@ in
             };
             script = ''
               set -e
-              ${lib.optionalString (!users.createHome) ''
-                # Create home directory if necessary
-                "${pkgs.linux-pam}/bin/mkhomedir_helper" "${name}" 0022 "${config.security.pam.makeHomeDir.skelDirectory}"
-              ''}
               # Mount the old home directory to /run/garuda/subsystem/sharedhome/old/$name
               "${pkgs.coreutils}/bin/mkdir" -p "/run/garuda/subsystem/sharedhome/old/${name}"
               "${pkgs.util-linux}/bin/mount" --bind --make-private "/home/${name}" "/run/garuda/subsystem/sharedhome/old/${name}"
             '';
             wantedBy = lib.mkForce [ ];
+            after = [ "create-homedirs.service" ];
           };
         })
         users.users)

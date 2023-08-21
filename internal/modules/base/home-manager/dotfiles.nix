@@ -1,11 +1,8 @@
-{ pkgs, ... }: {
-  # Import individual configuration snippets
-  imports = [ ./shells.nix ];
-
+{ username, home, state_version, ... }: { pkgs, ... }: {
   # Always needed home-manager settings - don't touch!
-  home.homeDirectory = "/home/nico";
-  home.stateVersion = "22.11";
-  home.username = "nico";
+  home.homeDirectory = home;
+  home.stateVersion = state_version;
+  home.username = username;
 
   # Git shall be used a lot on flaky systems
   programs.git = {

@@ -18,11 +18,11 @@
     # Home configuration management
     home-manager = {
       inputs.nixpkgs.follows = "garuda-nixpkgs";
-      url = "github:nix-community/home-manager/master";
+      url = "github:garuda-linux/home-manager/master";
     };
   };
 
-  outputs = { garuda-nixpkgs, home-manager, ... }@inputs: rec {
+  outputs = { garuda-nixpkgs, ... }@inputs: rec {
     nixpkgs = garuda-nixpkgs;
 
     formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
@@ -30,7 +30,7 @@
 
     devShells = import ./devshells { inherit inputs nixpkgs formatter lib; };
 
-    internal = import ./internal { inputs = inputs // { inherit nixpkgs; }; inherit home-manager; inherit lib; };
+    internal = import ./internal { inputs = inputs // { inherit nixpkgs; }; inherit lib; };
 
     lib = import ./lib { inherit inputs nixpkgs internal; };
   };
