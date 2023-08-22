@@ -184,15 +184,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1692649199,
-        "narHash": "sha256-FeNXJz6zrMBAx8g9F6Sa9+3uTmKTIK6edie8qDcWZMA=",
-        "owner": "garuda-linux",
+        "lastModified": 1692720545,
+        "narHash": "sha256-DQDremUH7lRxiZEIVh6C6kQusuPe1vUKtiVl29nmP0E=",
+        "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "5cd42867167d99dfde607a80b24ceb6abf839180",
+        "rev": "8eb8c212e50e2fd95af5849585a2eb819add0a1e",
         "type": "github"
       },
       "original": {
-        "owner": "garuda-linux",
+        "owner": "nix-community",
         "ref": "master",
         "repo": "home-manager",
         "type": "github"

@@ -1,9 +1,4 @@
-{ username, home, state_version, ... }: { pkgs, ... }: {
-  # Always needed home-manager settings - don't touch!
-  home.homeDirectory = home;
-  home.stateVersion = state_version;
-  home.username = username;
-
+{ pkgs, ... }: {
   # Git shall be used a lot on flaky systems
   programs.git = {
     diff-so-fancy.enable = true;
@@ -116,16 +111,10 @@
   };
 
   # Always use configured caches
-  home.file = {
-    ".config/nix/nix.conf".text = ''
-      substituters = https://cache.nixos.org https://chaotic-nyx.cachix.org
-      trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=
-    '';
-    ".local/share/nix/trusted-settings.json".text = ''
-      substituters = https://cache.nixos.org https://chaotic-nyx.cachix.org 
-      trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8= 
-    '';
-  };
+  nix.extraOptions = ''
+    extra-substituters = https://chaotic-nyx.cachix.org
+    extra-trusted-public-keys = chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=
+  '';
 
   # Enable dircolors
   programs.dircolors.enable = true;

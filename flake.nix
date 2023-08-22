@@ -18,7 +18,7 @@
     # Home configuration management
     home-manager = {
       inputs.nixpkgs.follows = "garuda-nixpkgs";
-      url = "github:garuda-linux/home-manager/master";
+      url = "github:nix-community/home-manager/master";
     };
   };
 

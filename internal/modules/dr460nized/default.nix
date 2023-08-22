@@ -80,6 +80,9 @@ in
       };
     };
 
+    # Home-manager configurations
+    garuda.home-manager.modules = gExcludableArray config "home-manager-modules" [ ./dotfiles.nix ];
+
     # These need to be enabled for complete functionality
     programs = {
       kdeconnect.enable = gDefault true;
