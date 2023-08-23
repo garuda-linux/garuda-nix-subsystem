@@ -53,6 +53,7 @@ with garuda-lib;
       };
       shellAbbrs = {
         "cls" = "clear";
+        "diffnix" = "nvd diff $(sh -c 'ls -d1v /nix/var/nix/profiles/system-*-link|tail -n 2')";
         "edit" = "sops";
         "gcommit" = "git commit -m";
         "glcone" = "git clone";
@@ -72,6 +73,7 @@ with garuda-lib;
         "bat" = "bat --style header --style snip --style changes";
         "cat" = "bat --style header --style snip --style changes";
         "dd" = "dd progress=status";
+        "diffnix" = "nvd diff $(sh -c 'ls -d1v /nix/var/nix/profiles/system-*-link|tail -n 2')";
         "dir" = "dir --color=auto";
         "egrep" = "egrep --color=auto";
         "fastfetch" = "fastfetch -l nixos";

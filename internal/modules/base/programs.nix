@@ -19,6 +19,7 @@ with garuda-lib;
       htop
       killall
       micro
+      nvd
       rsync
       screen
       tldr
