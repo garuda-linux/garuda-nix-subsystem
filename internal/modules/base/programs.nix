@@ -12,6 +12,7 @@ with garuda-lib;
     environment.systemPackages = with pkgs; gExcludableArray config "defaultpackages" [
       bat
       curl
+      eza
       fastfetch
       fishPlugins.autopair
       fishPlugins.puffer

@@ -63,12 +63,6 @@
       nix-direnv.enable = true;
     };
 
-    # Exa as ls replacement
-    exa = {
-      enable = true;
-      enableAliases = true;
-    };
-
     # Fish shell
     fish.enable = true;
 
