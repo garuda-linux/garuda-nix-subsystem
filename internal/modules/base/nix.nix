@@ -1,6 +1,6 @@
 { config
 , garuda-lib
-, inputs
+, flake-inputs
 , lib
 , pkgs
 , ...
@@ -43,7 +43,7 @@ with garuda-lib;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
     # Automtaically pin registries based on inputs
-    registry = lib.mapAttrs (_: v: { flake = v; }) inputs;
+    registry = lib.mapAttrs (_: v: { flake = v; }) flake-inputs;
   };
 
   # Allow unfree packages
@@ -69,7 +69,9 @@ with garuda-lib;
     description = "Auto clean all result symlinks created by nixos-rebuild test";
     serviceConfig.Type = "oneshot";
     script = ''
-      "${config.nix.package.out}/bin/nix-store" --gc --print-roots | "${pkgs.gawk}/bin/awk" 'match($0, /^(.*\/result) -> \/nix\/store\/[^-]+-nixos-system/, a) { print a[1] }' | xargs -r -d\\n rm
+      "${config.nix.package.out}/bin/nix-store" --gc --print-roots \
+        | "${pkgs.gawk}/bin/awk" 'match($0, /^(.*\/result) -> \/nix\/store\/[^-]+-nixos-system/, a) \
+        { print a[1] }' | xargs -r -d\\n rm
     '';
     before = [ "nix-gc.service" ];
     wantedBy = [ "nix-gc.service" ];

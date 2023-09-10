@@ -7,7 +7,7 @@ variables:
   REPO_URL: $CI_SERVER_PROTOCOL://gitlab-ci-token:$ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git
 update:
   stage: update
-  image: nixpkgs/nix-flakes
+  image: nixpkgs/nix-flakes:latest
   script:
     - nix flake update
     - nix flake check
@@ -21,8 +21,9 @@ update:
     refs: [main]
 tag:
   stage: tag
-  image: nixpkgs/nix-flakes
+  image: nixpkgs/nix-flakes:latest
   script:
+    - nix flake check
     - nix build .#internal.vm --dry-run
     - git tag -f v1
     - git push --atomic -f $REPO_URL v1 HEAD:refs/heads/stable
