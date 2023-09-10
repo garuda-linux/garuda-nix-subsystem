@@ -23,7 +23,11 @@ let
     in
     {
       default = overlayFinal.mkShell {
-        buildInputs = [ nixpkgs.legacyPackages.${system}.pre-commit ];
+        buildInputs = [
+          garuda-update
+          installer
+          nixpkgs.legacyPackages.${system}.pre-commit
+        ];
       };
       gns-install = overlayFinal.mkShell {
         buildInputs = [ installer garuda-update ];

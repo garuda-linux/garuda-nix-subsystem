@@ -77,6 +77,6 @@
       };
 
       # Formatter used with "nix fmt"
-      formatter.${system} = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
+      formatter = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
     });
 }
