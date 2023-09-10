@@ -1,3 +1,4 @@
 .github/workflows/*
+.pre-commit-config.yaml
 configurations/docker-compose/**
 flake.lock
