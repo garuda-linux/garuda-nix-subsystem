@@ -14,66 +14,69 @@
 
     # Devshell to set up a development environment
     devshell.url = "github:numtide/devshell";
-    devshell.inputs.nixpkgs.follows = "garuda-nixpkgs";
+    devshell.inputs.nixpkgs.follows = "nixpkgs";
 
     # Common used input of our flake inputs
     flake-utils.url = "github:numtide/flake-utils";
 
     # If you need to, override this to use a different nixpkgs version
     # by default we follow Chaotic Nyx' nyxpkgs-unstable branch
-    garuda-nixpkgs.follows = "chaotic-nyx/nixpkgs";
+    nixpkgs.follows = "chaotic-nyx/nixpkgs";
 
     # Have a local index of nixpkgs for fast launching of apps
     nix-index-database.url = "github:Mic92/nix-index-database";
-    nix-index-database.inputs.nixpkgs.follows = "garuda-nixpkgs";
+    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
     # Easy linting of the flake and all kind of other stuff
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
     pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
-    pre-commit-hooks.inputs.nixpkgs.follows = "garuda-nixpkgs";
+    pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
 
     # NixOS hardware database
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     # Home configuration management
     home-manager.url = "github:nix-community/home-manager/master";
-    home-manager.inputs.nixpkgs.follows = "garuda-nixpkgs";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # Spicetify
     spicetify-nix.url = "github:the-argus/spicetify-nix";
     spicetify-nix.inputs.flake-utils.follows = "flake-utils";
-    spicetify-nix.inputs.nixpkgs.follows = "garuda-nixpkgs";
+    spicetify-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs =
-    { devshell
-    , flake-parts
-    , garuda-nixpkgs
-    , self
-    , ...
-    } @ inputs:
-    rec {
-      devShells = import ./devshells { inherit inputs nixpkgs lib; };
+  outputs = { nixpkgs, ... }@inputs:
+    let
+      devShells = import ./devshell { inherit inputs nixpkgs lib; };
       internal = import ./internal { inputs = inputs // { inherit nixpkgs; }; inherit lib; };
       lib = import ./lib { inherit inputs nixpkgs internal; };
-      nixpkgs = garuda-nixpkgs;
-    } // flake-parts.lib.mkFlake
-      { inherit inputs; }
-      {
-        imports = [
-          ./devshells/flake-module.nix
-          inputs.devshell.flakeModule
-          inputs.pre-commit-hooks.flakeModule
-        ];
-
-        systems = [ "x86_64-linux" "aarch64-linux" ];
-
-        perSystem = { pkgs, system, ... }: {
-          # Enter devshell via "nix run .#apps.x86_64-linux.devshell"
-          apps.devshell = self.outputs.devShells.${system}.default.flakeApp;
-
-          # Defines a formatter for "nix fmt"
-          formatter = pkgs.nixpkgs-fmt;
+      inherit (inputs) flake-utils;
+    in
+    {
+      inherit devShells internal lib;
+    }
+    // flake-utils.lib.eachDefaultSystem (system: {
+      # The checks to run with "nix flake check"
+      checks.pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
+        hooks = {
+          commitizen.enable = true;
+          deadnix.enable = true;
+          nil.enable = true;
+          nixpkgs-fmt.enable = true;
+          prettier.enable = true;
+          shellcheck.enable = true;
+          shfmt.enable = true;
+          statix.enable = true;
+          yamllint.enable = true;
         };
+        settings.deadnix = {
+          edit = true;
+          hidden = true;
+          noLambdaArg = true;
+        };
+        src = ./.;
       };
 
+      # Formatter used with "nix fmt"
+      formatter.${system} = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
+    });
 }

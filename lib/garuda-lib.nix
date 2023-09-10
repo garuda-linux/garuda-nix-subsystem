@@ -1,8 +1,10 @@
 { nixpkgs, ... }:
 let
   inherit (nixpkgs) lib;
+
   # gDefault, set a priority of 950, which should be our default so the user can override our settings, yet we can override nixpkgs
   gDefault = lib.mkOverride 950;
+
   # This is terrible, but a perfect example of the sunk cost fallacy
   isUniqueVariable = type:
     let
@@ -47,11 +49,13 @@ let
 in
 {
   inherit gDefault;
+
   # Remove excluded options from the output array
   gExcludableArray = config: name: lib.filter
     (x: !(config.garuda.excludes."${name}".excludeAll or false) &&
       !(lib.lists.any (y: builtins.unsafeDiscardStringContext x == builtins.unsafeDiscardStringContext y) (config.garuda.excludes."${name}".exclude or [ ]))
     );
+
   # Define options = [] for the exclusion variable
   gCreateExclusionOption = name: {
     "${name}" = {
@@ -67,9 +71,12 @@ in
       };
     };
   };
+
   gDefaultAttrs = setDefaultAttrs [ ];
+
   # Subsystem version
   version = 1;
+
   # Generate /etc/skel from a path. This ensures that certain directories are always available to mount from with the correct permissions.
   gGenerateSkel = pkgs: skel: name: derivation {
     name = "skel-${name}";

@@ -41,7 +41,7 @@
     "devshell": {
       "inputs": {
         "nixpkgs": [
-          "garuda-nixpkgs"
+          "nixpkgs"
         ],
         "systems": "systems"
       },
@@ -73,22 +73,6 @@
         "owner": "edolstra",
         "repo": "flake-compat",
         "type": "github"
-      }
-    },
-    "flake-parts": {
-      "inputs": {
-        "nixpkgs-lib": "nixpkgs-lib"
-      },
-      "locked": {
-        "lastModified": 1693611461,
-        "narHash": "sha256-aPODl8vAgGQ0ZYFIRisxYG5MOGSkIczvu2Cd8Gb9+1Y=",
-        "path": "/nix/store/mww0kbd58ky1ig7a06fmby7ggbjxxghn-source",
-        "rev": "7f53fdb7bdc5bb237da7fefef12d099e4fd611ca",
-        "type": "path"
-      },
-      "original": {
-        "id": "flake-parts",
-        "type": "indirect"
       }
     },
     "flake-utils": {
@@ -133,7 +117,7 @@
     "home-manager": {
       "inputs": {
         "nixpkgs": [
-          "garuda-nixpkgs"
+          "nixpkgs"
         ]
       },
       "locked": {
@@ -154,7 +138,7 @@
     "nix-index-database": {
       "inputs": {
         "nixpkgs": [
-          "garuda-nixpkgs"
+          "nixpkgs"
         ]
       },
       "locked": {
@@ -202,24 +186,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-lib": {
-      "locked": {
-        "dir": "lib",
-        "lastModified": 1693471703,
-        "narHash": "sha256-0l03ZBL8P1P6z8MaSDS/MvuU8E75rVxe5eE1N6gxeTo=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "3e52e76b70d5508f3cec70b882a29199f4d1ee85",
-        "type": "github"
-      },
-      "original": {
-        "dir": "lib",
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1685801374,
@@ -244,16 +210,16 @@
         ],
         "gitignore": "gitignore",
         "nixpkgs": [
-          "garuda-nixpkgs"
+          "nixpkgs"
         ],
         "nixpkgs-stable": "nixpkgs-stable"
       },
       "locked": {
-        "lastModified": 1694345285,
-        "narHash": "sha256-RZbTA5lmiRdy+XHk32+vk5ePDUrsV3lRFQaJBf/KgBs=",
+        "lastModified": 1694364351,
+        "narHash": "sha256-oadhSCqopYXxURwIA6/Anpe5IAG11q2LhvTJNP5zE6o=",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "58e22ea8634a50292c8c2f29dc0652b11f2c5006",
+        "rev": "4f883a76282bc28eb952570afc3d8a1bf6f481d7",
         "type": "github"
       },
       "original": {
@@ -266,15 +232,14 @@
       "inputs": {
         "chaotic-nyx": "chaotic-nyx",
         "devshell": "devshell",
-        "flake-parts": "flake-parts",
         "flake-utils": "flake-utils",
-        "garuda-nixpkgs": [
-          "chaotic-nyx",
-          "nixpkgs"
-        ],
         "home-manager": "home-manager",
         "nix-index-database": "nix-index-database",
         "nixos-hardware": "nixos-hardware",
+        "nixpkgs": [
+          "chaotic-nyx",
+          "nixpkgs"
+        ],
         "pre-commit-hooks": "pre-commit-hooks",
         "spicetify-nix": "spicetify-nix"
       }
@@ -285,7 +250,7 @@
           "flake-utils"
         ],
         "nixpkgs": [
-          "garuda-nixpkgs"
+          "nixpkgs"
         ]
       },
       "locked": {
