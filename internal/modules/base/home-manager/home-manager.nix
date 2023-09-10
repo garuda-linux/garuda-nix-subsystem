@@ -8,7 +8,7 @@ with garuda-lib;
 let
   cfg = config.garuda.home-manager;
   state_version = config.system.stateVersion;
-  users = (lib.attrsets.filterAttrs (name: user: user.isNormalUser) config.users.users);
+  users = lib.attrsets.filterAttrs (_name: user: user.isNormalUser) config.users.users;
 in
 {
   options.garuda.home-manager.modules = with lib; mkOption {
@@ -24,7 +24,7 @@ in
 
       users = builtins.mapAttrs
         (username: user:
-          { config, ... }: {
+          { ... }: {
             home.homeDirectory = user.home;
             home.stateVersion = state_version;
             home.username = username;
@@ -36,7 +36,7 @@ in
     };
 
     systemd.services = lib.mapAttrs'
-      (username: user: lib.nameValuePair ("home-manager-${utils.escapeSystemdPath username}") {
+      (username: _user: lib.nameValuePair "home-manager-${utils.escapeSystemdPath username}" {
         after = [ "create-homedirs.service" ];
       })
       users;

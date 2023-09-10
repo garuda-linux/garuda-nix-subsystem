@@ -14,6 +14,7 @@ lib.mkIf config.garuda.dr460nized.enable {
     dr460nized-kde-theme
     ffmpegthumbnailer
     firedragon
+    jamesdsp
     libinput-gestures
     libsForQt5.applet-window-buttons
     libsForQt5.kdegraphics-thumbnailers

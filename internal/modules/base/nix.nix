@@ -1,6 +1,7 @@
 { config
-, flake-inputs
 , garuda-lib
+, inputs
+, lib
 , pkgs
 , ...
 }:
@@ -37,7 +38,12 @@ with garuda-lib;
       # Max number of parallel jobs
       max-jobs = gDefault "auto";
     };
-    nixPath = [ "nixpkgs=${flake-inputs.nixpkgs}" "nyx=${flake-inputs.chaotic}" ];
+
+    # Make legacy nix commands consistent as well
+    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
+
+    # Automtaically pin registries based on inputs
+    registry = lib.mapAttrs (_: v: { flake = v; }) inputs;
   };
 
   # Allow unfree packages

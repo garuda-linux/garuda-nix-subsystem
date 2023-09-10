@@ -41,9 +41,6 @@ in
       ananicy-cpp-rules
     ];
 
-    # Get notifications about earlyoom actions
-    services.systembus-notify.enable = mkIf cfg.enable (gDefault true);
-
     # 90% ZRAM as swap
     zramSwap = mkIf cfg.enable {
       algorithm = "zstd";
@@ -51,12 +48,15 @@ in
       memoryPercent = 90;
     };
 
-    # Earlyoom to prevent OOM situations
-    services.earlyoom = mkIf cfg.enable {
-      enable = gDefault true;
-      enableNotifications = true;
-      freeMemThreshold = 5;
+    # Fedora defaults for systemd-oomd
+    systemd.oomd = {
+      enable = lib.mkForce true; # This is actually the default, anyways...
+      enableSystemSlice = true;
+      enableUserServices = true;
     };
+
+    # BPF-based auto-tuning of Linux system parameters
+    services.bpftune.enable = true;
 
     ## A few other kernel tweaks
     boot.kernel.sysctl = mkIf cfg.enable {

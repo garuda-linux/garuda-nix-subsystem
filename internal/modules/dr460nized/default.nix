@@ -51,6 +51,10 @@ in
     # Allow GTK applications to show an appmenu on KDE
     chaotic.appmenu-gtk3-module.enable = gDefault true;
 
+    # Fix "the name ca.desrt.dconf was not provided by any .service files"
+    # https://nix-community.github.io/home-manager/index.html
+    programs.dconf.enable = true;
+
     # Define the default fonts Fira Sans & Jetbrains Mono Nerd Fonts
     fonts = {
       enableDefaultPackages = gDefault false;
@@ -85,6 +89,10 @@ in
 
     # These need to be enabled for complete functionality
     programs = {
+      direnv = {
+        enable = gDefault true;
+        silent = gDefault true;
+      };
       kdeconnect.enable = gDefault true;
       partition-manager.enable = gDefault true;
     };
@@ -92,6 +100,7 @@ in
     # Enable Kvantum for theming & Pipewire
     environment.variables = {
       ALSOFT_DRIVERS = gDefault "pipewire";
+      GTK_THEME = "Sweet-Dark";
       MOZ_USE_XINPUT2 = gDefault "1";
       QT_STYLE_OVERRIDE = gDefault "kvantum";
       SDL_AUDIODRIVER = gDefault "pipewire";

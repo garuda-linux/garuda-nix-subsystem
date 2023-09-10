@@ -4,7 +4,7 @@ let
   users = config.garuda.subsystem.imported-users;
 in
 {
-  config.systemd = lib.mkIf (cfg.enable && users.shared-home.enable) ({
+  config.systemd = lib.mkIf (cfg.enable && users.shared-home.enable) {
     mounts = [{
       what = "UUID=${users.shared-home.uuid}";
       options = "subvol=@home,compress=zstd,noatime,noauto,nofail";
@@ -12,7 +12,7 @@ in
       wantedBy = lib.mkForce [ ];
     }] ++ (builtins.concatLists (
       (lib.attrsets.mapAttrsToList
-        (name: value: [
+        (name: _value: [
           # Mount the .config 
           {
             what = "/run/garuda/subsystem/sharedhome/old/${name}/.config";
@@ -66,30 +66,28 @@ in
           }
         ])) users.users
     ));
-    services = (lib.mkMerge (
-      (lib.attrsets.mapAttrsToList
-        (name: value: {
-          "garuda-sharedhome-${name}-init" = {
-            unitConfig = {
-              RequiresMountsFor = [
-                "/run/garuda/subsystem/sharedhome/new"
-              ];
-            };
-            serviceConfig = {
-              Type = "oneshot";
-              RemainAfterExit = true;
-            };
-            script = ''
-              set -e
-              # Mount the old home directory to /run/garuda/subsystem/sharedhome/old/$name
-              "${pkgs.coreutils}/bin/mkdir" -p "/run/garuda/subsystem/sharedhome/old/${name}"
-              "${pkgs.util-linux}/bin/mount" --bind --make-private "/home/${name}" "/run/garuda/subsystem/sharedhome/old/${name}"
-            '';
-            wantedBy = lib.mkForce [ ];
-            after = [ "create-homedirs.service" ];
+    services = lib.mkMerge (lib.attrsets.mapAttrsToList
+      (name: _value: {
+        "garuda-sharedhome-${name}-init" = {
+          unitConfig = {
+            RequiresMountsFor = [
+              "/run/garuda/subsystem/sharedhome/new"
+            ];
           };
-        })
-        users.users)
-    ));
-  });
+          serviceConfig = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+          };
+          script = ''
+            set -e
+            # Mount the old home directory to /run/garuda/subsystem/sharedhome/old/$name
+            "${pkgs.coreutils}/bin/mkdir" -p "/run/garuda/subsystem/sharedhome/old/${name}"
+            "${pkgs.util-linux}/bin/mount" --bind --make-private "/home/${name}" "/run/garuda/subsystem/sharedhome/old/${name}"
+          '';
+          wantedBy = lib.mkForce [ ];
+          after = [ "create-homedirs.service" ];
+        };
+      })
+      users.users);
+  };
 }

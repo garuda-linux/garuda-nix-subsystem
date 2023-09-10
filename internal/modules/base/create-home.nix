@@ -35,7 +35,7 @@ with garuda-lib;
         ${
           lib.strings.concatLines (lib.mapAttrsToList (name: user: ''
             create_home_if_empty "${user.home}" "${name}" 
-          '') (lib.attrsets.filterAttrs (name: user: user.isNormalUser) config.users.users))
+          '') (lib.attrsets.filterAttrs (_name: user: user.isNormalUser) config.users.users))
         }
       '';
     };

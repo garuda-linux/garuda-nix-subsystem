@@ -34,7 +34,7 @@ in
 
   config = lib.mkIf (cfg.enable && config.garuda.subsystem.enable) {
     users.users = mapAttrs
-      (name: value: {
+      (_name: value: {
         isNormalUser = true;
         inherit (value) uid;
         initialHashedPassword = value.passwordHash;

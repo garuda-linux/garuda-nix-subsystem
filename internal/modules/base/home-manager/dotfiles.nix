@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+_: {
   # Git shall be used a lot on flaky systems
   programs.git = {
     diff-so-fancy.enable = true;

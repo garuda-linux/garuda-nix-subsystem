@@ -20,9 +20,20 @@ with garuda-lib;
       networkmanager = {
         enable = gDefault true;
         unmanaged = [ "lo" "docker0" "virbr0" ];
+        wifi = {
+          backend = "iwd";
+          powersave = gDefault false;
+        };
       };
       # Disable non-NetworkManager
       useDHCP = gDefault false;
+      wireless.iwd = {
+        enable = gDefault true;
+        settings = {
+          General.AddressRandomization = "once";
+          General.AddressRandomizationRange = "full";
+        };
+      };
     };
 
     # Enable wireless database

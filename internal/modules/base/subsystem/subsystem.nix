@@ -38,12 +38,12 @@ in
     networking.hostName = gDefault subsystem.hostname;
     garuda.subsystem.imported-users.users = builtins.listToAttrs (builtins.map
       (x: {
-        name = x.name;
+        inherit (x) name;
         value = {
           passwordHash = x.hashed_password;
-          uid = x.uid;
-          home = x.home;
-          wheel = x.wheel;
+          inherit (x) uid;
+          inherit (x) home;
+          inherit (x) wheel;
         };
       })
       subsystem.v1.users);
@@ -53,7 +53,7 @@ in
     services.xserver.layout = mkIf (subsystem.v1 ? keymap) (gDefault subsystem.v1.keymap);
     i18n = {
       defaultLocale = mkIf (subsystem.v1 ? locale && subsystem.v1.locale ? LANG) (gDefault subsystem.v1.locale.LANG);
-      extraLocaleSettings = mkIf (subsystem.v1 ? locale) (lib.mapAttrs (name: value: gDefault value) (subsystem.v1.locale));
+      extraLocaleSettings = mkIf (subsystem.v1 ? locale) (lib.mapAttrs (_name: gDefault) subsystem.v1.locale);
     };
     systemd.mounts = [{
       what = "UUID=${subsystem.v1.uuid}";

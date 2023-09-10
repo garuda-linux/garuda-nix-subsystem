@@ -1,6 +1,5 @@
 { garuda-lib
 , pkgs
-, flake-inputs
 , ...
 }:
 with garuda-lib;
@@ -40,10 +39,6 @@ with garuda-lib;
       "untar" = "tar zxvf ";
       "vdir" = "vdir --color=auto";
       "wget" = "wget -c";
-    };
-    command-not-found = {
-      dbPath = gDefault flake-inputs.flake-programs-sqlite.packages.${pkgs.system}.programs-sqlite;
-      enable = gDefault true;
     };
     fish = {
       enable = gDefault true;

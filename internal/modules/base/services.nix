@@ -33,12 +33,12 @@ with garuda-lib;
     hardware.bluetooth.enable = gDefault true;
 
     # Handle ACPI events
-    services.acpid.enable = gDefault true;
-
-    # LAN discovery
-    services.avahi = {
-      enable = gDefault true;
-      nssmdns = gDefault true;
+    services = {
+      acpid.enable = gDefault true;
+      avahi = {
+        enable = gDefault true;
+        nssmdns = gDefault true;
+      };
     };
 
     # Filesystem deduplication in the background

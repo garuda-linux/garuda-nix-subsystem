@@ -5,7 +5,7 @@ rec {
   garudaSystem = args: nixpkgs.lib.nixosSystem (args // {
     extraModules = [ internal.modules.default ] ++ args.extraModules or [ ];
     specialArgs = {
-      garuda-lib = garuda-lib;
+      inherit garuda-lib;
     } // args.specialArgs or { };
   });
   nixosSystem = garudaSystem;

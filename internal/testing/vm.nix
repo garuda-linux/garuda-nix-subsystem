@@ -1,12 +1,14 @@
-{ lib, pkgs, ... }:
+{ lib, ... }:
 {
   users.mutableUsers = false;
 
-  users.users.root.password = "garuda";
-  users.users.garuda = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ];
-    password = "garuda";
+  users.users = {
+    root.password = "garuda";
+    users.garuda = {
+      isNormalUser = true;
+      extraGroups = [ "wheel" ];
+      password = "garuda";
+    };
   };
 
   garuda.dr460nized.enable = true;

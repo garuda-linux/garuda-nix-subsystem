@@ -34,6 +34,7 @@ with garuda-lib;
         Defaults pwfeedback
         Defaults insults
       '';
+      package = pkgs.sudo.override { withInsults = true; };
     };
 
     # Run Appimages with appimage-run
@@ -67,5 +68,9 @@ with garuda-lib;
         zlib
       ];
     };
+
+    # Easy launching of apps via "comma", contains command-not-found database
+    programs.nix-index-database.comma.enable = gDefault true;
+    programs.command-not-found.enable = gDefault false;
   };
 }

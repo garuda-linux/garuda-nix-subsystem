@@ -11,7 +11,6 @@ let
     let
       overlayFinal = prev // final // { callPackage = prev.newScope final; };
       inherit (prev.stdenv.hostPlatform) system;
-      version = "1";
       installer = overlayFinal.callPackage ./installer.nix
         {
           all-packages = overlayFinal;
@@ -38,8 +37,8 @@ let
     };
 in
 {
-  x86_64-linux = mkShells inputs.chaotic.packages.x86_64-linux
+  x86_64-linux = mkShells inputs.chaotic-nyx.packages.x86_64-linux
     nixpkgs.legacyPackages.x86_64-linux;
-  aarch64-linux = mkShells inputs.chaotic.packages.aarch64-linux
+  aarch64-linux = mkShells inputs.chaotic-nyx.packages.aarch64-linux
     nixpkgs.legacyPackages.aarch64-linux;
 }

@@ -1,4 +1,4 @@
-{ inputs, lib, ... }@fromFlakes:
+{ inputs, lib, ... }:
 let
   modulesPerFile = {
     base = import ./base { inherit inputs; flake-lib = lib; };
@@ -6,7 +6,12 @@ let
   };
 
   default = { ... }: {
-    imports = [ inputs.chaotic.nixosModules.default inputs.home-manager.nixosModules.home-manager ] ++ builtins.attrValues modulesPerFile;
+    imports = [
+      inputs.chaotic-nyx.nixosModules.default
+      inputs.home-manager.nixosModules.home-manager
+      inputs.nix-index-database.nixosModules.nix-index
+      inputs.spicetify-nix.nixosModule
+    ] ++ builtins.attrValues modulesPerFile;
   };
 in
 modulesPerFile // { inherit default; }
