@@ -14,7 +14,7 @@
 
     # Devshell to set up a development environment
     devshell.url = "github:numtide/devshell";
-    devshell.inputs.nixpkgs.follows = "nixpkgs";
+    devshell.flake = false;
 
     # Common used input of our flake inputs
     flake-utils.url = "github:numtide/flake-utils";
@@ -44,39 +44,111 @@
     spicetify-nix.inputs.flake-utils.follows = "flake-utils";
     spicetify-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = { nixpkgs, ... }@inputs:
+  outputs =
+    { devshell
+    , flake-parts
+    , nixpkgs
+    , pre-commit-hooks
+    , self
+    , ...
+    } @ inp:
     let
-      devShells = import ./devshell { inherit inputs nixpkgs lib; };
+      inputs = inp;
+
       internal = import ./internal { inputs = inputs // { inherit nixpkgs; }; inherit lib; };
       lib = import ./lib { inherit inputs nixpkgs internal; };
-      inherit (inputs) flake-utils;
-    in
-    {
-      inherit devShells internal lib;
-    }
-    // flake-utils.lib.eachDefaultSystem (system: {
-      # The checks to run with "nix flake check"
-      checks.pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
-        hooks = {
-          commitizen.enable = true;
-          deadnix.enable = true;
-          nil.enable = true;
-          nixpkgs-fmt.enable = true;
-          prettier.enable = true;
-          shellcheck.enable = true;
-          shfmt.enable = true;
-          statix.enable = true;
-          yamllint.enable = true;
-        };
-        settings.deadnix = {
-          edit = true;
-          hidden = true;
-          noLambdaArg = true;
-        };
-        src = ./.;
-      };
 
-      # Formatter used with "nix fmt"
-      formatter = nixpkgs.legacyPackages.${system}.nixpkgs-fmt;
-    });
+      perSystem =
+        { pkgs
+        , system
+        , ...
+        }: {
+          checks.pre-commit-check = pre-commit-hooks.lib.${system}.run {
+            hooks = {
+              actionlint.enable = true;
+              commitizen.enable = true;
+              deadnix.enable = true;
+              nil.enable = true;
+              nixpkgs-fmt.enable = true;
+              prettier.enable = true;
+              yamllint.enable = true;
+              statix.enable = true;
+            };
+            src = ./.;
+          };
+
+          devShells =
+            let
+              garuda-update = pkgs.callPackage ./devshell/gns-update.nix {
+                all-packages = pkgs;
+                garuda-lib = lib;
+                inherit system self;
+              };
+              installer = pkgs.callPackage ./devshell/installer.nix {
+                all-packages = pkgs;
+                garuda-lib = lib;
+                inherit system;
+              };
+              makeDevshell = import "${inp.devshell}/modules" pkgs;
+              mkShell = config: (makeDevshell {
+                configuration = {
+                  inherit config;
+                  imports = [ ];
+                };
+              }).shell;
+            in
+            rec {
+              default = gns-shell;
+              gns-install = pkgs.mkShell {
+                buildInputs = [ installer garuda-update ];
+              };
+              gns-update = pkgs.mkShell {
+                buildInputs = [ garuda-update ];
+              };
+              gns-shell = mkShell {
+                devshell.name = "garuda-nix-subsystem";
+                commands = [
+                  {
+                    name = "gns-install";
+                    command = "${self.devShells.${system}.gns-install}";
+                    help = "Install the Garuda Nix Subsystem";
+                  }
+                  {
+                    name = "gns-update";
+                    command = "${self.devShells.${system}.gns-update}";
+                    help = "Update the Garuda Nix Subsystem";
+                  }
+                  { package = "commitizen"; }
+                  { package = "manix"; }
+                  { package = "mdbook"; }
+                  { package = "nix-melt"; }
+                  { package = "pre-commit"; }
+                  { package = "yamlfix"; }
+                ];
+                devshell.startup = {
+                  preCommitHooks.text = self.checks.${system}.pre-commit-check.shellHook;
+                  gnsEnv.text = ''
+                    export NIX_PATH=nixpkgs=${nixpkgs}
+                  '';
+                };
+              };
+            };
+
+          formatter = pkgs.nixpkgs-fmt;
+
+          packages.docs = pkgs.runCommand "gns-docs"
+            { nativeBuildInputs = with pkgs; [ bash mdbook ]; }
+            ''
+              bash -c "errors=$(mdbook build -d $out ${./.}/docs |& grep ERROR)
+              if [ \"$errors\" ]; then
+                exit 1
+              fi"
+            '';
+        };
+    in
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [ inputs.pre-commit-hooks.flakeModule ];
+      systems = [ "x86_64-linux" "aarch64-linux" ];
+      inherit perSystem;
+    };
 }

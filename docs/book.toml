@@ -1,0 +1,12 @@
+[book]
+authors = ["dr460nf1r3"]
+description = "Contains the documentation for the Garuda Nix subsystem"
+language = "en"
+multilingual = false
+src = "src"
+title = "Garuda Nix Subsystem documentation"
+
+[output.html]
+default-theme = "dark"
+git-repository-icon = "fa-code-fork"
+git-repository-url = "https://gitlab.com/garuda-linux/garuda-nix-subsystem"

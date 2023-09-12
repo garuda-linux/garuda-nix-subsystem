@@ -1,9 +1,9 @@
 ---
 stages: [update, tag]
 variables:
-  GIT_STRATEGY: clone
-  GIT_AUTHOR_NAME: Gitlab CI
   GIT_AUTHOR_EMAIL: ci@garudalinux.org
+  GIT_AUTHOR_NAME: Gitlab CI
+  GIT_STRATEGY: clone
   REPO_URL: $CI_SERVER_PROTOCOL://gitlab-ci-token:$ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git
 update:
   stage: update
@@ -14,7 +14,7 @@ update:
     - git config --global user.name "$GIT_AUTHOR_NAME"
     - git config --global user.email "$GIT_AUTHOR_EMAIL"
     - git add flake.lock
-    - "git commit -m 'chore: Bump flakes'"
+    - "git commit -m 'chore(flake.lock): Bump flakes'"
     - git push "$REPO_URL" HEAD:main
   only:
     variables: [$UPDATE == "true"]

@@ -14,6 +14,11 @@ with garuda-lib;
   programs = {
     bash.shellAliases = {
       # General useful things & theming
+      ".." = "cd ..";
+      "..." = "cd ../../";
+      "...." = "cd ../../../";
+      "....." = "cd ../../../../";
+      "......" = "cd ../../../../../";
       "bat" = "bat --style header --style snip --style changes";
       "cat" = "bat --style header --style snip --style changes";
       "cls" = "clear";
@@ -36,6 +41,7 @@ with garuda-lib;
       "psmem10" = "ps auxf | sort -nr -k 4 | head -1";
       "su" = "sudo su -";
       "tarnow" = "tar acf ";
+      "tree" = "eza --git --color always -T";
       "untar" = "tar zxvf ";
       "vdir" = "vdir --color=auto";
       "wget" = "wget -c";
@@ -47,6 +53,11 @@ with garuda-lib;
         config.enable = gDefault true;
       };
       shellAbbrs = {
+        ".." = "cd ..";
+        "..." = "cd ../../";
+        "...." = "cd ../../../";
+        "....." = "cd ../../../../";
+        "......" = "cd ../../../../../";
         "cls" = "clear";
         "diffnix" = "nvd diff $(sh -c 'ls -d1v /nix/var/nix/profiles/system-*-link|tail -n 2')";
         "edit" = "sops";
@@ -61,6 +72,7 @@ with garuda-lib;
         "su" = "sudo su -";
         "tarnow" = "tar acf ";
         "test" = "sudo nixos-rebuild switch --test";
+        "tree" = "eza --git --color always -T";
         "untar" = "tar zxvf ";
         "use" = "nix shell nixpkgs#";
       };
