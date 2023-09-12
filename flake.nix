@@ -108,22 +108,24 @@
               gns-shell = mkShell {
                 devshell.name = "garuda-nix-subsystem";
                 commands = [
-                  {
-                    name = "gns-install";
-                    command = "${self.devShells.${system}.gns-install}";
-                    help = "Install the Garuda Nix Subsystem";
-                  }
-                  {
-                    name = "gns-update";
-                    command = "${self.devShells.${system}.gns-update}";
-                    help = "Update the Garuda Nix Subsystem";
-                  }
                   { package = "commitizen"; }
                   { package = "manix"; }
                   { package = "mdbook"; }
                   { package = "nix-melt"; }
                   { package = "pre-commit"; }
                   { package = "yamlfix"; }
+                  {
+                    name = "gns-install";
+                    category = "garuda tools";
+                    command = "${self.devShells.${system}.gns-install}";
+                    help = "Install the Garuda Nix Subsystem";
+                  }
+                  {
+                    name = "gns-update";
+                    category = "garuda tools";
+                    command = "${self.devShells.${system}.gns-update}";
+                    help = "Update the Garuda Nix Subsystem";
+                  }
                 ];
                 devshell.startup = {
                   preCommitHooks.text = self.checks.${system}.pre-commit-check.shellHook;
