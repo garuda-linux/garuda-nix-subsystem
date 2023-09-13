@@ -9,7 +9,9 @@ The Garuda Nix Subsystem is a Nix flake which allows easy dual boot with Garuda 
 
 ## Quick links
 
-- Coming soon™️
+- [Using as subsystem to Garuda](./subsystem/quick-start.md)
+- [Using as module for NixOS](./nixos-module/quick-start.md)
+- ... coming soon™️
 
 ## Devshell and how to enter it
 
