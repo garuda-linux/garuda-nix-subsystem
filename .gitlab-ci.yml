@@ -1,5 +1,12 @@
 ---
 stages: [update, test, tag]
+workflow:
+  rules:
+    - changes:
+        - "*.md"
+        - "docs/**"
+      when: never
+    - when: always
 variables:
   GIT_AUTHOR_EMAIL: ci@garudalinux.org
   GIT_AUTHOR_NAME: Gitlab CI
