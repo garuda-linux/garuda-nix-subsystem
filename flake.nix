@@ -69,6 +69,7 @@
         }: {
           checks.pre-commit-check = pre-commit-hooks.lib.${system}.run {
             hooks = {
+              actionlint.enable = true;
               commitizen.enable = true;
               deadnix.enable = true;
               nil.enable = true;
