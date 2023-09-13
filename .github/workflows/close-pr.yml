@@ -1,15 +1,15 @@
 ---
-name: PR Closer
+name: PR closer
 on:
   pull_request:
     types: [opened, reopened]
 jobs:
   close-pull-request:
     runs-on: ubuntu-latest
-    name: Close Pull Request
+    name: Close pull request 🚫
     steps:
       - uses: codelytv/no-pull-requests@v1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          message: This is a read only mirror of the Garuda Nix Subsystem.
+          message: This is a read only mirror of the Garuda Nix Subsystem. Thank you! 😊
             Please submit pull requests at https://gitlab.com/garuda-linux/garuda-nix-subsystem.

@@ -1,0 +1,27 @@
+---
+name: Cloudflare pages
+on:
+  push:
+    branches: [main]
+    paths: [docs/**, README.md]
+permissions:
+  contents: write
+jobs:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+      - name: Setup mdBook 📜
+        uses: peaceiris/actions-mdbook@v1
+        with:
+          mdbook-version: latest
+      - name: Install and build 🔧
+        run: cd docs && mdbook build
+      - name: Deploy 🚀
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: cf-pages
+          publish_dir: docs/book

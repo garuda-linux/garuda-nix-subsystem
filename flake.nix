@@ -55,7 +55,11 @@
     let
       inputs = inp;
 
-      internal = import ./internal { inputs = inputs // { inherit nixpkgs; }; inherit lib; };
+      internal = import ./internal {
+        inherit lib;
+        inputs = inputs // { inherit nixpkgs; };
+      };
+
       lib = import ./lib { inherit inputs nixpkgs internal; };
 
       perSystem =
@@ -65,7 +69,6 @@
         }: {
           checks.pre-commit-check = pre-commit-hooks.lib.${system}.run {
             hooks = {
-              actionlint.enable = true;
               commitizen.enable = true;
               deadnix.enable = true;
               nil.enable = true;
@@ -139,6 +142,7 @@
           formatter = pkgs.nixpkgs-fmt;
 
           packages.docs = pkgs.runCommand "gns-docs"
+            # makes the documentation available at ./result/ by running nix build .#docs
             { nativeBuildInputs = with pkgs; [ bash mdbook ]; }
             ''
               bash -c "errors=$(mdbook build -d $out ${./.}/docs |& grep ERROR)

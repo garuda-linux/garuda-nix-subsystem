@@ -1,5 +1,5 @@
 ---
-stages: [update, tag]
+stages: [update, test, tag]
 variables:
   GIT_AUTHOR_EMAIL: ci@garudalinux.org
   GIT_AUTHOR_NAME: Gitlab CI
@@ -10,20 +10,25 @@ update:
   image: nixpkgs/nix-flakes:latest
   script:
     - nix flake update
-    - nix flake check
     - git config --global user.name "$GIT_AUTHOR_NAME"
     - git config --global user.email "$GIT_AUTHOR_EMAIL"
     - git add flake.lock
-    - "git commit -m 'chore(flake.lock): Bump flakes'"
+    - "git commit -m 'chore(flake.lock): bump flakes'"
     - git push "$REPO_URL" HEAD:main
   only:
     variables: [$UPDATE == "true"]
+    refs: [main]
+test:
+  stage: test
+  image: nixpkgs/nix-flakes:latest
+  script:
+    - nix flake check
+  only:
     refs: [main]
 tag:
   stage: tag
   image: nixpkgs/nix-flakes:latest
   script:
-    - nix flake check
     - nix build .#internal.vm --dry-run
     - git tag -f v1
     - git push --atomic -f $REPO_URL v1 HEAD:refs/heads/stable
