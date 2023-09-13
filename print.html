@@ -189,35 +189,7 @@ sh ./nix-install.sh install --diagnostic-endpoint=&quot;&quot;
 <pre><code class="language-sh">nix develop # The intended way to use the devshell
 nix-shell # Legacy, non-flakes way if flakes are not available for some reason
 </code></pre>
-<p>This also sets up pre-commit-hooks and shows the currently implemented tasks, which can be executed by running the command.</p>
-<pre><code class="language-sh">[infra-nix]
-
-ansible-core    - Radically simple IT automation
-apply           - Applies the infra-nix configuration pushed to the servers
-buildiso-local  - Spawns a local buildiso shell to build to ./buildiso (needs Docker)
-buildiso-remote - Spawn a buildiso shell on the iso-runner builder
-clean           - Runs the garbage collection on the servers
-deploy          - Deploys the local NixOS configuration to the servers
-update          - Performs a full system update on the servers by bumping flake lock
-update-forum    - Updates the Discourse container of our forum
-update-toolbox  - Updates the locked Chaotic toolbox commit and deploys the changes
-update-website  - Updates the locked website commit and deploys the changes
-</code></pre>
-<h2 id="general-structure"><a class="header" href="#general-structure">General structure</a></h2>
-<p>A general overview of the folder structure can be found below:</p>
-<pre><code class="language-sh">├── devshell
-├── docs
-│   ├── src
-│   └── theme
-├── internal
-│   ├── modules
-│   │   ├── base
-│   │   │   ├── home-manager
-│   │   │   └── subsystem
-│   │   └── dr460nized
-│   └── testing
-└── lib
-</code></pre>
+<p>This also sets up pre-commit-hooks and shows the currently implemented tasks, which can be executed by running the command shown in the welcome message.</p>
 
                     </main>
 
