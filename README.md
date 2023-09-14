@@ -5,7 +5,7 @@
 
 ## General information
 
-The Garuda Nix Subsystem is a Nix flake which allows easy dual boot with Garuda Linux. But it also provides a framework for pure NixOS, which provides opiniated defaults and a system which can be fully set up by toggling a few module options.
+The Garuda Nix Subsystem is a Nix flake, which allows easy dual boot with Garuda Linux. But it also provides a framework for pure NixOS, which provides opinionated defaults and a system which can be fully set up by toggling a few module options.
 
 ## Quick links
 
