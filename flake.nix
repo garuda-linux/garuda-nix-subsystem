@@ -1,10 +1,14 @@
 {
   description = "Garuda Linux Nix subsystem flake ❄️";
 
-  nixConfig.extra-substituters = [ "https://nyx.chaotic.cx" ];
+  nixConfig.extra-substituters = [
+    "https://cache.garnix.io"
+    "https://nyx.chaotic.cx"
+  ];
   nixConfig.extra-trusted-public-keys = [
-    "nyx.chaotic.cx-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
+    "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
     "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
+    "nyx.chaotic.cx-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
   ];
 
   inputs = {
@@ -94,12 +98,13 @@
                 inherit system;
               };
               makeDevshell = import "${inp.devshell}/modules" pkgs;
-              mkShell = config: (makeDevshell {
-                configuration = {
-                  inherit config;
-                  imports = [ ];
-                };
-              }).shell;
+              mkShell = config:
+                (makeDevshell {
+                  configuration = {
+                    inherit config;
+                    imports = [ ];
+                  };
+                }).shell;
             in
             rec {
               default = gns-shell;
@@ -142,15 +147,16 @@
 
           formatter = pkgs.nixpkgs-fmt;
 
-          packages.docs = pkgs.runCommand "gns-docs"
-            # makes the documentation available at ./result/ by running nix build .#docs
-            { nativeBuildInputs = with pkgs; [ bash mdbook ]; }
-            ''
-              bash -c "errors=$(mdbook build -d $out ${./.}/docs |& grep ERROR)
-              if [ \"$errors\" ]; then
-                exit 1
-              fi"
-            '';
+          packages.docs =
+            pkgs.runCommand "gns-docs"
+              # makes the documentation available at ./result/ by running nix build .#docs
+              { nativeBuildInputs = with pkgs; [ bash mdbook ]; }
+              ''
+                bash -c "errors=$(mdbook build -d $out ${./.}/docs |& grep ERROR)
+                if [ \"$errors\" ]; then
+                  exit 1
+                fi"
+              '';
         };
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
