@@ -9,15 +9,19 @@ in
     garuda.dr460nized = {
       enable = lib.mkOption {
         default = false;
+        example = true;
         description = ''
           If enabled, Garuda Linux's dr460nized config will be used.
         '';
+        type = lib.types.bool;
       };
       themePackage = lib.mkOption {
         default = pkgs.dr460nized-kde-theme;
         description = ''
           The theme package to use.
         '';
+        type = lib.types.package;
+        example = pkgs.libsForQt5.breeze-qt5;
       };
     };
   };
@@ -69,8 +73,7 @@ in
       fontconfig = {
         cache32Bit = gDefault true;
         defaultFonts = {
-          monospace =
-            gDefault [ "JetBrains Mono Nerd Font" "Noto Fonts Emoji" ];
+          monospace = gDefault [ "JetBrains Mono Nerd Font" "Noto Fonts Emoji" ];
           sansSerif = gDefault [ "Fira" "Noto Fonts Emoji" ];
           serif = gDefault [ "Fira" "Noto Fonts Emoji" ];
           emoji = gDefault [ "Noto Fonts Emoji" ];
@@ -84,7 +87,7 @@ in
       };
     };
 
-    # Home-manager configurations
+    # Dr460nized-specific home-manager configuration
     garuda.home-manager.modules = gExcludableArray config "home-manager-modules" [ ./dotfiles.nix ];
 
     # These need to be enabled for complete functionality
@@ -100,12 +103,13 @@ in
     # Enable Kvantum for theming & Pipewire
     environment.variables = {
       ALSOFT_DRIVERS = gDefault "pipewire";
-      GTK_THEME = "Sweet-Dark";
+      GTK_THEME = gDefault "Sweet-Dark";
       MOZ_USE_XINPUT2 = gDefault "1";
       QT_STYLE_OVERRIDE = gDefault "kvantum";
       SDL_AUDIODRIVER = gDefault "pipewire";
     };
 
+    # Use the Dr460nized theme as default /etc/skel folder
     garuda.create-home.skel = gDefault "${gGenerateSkel pkgs "${pkgs.dr460nized-kde-theme}/skel" "dr460nized"}";
   };
 }

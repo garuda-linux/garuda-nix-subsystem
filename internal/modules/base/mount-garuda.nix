@@ -13,6 +13,7 @@ in
       {
         default = false;
         type = types.bool;
+        example = true;
         description = mdDoc ''
           Enables mounting of the Garuda Linux root partition.
         '';
@@ -21,6 +22,7 @@ in
       {
         default = "/var/lib/machines/garuda";
         type = types.str;
+        example = "/mnt/ssd/garuda";
         description = mdDoc ''
           Specifies where the Garuda Linux root partition should be mounted
         '';
@@ -29,6 +31,7 @@ in
       {
         default = null;
         type = types.str;
+        example = "f498b189-79c7-40e4-859e-fadc1496ee8e";
         description = mdDoc ''
           Provide the UUID of the Garuda root partition
         '';
@@ -37,6 +40,7 @@ in
       {
         default = null;
         type = types.str;
+        example = "D9CB-2B11";
         description = mdDoc ''
           Provide the UUID of the Garuda boot partition
         '';
@@ -45,6 +49,7 @@ in
       {
         default = null;
         type = types.str;
+        example = "garuda";
         description = mdDoc ''
           The default user of the Garuda / NixOS subsystem
         '';

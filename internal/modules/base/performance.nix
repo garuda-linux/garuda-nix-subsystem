@@ -15,6 +15,7 @@ in
       {
         default = false;
         type = types.bool;
+        example = true;
         description = mdDoc ''
           If set to true, this module will enable a few performance tweaks.
         '';
@@ -23,6 +24,7 @@ in
       {
         default = false;
         type = types.bool;
+        example = true;
         description = mdDoc ''
           If set to true, the subsystem will use the linux_cachyos kernel.
         '';
@@ -51,12 +53,12 @@ in
     # Fedora defaults for systemd-oomd
     systemd.oomd = {
       enable = lib.mkForce true; # This is actually the default, anyways...
-      enableSystemSlice = true;
-      enableUserServices = true;
+      enableSystemSlice = gDefault true;
+      enableUserServices = gDefault true;
     };
 
     # BPF-based auto-tuning of Linux system parameters
-    services.bpftune.enable = true;
+    services.bpftune.enable = gDefault true;
 
     ## A few other kernel tweaks
     boot.kernel.sysctl = mkIf cfg.enable {

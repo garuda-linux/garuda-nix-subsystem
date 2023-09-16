@@ -24,5 +24,5 @@
   services.xserver.layout = "de";
   time.timeZone = "Europe/Berlin";
 
-  system.stateVersion = "23.05";
+  system.stateVersion = "23.11";
 }

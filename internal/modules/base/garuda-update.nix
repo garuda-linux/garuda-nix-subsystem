@@ -17,6 +17,7 @@ let
 in
 {
   config = {
+    # This is the default updater for GNS (irrelevant for non-GNS users)
     environment.systemPackages = [ garuda-update ];
   };
 }

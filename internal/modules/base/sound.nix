@@ -10,6 +10,7 @@ with garuda-lib;
       mkOption {
         default = true;
         type = types.bool;
+        example = false;
         description = ''
           If set to true, a default configuration for Pipewire will be used.
         '';
@@ -30,6 +31,6 @@ with garuda-lib;
     security.rtkit.enable = mkIf cfg.pipewire.enable (gDefault true);
 
     # Disable PulseAudio
-    hardware.pulseaudio.enable = mkIf cfg.pipewire.enable false;
+    hardware.pulseaudio.enable = mkIf cfg.pipewire.enable (gDefault false);
   };
 }

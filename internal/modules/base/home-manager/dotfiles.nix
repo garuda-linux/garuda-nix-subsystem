@@ -1,4 +1,4 @@
-_: {
+{ pkgs, ... }: {
   # Git shall be used a lot on flaky systems
   programs.git = {
     diff-so-fancy.enable = true;
@@ -66,6 +66,16 @@ _: {
     # Fish shell
     fish.enable = true;
 
+    # Micro, the editor
+    micro = {
+      enable = true;
+      settings = {
+        "autosu" = true;
+        "colorscheme" = "geany";
+        "mkparents" = true;
+      };
+    };
+
     # The starship prompt
     starship = {
       enable = true;
@@ -102,13 +112,35 @@ _: {
         };
       };
     };
+
+    # Easy terminal tabbing
+    tmux = {
+      baseIndex = 1;
+      clock24 = true;
+      enable = true;
+      extraConfig = ''
+        set -g default-terminal "screen-256color"
+        set -g status-bg black
+      '';
+      historyLimit = 10000;
+      newSession = true;
+      sensibleOnTop = false;
+      shell = "${pkgs.fish}/bin/fish";
+    };
   };
 
-  # Always use configured caches
-  nix.extraOptions = ''
-    extra-substituters = https://chaotic-nyx.cachix.org
-    extra-trusted-public-keys = chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=
-  '';
+  nix.settings = {
+    # Use available binary caches, this is not Gentoo
+    # this also allows us to use remote builders to reduce build times and batter usage
+    builders-use-substitutes = true;
+
+    # We are using flakes, so enable the experimental features
+    experimental-features = [ "nix-command" "flakes" ];
+
+    # A few extra binary caches and their public keys
+    substituters = [ "https://chaotic-nyx.cachix.org" ];
+    trusted-public-keys = [ "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=" ];
+  };
 
   # Enable dircolors
   programs.dircolors.enable = true;

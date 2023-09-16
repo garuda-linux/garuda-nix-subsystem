@@ -29,6 +29,12 @@ with garuda-lib;
     settings = {
       # Allow using flakes & automatically optimize the nix store
       auto-optimise-store = gDefault true;
+
+      # Use available binary caches, this is not Gentoo
+      # this also allows us to use remote builders to reduce build times and batter usage
+      builders-use-substitutes = true;
+
+      # We are using flakes, so enable the experimental features
       experimental-features = [ "nix-command" "flakes" ];
 
       # Users allowed to use Nix

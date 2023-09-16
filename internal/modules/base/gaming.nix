@@ -9,12 +9,23 @@ let
 in
 with garuda-lib;
 {
-  options.garuda.gaming.enable = lib.mkOption {
-    default = false;
-    type = lib.types.bool;
-    description = ''
-      Installs and enables some gaming packages and services.
-    '';
+  options.garuda.gaming = {
+    enable = lib.mkOption {
+      default = false;
+      description = ''
+        Installs and enables some gaming packages and services.
+      '';
+      example = true;
+      type = lib.types.bool;
+    };
+    leagueOfLegendsFix = lib.mkOption {
+      default = false;
+      description = ''
+        Allows playing League of Legends by disabling vsyscall32.
+      '';
+      example = true;
+      type = lib.types.bool;
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -53,8 +64,6 @@ with garuda-lib;
     };
 
     # Fix League of Legends
-    boot.kernel.sysctl = {
-      "abi.vsyscall32" = 0;
-    };
+    boot.kernel.sysctl."abi.vsyscall32" = lib.mkIf cfg.leagueOfLegendsFix 0;
   };
 }

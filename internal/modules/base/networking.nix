@@ -10,6 +10,7 @@ with garuda-lib;
       mkOption {
         default = true;
         type = types.bool;
+        example = true;
         description = ''
           If set to true, reasonable defaults for networking will be set.
         '';
