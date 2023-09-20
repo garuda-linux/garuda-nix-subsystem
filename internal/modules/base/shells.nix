@@ -2,8 +2,7 @@
 , pkgs
 , ...
 }:
-with garuda-lib;
-{
+with garuda-lib; {
   # Use micro as editor
   environment.sessionVariables = {
     EDITOR = gDefault "${pkgs.micro}/bin/micro";
@@ -13,7 +12,6 @@ with garuda-lib;
   # Programs & global config
   programs = {
     bash.shellAliases = {
-      # General useful things & theming
       ".." = "cd ..";
       "..." = "cd ../../";
       "...." = "cd ../../../";
@@ -45,6 +43,14 @@ with garuda-lib;
       "vdir" = "vdir --color=auto";
       "wget" = "wget -c";
     };
+
+    # Direnv for per-directory environment variables
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
+
+    # The fish shell, default for terminals
     fish = {
       enable = gDefault true;
       vendor = {
@@ -93,11 +99,61 @@ with garuda-lib;
         "vdir" = "vdir --color=auto";
         "wget" = "wget -c";
       };
-      shellInit = ''
+      shellInit = gDefault ''
         set fish_greeting
         ${pkgs.fastfetch}/bin/fastfetch -L nixos --load-config paleofetch
       '';
     };
+
+    # The starship prompt
+    starship = {
+      enable = gDefault true;
+      settings = {
+        cmd_duration = {
+          disabled = gDefault false;
+          format = gDefault "took [$duration]($style)";
+          min_time = gDefault 1;
+        };
+        directory = {
+          style = gDefault "purple";
+          truncate_to_repo = gDefault true;
+          truncation_length = gDefault 0;
+          truncation_symbol = gDefault "repo: ";
+        };
+        hostname = {
+          disabled = gDefault false;
+          format = gDefault "[$hostname]($style) in ";
+          ssh_only = gDefault false;
+          style = gDefault "bold dimmed red";
+          trim_at = gDefault "-";
+        };
+        scan_timeout = gDefault 10;
+        status = {
+          disabled = gDefault false;
+          map_symbol = gDefault true;
+        };
+        sudo.disabled = gDefault false;
+        username = {
+          format = gDefault " [$user]($style)@";
+          show_always = gDefault true;
+          style_root = gDefault "bold red";
+          style_user = gDefault "bold red";
+        };
+      };
+    };
+
+    # Easy terminal tabbing
+    tmux = {
+      baseIndex = gDefault 1;
+      clock24 = gDefault true;
+      enable = gDefault true;
+      extraConfig = gDefault ''
+        set -g default-shell ${pkgs.fish}/bin/fish
+        set -g default-terminal "screen-256color"
+        set -g status-bg black
+      '';
+      historyLimit = gDefault 10000;
+      newSession = gDefault true;
+    };
   };
 }
-

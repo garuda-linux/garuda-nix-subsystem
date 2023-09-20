@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+_: {
   # Git shall be used a lot on flaky systems
   programs.git = {
     diff-so-fancy.enable = true;
@@ -11,6 +11,7 @@
   };
 
   # Suggested GPG settings
+  # https://github.com/drduh/YubiKey-Guide/tree/master#harden-configuration
   programs.gpg = {
     enable = true;
     settings = {
@@ -38,9 +39,6 @@
 
   # Invididual terminal app configs
   programs = {
-    # Common Bash aliases & tmux autostart
-    bash.enable = true;
-
     # The better cat replacement
     bat = {
       enable = true;
@@ -57,15 +55,6 @@
       };
     };
 
-    # Direnv for per-directory environment variables
-    direnv = {
-      enable = true;
-      nix-direnv.enable = true;
-    };
-
-    # Fish shell
-    fish.enable = true;
-
     # Micro, the editor
     micro = {
       enable = true;
@@ -74,58 +63,6 @@
         "colorscheme" = "geany";
         "mkparents" = true;
       };
-    };
-
-    # The starship prompt
-    starship = {
-      enable = true;
-      settings = {
-        username = {
-          format = " [$user]($style)@";
-          show_always = true;
-          style_root = "bold red";
-          style_user = "bold red";
-        };
-        hostname = {
-          disabled = false;
-          format = "[$hostname]($style) in ";
-          ssh_only = false;
-          style = "bold dimmed red";
-          trim_at = "-";
-        };
-        scan_timeout = 10;
-        directory = {
-          style = "purple";
-          truncate_to_repo = true;
-          truncation_length = 0;
-          truncation_symbol = "repo: ";
-        };
-        status = {
-          disabled = false;
-          map_symbol = true;
-        };
-        sudo = { disabled = false; };
-        cmd_duration = {
-          disabled = false;
-          format = "took [$duration]($style)";
-          min_time = 1;
-        };
-      };
-    };
-
-    # Easy terminal tabbing
-    tmux = {
-      baseIndex = 1;
-      clock24 = true;
-      enable = true;
-      extraConfig = ''
-        set -g default-terminal "screen-256color"
-        set -g status-bg black
-      '';
-      historyLimit = 10000;
-      newSession = true;
-      sensibleOnTop = false;
-      shell = "${pkgs.fish}/bin/fish";
     };
   };
 
@@ -147,7 +84,4 @@
 
   # Show home-manager news
   news.display = "notify";
-
-  # Disable manpages
-  manual.manpages.enable = false;
 }
