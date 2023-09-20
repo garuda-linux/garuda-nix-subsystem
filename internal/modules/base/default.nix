@@ -1,5 +1,7 @@
-{ inputs, ... }: { flake-inputs, ... }:
-{
+{ inputs, ... }: { flake-inputs
+                 , config
+                 , ...
+                 }: {
   imports = [
     ./boot.nix
     ./create-home.nix
@@ -19,5 +21,10 @@
     ./sound.nix
     ./subsystem/subsystem.nix
   ];
+
+  # Pass inputs via flake-inputs to the modules
   _module.args.flake-inputs = inputs;
+
+  # Custom label for boot menu entries
+  system.nixos.label = builtins.concatStringsSep "-" [ "garuda-nix-subsystem-" ] + config.system.nixos.version;
 }
