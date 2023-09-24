@@ -1,12 +1,5 @@
 ---
-stages: [update, test, tag]
-workflow:
-  rules:
-    - changes:
-        - "*.md"
-        - "docs/**"
-      when: never
-    - when: always
+stages: [update, tag]
 variables:
   GIT_AUTHOR_EMAIL: ci@garudalinux.org
   GIT_AUTHOR_NAME: Gitlab CI
@@ -25,17 +18,12 @@ update:
   only:
     variables: [$UPDATE == "true"]
     refs: [main]
-test:
-  stage: test
-  image: nixpkgs/nix-flakes:latest
-  script:
-    - nix flake check
-  only:
-    refs: [main]
 tag:
   stage: tag
   image: nixpkgs/nix-flakes:latest
   script:
+    # Test and deploy
+    - nix flake check
     - nix build .#internal.vm --dry-run
     - git tag -f v1
     - git push --atomic -f $REPO_URL v1 HEAD:refs/heads/stable

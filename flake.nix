@@ -28,7 +28,7 @@
     nixpkgs.follows = "chaotic-nyx/nixpkgs";
 
     # Have a local index of nixpkgs for fast launching of apps
-    nix-index-database.url = "github:Mic92/nix-index-database";
+    nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
     # Easy linting of the flake and all kind of other stuff
@@ -36,17 +36,9 @@
     pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
 
-    # NixOS hardware database
-    nixos-hardware.url = "github:NixOS/nixos-hardware";
-
     # Home configuration management
     home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Spicetify
-    spicetify-nix.url = "github:the-argus/spicetify-nix";
-    spicetify-nix.inputs.flake-utils.follows = "flake-utils";
-    spicetify-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
     { devshell

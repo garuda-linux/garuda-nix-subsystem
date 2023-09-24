@@ -10,7 +10,6 @@ let
       inputs.chaotic-nyx.nixosModules.default
       inputs.home-manager.nixosModules.home-manager
       inputs.nix-index-database.nixosModules.nix-index
-      inputs.spicetify-nix.nixosModule
     ] ++ builtins.attrValues modulesPerFile;
   };
 in

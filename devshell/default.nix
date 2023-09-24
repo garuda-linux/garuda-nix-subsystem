@@ -24,8 +24,6 @@ let
     {
       default = overlayFinal.mkShell {
         buildInputs = [
-          garuda-update
-          installer
           nixpkgs.legacyPackages.${system}.pre-commit
         ];
       };

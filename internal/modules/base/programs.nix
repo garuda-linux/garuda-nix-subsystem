@@ -34,7 +34,6 @@ with garuda-lib;
         Defaults pwfeedback
         Defaults insults
       '';
-      package = pkgs.sudo.override { withInsults = true; };
     };
 
     # Run Appimages with appimage-run
