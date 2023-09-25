@@ -75,7 +75,7 @@ in
   gDefaultAttrs = setDefaultAttrs [ ];
 
   # Subsystem version
-  version = 1;
+  version = 2;
 
   # Generate /etc/skel from a path. This ensures that certain directories are always available to mount from with the correct permissions.
   gGenerateSkel = pkgs: skel: name: derivation {

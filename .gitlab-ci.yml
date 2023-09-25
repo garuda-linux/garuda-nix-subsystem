@@ -24,7 +24,7 @@ tag:
   script:
     # Test and deploy
     - nix flake check
-    - nix build .#internal.vm --dry-run
+    - nix build .#internal.ci --dry-run
     - git tag -f v1
     - git push --atomic -f $REPO_URL v1 HEAD:refs/heads/stable
   only:

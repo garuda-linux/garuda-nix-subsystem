@@ -1,49 +1,67 @@
+set -e
+
 function configureGNS {
     config="$(cat "$MNT_DIR/etc/nixos/garuda-managed.json")"
 
+    version="$(jq -r '.version' <<<"$config")"
+    #install_version="$(jq -r '.installVersion' <<<"$config")"
+
+    # Version less than 2
+    if [ "$version" -lt 2 ]; then
+        # If FROM_HOST is true, we delete the v1 key and set version to 2.
+        # Otherwise, we exit out with an error
+        if [ "$FROM_HOST" == "true" ]; then
+            config="$(jq 'del(.v1) | .v2.subsystem=true' <<<"$config")"
+            version=2
+        else
+            echo -e "\033[1;31mError: Garuda Nix Subsystem must be updated from the host system. Run "garuda-nix-subsystem update" ❌\033[0m";
+            exit 1
+        fi
+    fi
+
     if [ "$FROM_HOST" == "true" ]; then
-    config="$(jq 'del(.v1.users) | del(.v1.locale) | del(.v1.keymap) | del(.v1.timezone)' <<<"$config")"
-    # Loop over all users
-    while IFS=: read -r user _ uid _ _ home _; do
-        if [[ $uid -ge 1000 && $home == /home/* ]]; then
-        hashed_password=$(grep "^$user:" /etc/shadow | cut -d: -f2)
-        groups "$user" | grep -qE '\b(sudo|wheel)\b' && is_admin=true || is_admin=false
-        config="$(jq --arg user "$user" --arg uid "$uid" --arg hashed_password "$hashed_password" --arg home "$home" --arg wheel "$is_admin" '.v1.users += [{"name":$user, "uid":$uid|tonumber, "hashed_password":$hashed_password, "home":$home, "wheel":$wheel | test("true")}]' <<<"$config")"
-        fi
-    done </etc/passwd
+        config="$(jq 'del(.v2.host)' <<<"$config")"
+        # Loop over all users
+        while IFS=: read -r user _ uid _ _ home _; do
+            if [[ $uid -ge 1000 && $home == /home/* ]]; then
+            hashed_password=$(grep "^$user:" /etc/shadow | cut -d: -f2)
+            groups "$user" | grep -qE '\b(sudo|wheel)\b' && is_admin=true || is_admin=false
+            config="$(jq --arg user "$user" --arg uid "$uid" --arg hashed_password "$hashed_password" --arg home "$home" --arg wheel "$is_admin" '.v2.host.users += [{"name":$user, "uid":$uid|tonumber, "hashed_password":$hashed_password, "home":$home, "wheel":$wheel | test("true")}]' <<<"$config")"
+            fi
+        done </etc/passwd
 
-    if [ -f /etc/locale.conf ]; then
-        while IFS= read -r line; do
-        key=${line%%=*}
-        value=${line#*=}
-        config="$(jq --arg key "$key" --arg value "$value" '.v1.locale += {($key):$value}' <<<"$config")"
-        done < <(grep -E '^[a-zA-Z_]+=.+$' /etc/locale.conf)
-    fi
-    # keymap
-    if [ -f /etc/vconsole.conf ]; then
-        keymap="$(grep '^KEYMAP=' /etc/vconsole.conf | cut -d= -f2)"
-        if [ -n "$keymap" ]; then
-        config="$(jq --arg keymap "$keymap" '.v1.keymap=$keymap' <<<"$config")"
+        if [ -f /etc/locale.conf ]; then
+            while IFS= read -r line; do
+            key=${line%%=*}
+            value=${line#*=}
+            config="$(jq --arg key "$key" --arg value "$value" '.v2.host.locale += {($key):$value}' <<<"$config")"
+            done < <(grep -E '^[a-zA-Z_]+=.+$' /etc/locale.conf)
         fi
-    fi
-    # timezone
-    if [ -f /etc/timezone ]; then
-        timezone="$(cat /etc/timezone)"
-        if [ -n "$timezone" ]; then
-        config="$(jq --arg timezone "$timezone" '.v1.timezone=$timezone' <<<"$config")"
+        # keymap
+        if [ -f /etc/vconsole.conf ]; then
+            keymap="$(grep '^KEYMAP=' /etc/vconsole.conf | cut -d= -f2)"
+            if [ -n "$keymap" ]; then
+            config="$(jq --arg keymap "$keymap" '.v2.host.keymap=$keymap' <<<"$config")"
+            fi
         fi
-    fi
+        # timezone
+        if [ -f /etc/timezone ]; then
+            timezone="$(cat /etc/timezone)"
+            if [ -n "$timezone" ]; then
+            config="$(jq --arg timezone "$timezone" '.v2.host.timezone=$timezone' <<<"$config")"
+            fi
+        fi
 
-    packages="$(pacman -Qq garuda-nvidia-config garuda-nvidia-prime-config 2> /dev/null | xargs || true)"
-    if [[ "$packages" =~ (^| )garuda-nvidia-prime-config($| ) ]]; then
-        config="$(jq '.v1.hardware.nvidia=prime' <<<"$config")"
-    elif [[ "$packages" =~ (^| )garuda-nvidia-config($| ) ]]; then
-        config="$(jq '.v1.hardware.nvidia=nvidia' <<<"$config")"
-    fi
+        packages="$(pacman -Qq garuda-nvidia-config garuda-nvidia-prime-config 2> /dev/null | xargs || true)"
+        if [[ "$packages" =~ (^| )garuda-nvidia-prime-config($| ) ]]; then
+            config="$(jq '.v2.host.hardware.nvidia=prime' <<<"$config")"
+        elif [[ "$packages" =~ (^| )garuda-nvidia-config($| ) ]]; then
+            config="$(jq '.v2.host.hardware.nvidia=nvidia' <<<"$config")"
+        fi
     fi
 
     VIRT="$(systemd-detect-virt || echo "none")"
-    jq --arg UUID "$BTRFS_UUID" --arg VIRT "$VIRT" --arg version "[[GNS_CURRENT_VERSION]]" '.version=($version|tonumber) | .v1.uuid=$UUID | .v1.hardware.virt=$VIRT' <<<"$config" >"$MNT_DIR/etc/nixos/garuda-managed.json"
+    jq --arg UUID "$BTRFS_UUID" --arg VIRT "$VIRT" --arg version "[[GNS_CURRENT_VERSION]]" '.version=($version|tonumber) | del(.v2.auto) | .v2.auto.uuid=$UUID | .v2.auto.hardware.virt=$VIRT' <<<"$config" >"$MNT_DIR/etc/nixos/garuda-managed.json"
 }
 
 if [[ $EUID -ne 0 ]]; then

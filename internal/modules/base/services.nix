@@ -6,8 +6,6 @@
 }:
 let
   cfg = config.garuda;
-  cfgSubsystem = config.garuda.subsystem;
-  subsystem = builtins.fromJSON (builtins.readFile cfgSubsystem.config);
 in
 with garuda-lib;
 {
@@ -26,6 +24,12 @@ with garuda-lib;
         Enables the beesd service to deduplicate files in the background.
       '';
     };
+    uuid = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      description = ''
+        The UUID of the BTRFS filesystem to deduplicate.
+      '';
+    };
   };
 
   config = {
@@ -42,11 +46,11 @@ with garuda-lib;
     };
 
     # Filesystem deduplication in the background
-    services.beesd.filesystems = lib.mkIf (cfg.btrfs-maintenance.deduplication && cfg.btrfs-maintenance.enable) {
+    services.beesd.filesystems = lib.mkIf (cfg.btrfs-maintenance.deduplication && cfg.btrfs-maintenance.enable && cfg.btrfs-maintenance.uuid != null) {
       root = {
         extraOptions = [ "--loadavg-target" "1.0" ];
         hashTableSizeMB = 2048;
-        spec = "UUID=${subsystem.v1.uuid}";
+        spec = "UUID=${cfg.btrfs-maintenance.uuid}";
         verbosity = "crit";
       };
     };

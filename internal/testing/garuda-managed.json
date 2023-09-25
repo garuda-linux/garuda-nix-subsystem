@@ -1,0 +1,39 @@
+{
+  "installVersion": 1,
+  "hostname": "CI",
+  "version": 2,
+  "v2": {
+    "subsystem": true,
+    "host": {
+      "users": [
+        {
+          "name": "CI",
+          "uid": 1000,
+          "hashed_password": "$6$TDHyAT/yYQk2MYQY$wzU/1Idm3YPeSODmPXvJRluw1ID8o9wdAZgpLUyezbuq1Eu7XJk4l138fC8ZIGiocS2Cva6.e7r5XFZtWoKYo.",
+          "home": "/home/CI",
+          "wheel": true
+        }
+      ],
+      "locale": {
+        "LANG": "en_US.UTF-8",
+        "LC_ADDRESS": "de_DE.UTF-8",
+        "LC_IDENTIFICATION": "de_DE.UTF-8",
+        "LC_MEASUREMENT": "de_DE.UTF-8",
+        "LC_MONETARY": "de_DE.UTF-8",
+        "LC_NAME": "de_DE.UTF-8",
+        "LC_NUMERIC": "de_DE.UTF-8",
+        "LC_PAPER": "de_DE.UTF-8",
+        "LC_TELEPHONE": "de_DE.UTF-8",
+        "LC_TIME": "de_DE.UTF-8"
+      },
+      "keymap": "de",
+      "timezone": "Europe/Berlin"
+    },
+    "auto": {
+      "uuid": "62645dc7-287d-4bc9-aaae-9354fef4e365",
+      "hardware": {
+        "virt": "kvm"
+      }
+    }
+  }
+}

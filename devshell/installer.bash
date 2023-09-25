@@ -33,7 +33,7 @@ with lib;
     ];
     # Do not remove these subsystem settings
     garuda.subsystem.enable = true;
-    garuda.subsystem.config = ./garuda-managed.json;
+    garuda.managed.config = ./garuda-managed.json;
 
     garuda.dr460nized.enable = true;
 

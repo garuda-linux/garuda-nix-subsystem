@@ -19,7 +19,7 @@
     ./services.nix
     ./shells.nix
     ./sound.nix
-    ./subsystem/subsystem.nix
+    ./managed
   ];
 
   # Pass inputs via flake-inputs to the modules
