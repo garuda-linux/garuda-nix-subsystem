@@ -1,9 +1,8 @@
-{ config, lib, garuda-lib, ... }:
+{ config, lib, garuda-lib, settings, ... }:
 with lib;
 with garuda-lib;
 let
   cfg = config.garuda.subsystem;
-  subsystem = builtins.fromJSON (builtins.readFile cfg.config);
 in
 {
   imports = [
@@ -15,9 +14,6 @@ in
     enable = mkOption {
       type = types.bool;
       default = false;
-    };
-    config = mkOption {
-      type = types.path;
     };
     useGrub = mkOption {
       type = types.bool;
@@ -35,7 +31,6 @@ in
         device = "nodev";
       };
     };
-    networking.hostName = gDefault subsystem.hostname;
     garuda.subsystem.imported-users.users = builtins.listToAttrs (builtins.map
       (x: {
         inherit (x) name;
@@ -46,17 +41,10 @@ in
           inherit (x) wheel;
         };
       })
-      subsystem.v1.users);
-    garuda.subsystem.imported-users.shared-home.uuid = subsystem.v1.uuid;
-    time.timeZone = mkIf (subsystem.v1 ? timezone) (gDefault subsystem.v1.timezone);
-    console.keyMap = mkIf (subsystem.v1 ? keymap) (gDefault subsystem.v1.keymap);
-    services.xserver.layout = mkIf (subsystem.v1 ? keymap) (gDefault subsystem.v1.keymap);
-    i18n = {
-      defaultLocale = mkIf (subsystem.v1 ? locale && subsystem.v1.locale ? LANG) (gDefault subsystem.v1.locale.LANG);
-      extraLocaleSettings = mkIf (subsystem.v1 ? locale) (lib.mapAttrs (_name: gDefault) subsystem.v1.locale);
-    };
+      settings.users);
+    garuda.subsystem.imported-users.shared-home.uuid = settings.uuid;
     systemd.mounts = [{
-      what = "UUID=${subsystem.v1.uuid}";
+      what = "UUID=${settings.uuid}";
       options = "subvol=@,compress=zstd,noatime,noauto,nofail";
       where = "/run/garuda/subsystem/root";
       wantedBy = lib.mkForce [ ];
@@ -67,8 +55,5 @@ in
       before = [ "NetworkManager.service" ];
       wantedBy = lib.mkForce [ "NetworkManager.service" ];
     };
-
-    virtualisation.vmware.guest.enable = lib.mkIf (subsystem.v1 ? hardware) (gDefault (subsystem.v1.hardware.virt == "vmware"));
-    virtualisation.virtualbox.guest.enable = lib.mkIf (subsystem.v1 ? hardware) (gDefault (subsystem.v1.hardware.virt == "oracle"));
   };
 }

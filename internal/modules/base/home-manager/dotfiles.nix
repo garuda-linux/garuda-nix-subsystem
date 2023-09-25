@@ -75,8 +75,8 @@ _: {
     experimental-features = [ "nix-command" "flakes" ];
 
     # A few extra binary caches and their public keys
-    substituters = [ "https://chaotic-nyx.cachix.org" ];
-    trusted-public-keys = [ "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=" ];
+    extra-substituters = [ "https://chaotic-nyx.cachix.org" ];
+    extra-trusted-public-keys = [ "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=" ];
   };
 
   # Enable dircolors
