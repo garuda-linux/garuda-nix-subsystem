@@ -1,4 +1,4 @@
-{ config, lib, garuda-lib, ... }:
+{ config, lib, garuda-lib, pkgs, ... }:
 with lib;
 with garuda-lib;
 let
@@ -23,7 +23,7 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.config != null) {
+  config = mkIf (cfg.config != null) {
     networking.hostName = gDefault managed.hostname;
     virtualisation.vmware.guest.enable = lib.mkIf (settings ? hardware) (gDefault (settings.hardware.virt == "vmware"));
     virtualisation.virtualbox.guest.enable = lib.mkIf (settings ? hardware) (gDefault (settings.hardware.virt == "oracle"));
@@ -34,5 +34,9 @@ in
       defaultLocale = mkIf (settings ? locale && settings.locale ? LANG) (gDefault settings.locale.LANG);
       extraLocaleSettings = mkIf (settings ? locale) (lib.mapAttrs (_name: gDefault) settings.locale);
     };
+
+    environment.systemPackages = mkIf (settings ? extrapackages) (
+      lists.remove null (map (pkg: pkgs."${pkg}" or (warn "${builtins.toString cfg.config}: Package "${pkg}" does not exist" null)) settings.extrapackages)
+    );
   };
 }
