@@ -36,7 +36,7 @@ in
     };
 
     environment.systemPackages = mkIf (settings ? extrapackages) (
-      lists.remove null (map (pkg: pkgs."${pkg}" or (warn "${builtins.toString cfg.config}: Package "${pkg}" does not exist" null)) settings.extrapackages)
+      lists.remove null (map (pkg: pkgs."${pkg}" or (warn "${builtins.toString cfg.config}: Package \"${pkg}\" does not exist" null)) settings.extrapackages)
     );
   };
 }
