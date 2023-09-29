@@ -7,14 +7,16 @@
         "home-manager": [
           "home-manager"
         ],
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "systems": "systems",
+        "yafas": "yafas"
       },
       "locked": {
-        "lastModified": 1695882141,
-        "narHash": "sha256-J8p6FDa5T0qgdPWqkLri2KbZB7pkDBv0AIhZ40rotFo=",
+        "lastModified": 1695926842,
+        "narHash": "sha256-gCaPtzG3Z+I2yau1bZOeZhuqCk0LRXHCODkSh0fPGac=",
         "owner": "chaotic-cx",
         "repo": "nyx",
-        "rev": "61047a42094d8226b66ef86cb6ee941f76efd1ae",
+        "rev": "76f6298ae9df27bbdc387b5e187f398949655517",
         "type": "github"
       },
       "original": {
@@ -101,7 +103,7 @@
     },
     "flake-utils": {
       "inputs": {
-        "systems": "systems"
+        "systems": "systems_2"
       },
       "locked": {
         "lastModified": 1694529238,
@@ -145,11 +147,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1695738267,
-        "narHash": "sha256-LTNAbTQ96xSj17xBfsFrFS9i56U2BMLpD0BduhrsVkU=",
+        "lastModified": 1695940289,
+        "narHash": "sha256-z9DItQvCasu7sexaz1GZ+uOymDRpuEehFwRKToCooJ8=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "0f4e5b4999fd6a42ece5da8a3a2439a50e48e486",
+        "rev": "9d4cdf8cc4da54beb5d2e927af7a259bb4a00645",
         "type": "github"
       },
       "original": {
@@ -269,6 +271,20 @@
     },
     "systems": {
       "locked": {
+        "narHash": "sha256-12tWmuL2zgBgZkdoB6qXZsgJEH9LR3oUgpaQq2RbI80=",
+        "owner": "nix-systems",
+        "repo": "default-linux",
+        "rev": "31732fcf5e8fea42e59c2488ad31a0e651500f68",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default-linux",
+        "type": "github"
+      }
+    },
+    "systems_2": {
+      "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
         "owner": "nix-systems",
@@ -280,6 +296,29 @@
         "owner": "nix-systems",
         "repo": "default",
         "type": "github"
+      }
+    },
+    "yafas": {
+      "inputs": {
+        "flake-schemas": [
+          "chaotic-nyx",
+          "flake-schemas"
+        ],
+        "systems": [
+          "chaotic-nyx",
+          "systems"
+        ]
+      },
+      "locked": {
+        "narHash": "sha256-wNFFnItckgSs8XeYhhv8vlJs2WF09fSQaWgw4xkDqHQ=",
+        "rev": "7772afd6686458ca0ddbc599a52cf5d337367653",
+        "revCount": 4,
+        "type": "tarball",
+        "url": "https://api.flakehub.com/f/pinned/UbiqueLambda/yafas/0.1.4%2Brev-7772afd6686458ca0ddbc599a52cf5d337367653/018add18-ebb4-72c6-93fe-d1d8da361703/source.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://flakehub.com/f/UbiqueLambda/yafas/0.1.0.tar.gz"
       }
     }
   },
