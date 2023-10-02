@@ -15,6 +15,7 @@
     ./nix.nix
     ./nyx.nix
     ./performance.nix
+    ./pkgs-overrides.nix
     ./programs.nix
     ./services.nix
     ./shells.nix
