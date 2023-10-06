@@ -12,11 +12,11 @@
         "yafas": "yafas"
       },
       "locked": {
-        "lastModified": 1696468891,
-        "narHash": "sha256-TcNk8gk6Q3hW6vYLRtGrVUFbNoeuD3VNYxtLWj4/FH8=",
+        "lastModified": 1696552306,
+        "narHash": "sha256-IjlQ+JeW5e/1rybhoLNNIcO/sHMk3sF/lFW9V7fcui8=",
         "owner": "chaotic-cx",
         "repo": "nyx",
-        "rev": "175f0ce6aa080e4cf8e1c535a3f4760ecb1640e3",
+        "rev": "e26cfcdc46332e0f03ff22de7142e32d2a9cf6dc",
         "type": "github"
       },
       "original": {
@@ -241,11 +241,11 @@
         "nixpkgs-stable": "nixpkgs-stable"
       },
       "locked": {
-        "lastModified": 1696158581,
-        "narHash": "sha256-h0vY4E7Lx95lpYQbG2w4QH4yG5wCYOvPJzK93wVQbT0=",
+        "lastModified": 1696516544,
+        "narHash": "sha256-8rKE8Je6twTNFRTGF63P9mE3lZIq917RAicdc4XJO80=",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "033453f85064ccac434dfd957f95d8457901ecd6",
+        "rev": "66c352d33e0907239e4a69416334f64af2c685cc",
         "type": "github"
       },
       "original": {
