@@ -75,7 +75,7 @@ with garuda-lib;
       enable = gDefault true;
       localuser = null;
       interval = "hourly";
-      locate = pkgs.plocate;
+      package = pkgs.plocate;
     };
 
     # Power profiles daemon

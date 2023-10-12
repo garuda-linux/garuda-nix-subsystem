@@ -78,10 +78,9 @@
       "locked": {
         "lastModified": 1696343447,
         "narHash": "sha256-B2xAZKLkkeRFG5XcHHSXXcP7To9Xzr59KXeZiRf4vdQ=",
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
+        "path": "/nix/store/a5spqvgdp4qxhz4arxxn2374jv0r7acv-source",
         "rev": "c9afaba3dfa4085dbd2ccb38dfade5141e33d9d4",
-        "type": "github"
+        "type": "path"
       },
       "original": {
         "id": "flake-parts",
