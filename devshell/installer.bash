@@ -49,7 +49,7 @@ EOF
     fi
 
     if ! [ -f "$MNT_DIR/etc/nixos/garuda-managed.json" ]; then
-    jq -n --arg installVersion "[[GNS_CURRENT_VERSION]]" --arg hostname "$HOSTNAME" '{"installVersion":$installVersion|tonumber, "hostname":$hostname, "v2": { "subsystem": true }}' > "$MNT_DIR/etc/nixos/garuda-managed.json"
+    jq -n --arg installVersion "[[GNS_CURRENT_VERSION]]" --arg hostname "$HOSTNAME" '{"installVersion":$installVersion|tonumber, "version":$installVersion|tonumber, "hostname":$hostname, "v2": { "subsystem": true }}' > "$MNT_DIR/etc/nixos/garuda-managed.json"
     fi
 }
 
