@@ -6,8 +6,8 @@ with lib;
 with garuda-lib;
 {
   options = {
-    garuda.networking.enable =
-      mkOption {
+    garuda.networking = {
+      enable = mkOption {
         default = true;
         type = types.bool;
         example = true;
@@ -15,6 +15,15 @@ with garuda-lib;
           If set to true, reasonable defaults for networking will be set.
         '';
       };
+      iwd = mkOption {
+        default = true;
+        type = types.bool;
+        example = true;
+        description = ''
+          If set to true, iwd will be used as the wireless backend.
+        '';
+      };
+    };
   };
   config = lib.mkIf cfg.enable {
     networking = {
@@ -22,17 +31,17 @@ with garuda-lib;
         enable = gDefault true;
         unmanaged = [ "lo" "docker0" "virbr0" ];
         wifi = {
-          backend = "iwd";
+          backend = gDefault (if cfg.iwd then "iwd" else "wpa_supplicant");
           powersave = gDefault false;
         };
       };
       # Disable non-NetworkManager
       useDHCP = gDefault false;
-      wireless.iwd = {
+      wireless.iwd = lib.mkIf cfg.iwd {
         enable = gDefault true;
         settings = {
-          General.AddressRandomization = "once";
-          General.AddressRandomizationRange = "full";
+          General.AddressRandomization = gDefault "once";
+          General.AddressRandomizationRange = gDefault "full";
         };
       };
     };
