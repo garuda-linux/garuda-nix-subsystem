@@ -12,11 +12,11 @@
         "yafas": "yafas"
       },
       "locked": {
-        "lastModified": 1697896649,
-        "narHash": "sha256-Yr1/WuI317Y5Iv0XxjKPoNPaFwLFKlvjVHZN3LQB9D0=",
+        "lastModified": 1697998554,
+        "narHash": "sha256-US3iTZNAbjDz6z6GRSaUiYl/eMJ2f7uzTLGgnrnVRcE=",
         "owner": "chaotic-cx",
         "repo": "nyx",
-        "rev": "8e83594774cf1e0dba9d800811af71a082d88419",
+        "rev": "bc91bba63829e685d40df21df1ad7be09f3fb285",
         "type": "github"
       },
       "original": {
@@ -28,6 +28,7 @@
     },
     "compare-to": {
       "locked": {
+        "lastModified": 1695341185,
         "narHash": "sha256-htO6DSbWyCgaDkxi7foPjXwJFPzGjVt3RRUbPSpNtZY=",
         "rev": "98b8e330823a3570d328720f87a1153f8a7f2224",
         "revCount": 2,
@@ -90,6 +91,7 @@
     },
     "flake-schemas": {
       "locked": {
+        "lastModified": 1697467827,
         "narHash": "sha256-j8SR19V1SRysyJwpOBF4TLuAvAjF5t+gMiboN4gYQDU=",
         "rev": "764932025c817d4e500a8d2a4d8c565563923d29",
         "revCount": 29,
@@ -147,11 +149,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1697931116,
-        "narHash": "sha256-KdjQQBavncOSLgv/AM/hwWH8GAYeP3O2XXLfXSuJzQ0=",
+        "lastModified": 1697964592,
+        "narHash": "sha256-fua0LKNLkYYK2Dgdm9P+VPdqrVgDXUIx+EkQAQByhuc=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "81ab14626273ca38cba947d9a989c9d72b5e7593",
+        "rev": "219d268a69512ff520fe8da1739ac22d95d52355",
         "type": "github"
       },
       "original": {
@@ -183,6 +185,7 @@
     },
     "nixpkgs": {
       "locked": {
+        "lastModified": 1697723726,
         "narHash": "sha256-SaTWPkI8a5xSHX/rrKzUe+/uVNy6zCGMXgoeMb7T9rg=",
         "rev": "7c9cc5a6e5d38010801741ac830a3f8fd667a7a0",
         "revCount": 537656,
@@ -311,6 +314,7 @@
         ]
       },
       "locked": {
+        "lastModified": 1695926485,
         "narHash": "sha256-wNFFnItckgSs8XeYhhv8vlJs2WF09fSQaWgw4xkDqHQ=",
         "rev": "7772afd6686458ca0ddbc599a52cf5d337367653",
         "revCount": 4,
