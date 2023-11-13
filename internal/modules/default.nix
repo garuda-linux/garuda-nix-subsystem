@@ -1,7 +1,7 @@
-{ inputs, lib, ... }:
+{ inputs, lib, overlay, ... }:
 let
   modulesPerFile = {
-    base = import ./base { inherit inputs; flake-lib = lib; };
+    base = import ./base { inherit inputs overlay; flake-lib = lib; };
     dr460nized = import ./dr460nized;
   };
 

@@ -1,6 +1,6 @@
-{ inputs, lib, ... }@fromFlake:
+{ inputs, lib, overlay, ... }@fromFlake:
 {
-  modules = import ./modules { inherit inputs lib fromFlake; };
+  modules = import ./modules { inherit inputs lib fromFlake overlay; };
   inherit ((lib.garudaSystem {
     system = "x86_64-linux";
     modules = [ ./testing/vm.nix ];

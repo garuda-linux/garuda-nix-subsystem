@@ -1,4 +1,3 @@
-# The smallest and KISSer continuos-deploy I was able to create.
 { all-packages
 , garuda-lib
 , self
@@ -11,7 +10,7 @@ let
 in
 all-packages.writeShellApplication {
   name = "gns-update";
-  runtimeInputs = with all-packages; [ util-linux btrfs-progs coreutils mktemp jq nixos.nixos-install nix ];
+  runtimeInputs = with all-packages; [ util-linux btrfs-progs coreutils mktemp jq nixos.nixos-install nixos.nixos-rebuild nix ];
 
   text = builtins.replaceStrings [ "[[GNS_CURRENT_VERSION]]" "[[GNS_SELF]]" ] [ version (builtins.toString self) ] executable;
 }

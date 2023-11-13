@@ -1,3 +1,4 @@
+{ overlay }:
 { config
 , garuda-lib
 , flake-inputs
@@ -82,4 +83,8 @@ with garuda-lib;
     before = [ "nix-gc.service" ];
     wantedBy = [ "nix-gc.service" ];
   };
+
+  nixpkgs.overlays = [
+    overlay
+  ];
 }

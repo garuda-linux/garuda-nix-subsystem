@@ -1,7 +1,7 @@
-{ inputs, ... }: { flake-inputs
-                 , config
-                 , ...
-                 }: {
+{ inputs, overlay, ... }: { flake-inputs
+                          , config
+                          , ...
+                          }: {
   imports = [
     ./boot.nix
     ./create-home.nix
@@ -12,7 +12,8 @@
     ./locales.nix
     ./mount-garuda.nix
     ./networking.nix
-    ./nix.nix
+    (import ./nix.nix { inherit overlay; })
+    ./nix-manager.nix
     ./nyx.nix
     ./performance.nix
     ./pkgs-overrides.nix

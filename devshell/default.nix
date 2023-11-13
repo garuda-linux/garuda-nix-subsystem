@@ -1,43 +1,56 @@
 { inputs
 , nixpkgs
 , self ? inputs.self
-, lib
+, system
+, pkgs
+, packages
 }:
 
-# The following shells are used to help our maintainers and CI/CDs.
 let
-  mkShells = final: prev:
-    let
-      overlayFinal = prev // final // { callPackage = prev.newScope final; };
-      inherit (prev.stdenv.hostPlatform) system;
-      installer = overlayFinal.callPackage ./installer.nix {
-        all-packages = overlayFinal;
-        garuda-lib = lib;
-        inherit system;
+  makeDevshell = import "${inputs.devshell}/modules" pkgs;
+  mkShell = config:
+    (makeDevshell {
+      configuration = {
+        inherit config;
+        imports = [ ];
       };
-      garuda-update = overlayFinal.callPackage ./gns-update.nix {
-        all-packages = overlayFinal;
-        garuda-lib = lib;
-        inherit system self;
-      };
-    in
-    {
-      default = overlayFinal.mkShell {
-        buildInputs = [
-          nixpkgs.legacyPackages.${system}.pre-commit
-        ];
-      };
-      gns-install = overlayFinal.mkShell {
-        buildInputs = [ installer garuda-update ];
-      };
-      gns-update = overlayFinal.mkShell {
-        buildInputs = [ garuda-update ];
-      };
-    };
+    }).shell;
 in
-{
-  x86_64-linux = mkShells inputs.chaotic-nyx.packages.x86_64-linux
-    nixpkgs.legacyPackages.x86_64-linux;
-  aarch64-linux = mkShells inputs.chaotic-nyx.packages.aarch64-linux
-    nixpkgs.legacyPackages.aarch64-linux;
+rec {
+  default = gns-shell;
+  gns-install = pkgs.mkShell {
+    buildInputs = with packages.internal; [ installer garuda-update ];
+  };
+  gns-update = pkgs.mkShell {
+    buildInputs = with packages.internal; [ garuda-update ];
+  };
+  gns-shell = mkShell {
+    devshell.name = "garuda-nix-subsystem";
+    commands = [
+      { package = "commitizen"; }
+      { package = "manix"; }
+      { package = "mdbook"; }
+      { package = "nix-melt"; }
+      { package = "pre-commit"; }
+      { package = "yamlfix"; }
+      {
+        name = "gns-install";
+        category = "garuda tools";
+        command = "${self.devShells.${system}.gns-install}";
+        help = "Install the Garuda Nix Subsystem";
+      }
+      {
+        name = "gns-update";
+        category = "garuda tools";
+        command = "${self.devShells.${system}.gns-update}";
+        help = "Update the Garuda Nix Subsystem";
+      }
+    ];
+    devshell.startup = {
+      preCommitHooks.text = self.checks.${system}.pre-commit-check.shellHook;
+      gnsEnv.text = ''
+        export NIX_PATH=nixpkgs=${nixpkgs}
+      '';
+    };
+  };
 }

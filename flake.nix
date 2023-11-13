@@ -41,18 +41,17 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
-    { devshell
-    , flake-parts
+    { flake-parts
     , nixpkgs
     , pre-commit-hooks
-    , self
     , ...
-    } @ inp:
+    } @ inputs:
     let
-      inputs = inp;
-
       internal = import ./internal {
         inherit lib;
+        overlay = import ./packages/overlay.nix {
+          inherit inputs lib;
+        };
         inputs = inputs // { inherit nixpkgs; };
       };
 
@@ -62,7 +61,11 @@
         { pkgs
         , system
         , ...
-        }: {
+        }:
+        let
+          packages = import ./packages { inherit system pkgs inputs lib; };
+        in
+        {
           checks.pre-commit-check = pre-commit-hooks.lib.${system}.run {
             hooks = {
               actionlint.enable = true;
@@ -77,78 +80,13 @@
             src = ./.;
           };
 
-          devShells =
-            let
-              garuda-update = pkgs.callPackage ./devshell/gns-update.nix {
-                all-packages = pkgs;
-                garuda-lib = lib;
-                inherit system self;
-              };
-              installer = pkgs.callPackage ./devshell/installer.nix {
-                all-packages = pkgs;
-                garuda-lib = lib;
-                inherit system;
-              };
-              makeDevshell = import "${inp.devshell}/modules" pkgs;
-              mkShell = config:
-                (makeDevshell {
-                  configuration = {
-                    inherit config;
-                    imports = [ ];
-                  };
-                }).shell;
-            in
-            rec {
-              default = gns-shell;
-              gns-install = pkgs.mkShell {
-                buildInputs = [ installer garuda-update ];
-              };
-              gns-update = pkgs.mkShell {
-                buildInputs = [ garuda-update ];
-              };
-              gns-shell = mkShell {
-                devshell.name = "garuda-nix-subsystem";
-                commands = [
-                  { package = "commitizen"; }
-                  { package = "manix"; }
-                  { package = "mdbook"; }
-                  { package = "nix-melt"; }
-                  { package = "pre-commit"; }
-                  { package = "yamlfix"; }
-                  {
-                    name = "gns-install";
-                    category = "garuda tools";
-                    command = "${self.devShells.${system}.gns-install}";
-                    help = "Install the Garuda Nix Subsystem";
-                  }
-                  {
-                    name = "gns-update";
-                    category = "garuda tools";
-                    command = "${self.devShells.${system}.gns-update}";
-                    help = "Update the Garuda Nix Subsystem";
-                  }
-                ];
-                devshell.startup = {
-                  preCommitHooks.text = self.checks.${system}.pre-commit-check.shellHook;
-                  gnsEnv.text = ''
-                    export NIX_PATH=nixpkgs=${nixpkgs}
-                  '';
-                };
-              };
-            };
+          devShells = import ./devshell {
+            inherit inputs nixpkgs system pkgs packages;
+          };
 
           formatter = pkgs.nixpkgs-fmt;
 
-          packages.docs =
-            pkgs.runCommand "gns-docs"
-              # makes the documentation available at ./result/ by running nix build .#docs
-              { nativeBuildInputs = with pkgs; [ bash mdbook ]; }
-              ''
-                bash -c "errors=$(mdbook build -d $out ${./.}/docs |& grep ERROR)
-                if [ \"$errors\" ]; then
-                  exit 1
-                fi"
-              '';
+          packages = packages.external;
         };
     in
     flake-parts.lib.mkFlake { inherit inputs; } {

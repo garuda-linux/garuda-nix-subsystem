@@ -10,9 +10,10 @@ update:
   image: nixpkgs/nix-flakes:latest
   script:
     - nix flake update
+    - nix flake update ./internal/updater --inputs-from . --override-input nixpkgs "nixpkgs"
     - git config --global user.name "$GIT_AUTHOR_NAME"
     - git config --global user.email "$GIT_AUTHOR_EMAIL"
-    - git add flake.lock
+    - git add flake.lock internal/updater/flake.lock
     - "git commit -m 'chore(flake.lock): bump flakes'"
     - git push "$REPO_URL" HEAD:main
   only:
@@ -25,8 +26,8 @@ tag:
     # Test and deploy
     - nix flake check
     - nix build .#internal.ci --dry-run
-    - git tag -f v1
-    - git push --atomic -f $REPO_URL v1 HEAD:refs/heads/stable
+    - git tag -f v2
+    - git push --atomic -f $REPO_URL v2 HEAD:refs/heads/stable
   only:
     refs: [main]
     variables: [$UPDATE != "true"]

@@ -1,4 +1,3 @@
-# The smallest and KISSer continuos-deploy I was able to create.
 { all-packages
 , garuda-lib
 , system
