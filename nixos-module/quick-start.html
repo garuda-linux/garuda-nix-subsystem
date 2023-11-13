@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js dark">
+<html lang="en" class="dark" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -10,7 +10,7 @@
         
         <meta name="description" content="Contains the documentation for the Garuda Nix subsystem">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
         <link rel="icon" href="../favicon.svg">
         <link rel="shortcut icon" href="../favicon.png">
@@ -32,7 +32,7 @@
         <link rel="stylesheet" href="../theme/css/custom.css">
 
     </head>
-    <body>
+    <body class="sidebar-visible no-js">
     <div id="body-container">
         <!-- Provide site root to javascript -->
         <script>
@@ -62,24 +62,29 @@
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
-            html.classList.remove('no-js')
             html.classList.remove('dark')
             html.classList.add(theme);
-            html.classList.add('js');
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
         </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var html = document.querySelector('html');
+            var body = document.querySelector('body');
             var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
             } else {
                 sidebar = 'hidden';
             }
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
@@ -117,9 +122,9 @@
                                 <div id="menu-bar-hover-placeholder"></div>
                 <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
@@ -176,12 +181,12 @@
 
   inputs = {
     nixpkgs.url = &quot;github:NixOS/nixpkgs/nixpkgs-unstable&quot;;
-    garuda-nix.url = &quot;gitlab:garuda-linux/garuda-nix-subsystem/main&quot;;
+    garuda.url = &quot;gitlab:garuda-linux/garuda-nix-subsystem/stable&quot;;
   };
 
-  outputs = { garuda-nix, nixpkgs, ... }: {
+  outputs = { garuda, nixpkgs, ... }: {
     nixosConfigurations = {
-      hostname = garuda-nix.lib.garudaSystem {
+      hostname = garuda.lib.garudaSystem {
         system = &quot;x86_64-linux&quot;;
         modules = [
           ./configuration.nix # Your system configuration.
@@ -191,7 +196,7 @@
   };
 }
 </code></pre>
-<p>You may notice that we are using <code>garuda-nix.lib.garudaSystem</code> to build the derivation. <code>garudaSystem</code> provides an opinionated system configuration similar to what Garuda Linux provides out of the box. It also exposes our modules which can then be referenced in our modules like <code>garuda.*</code>. Then, build your configuration as usual. GNS defaults are generally lower priority than your settings, therefore it's easy to override most settings if needed.</p>
+<p>You may notice that we are using <code>garuda.lib.garudaSystem</code> to build the derivation. <code>garudaSystem</code> provides an opinionated system configuration similar to what Garuda Linux provides out of the box. It also exposes our modules which can then be referenced in our modules like <code>garuda.*</code>. Then, build your configuration as usual. GNS defaults are generally lower priority than your settings, therefore it's easy to override most settings if needed.</p>
 <p>You may also use any of the <a href="https://www.nyx.chaotic.cx/">Chaotic Nyx's</a> module or home-manager options. GNS <code>nixpkgs</code> input follows the Nyx's <code>nyxpkgs-unstable</code> (which updates daily from nixos-stable after caching has been successful) and shouldn't be overridden to profit from their package cache on Cachix.</p>
 <p>An exemplary <code>configuration.nix</code> could look as follows:</p>
 <pre><code class="language-nix">{ ... }: {
