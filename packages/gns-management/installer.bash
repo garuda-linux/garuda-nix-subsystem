@@ -1,5 +1,7 @@
 set -e
 
+unset LD_PRELOAD LD_LIBRARY_PATH
+
 function createOriginalConfiguration {
     if ! [ -f "$MNT_DIR/etc/nixos/flake.nix" ]; then
     cat > "$MNT_DIR/etc/nixos/flake.nix" << EOF

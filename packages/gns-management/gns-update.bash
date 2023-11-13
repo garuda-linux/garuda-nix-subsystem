@@ -1,5 +1,7 @@
 set -e
 
+unset LD_PRELOAD LD_LIBRARY_PATH
+
 function configureGNS {
     config="$(cat "$MNT_DIR/etc/nixos/garuda-managed.json")"
 

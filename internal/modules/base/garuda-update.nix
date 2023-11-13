@@ -6,6 +6,7 @@ let
     name = "garuda-update";
     runtimeInputs = with pkgs; [ nix coreutils ];
     text = ''
+      unset LD_PRELOAD LD_LIBRARY_PATH
       if [ "$EUID" -ne 0 ]; then
         sudo "$0" "$@"
         exit 1
