@@ -26,6 +26,8 @@ in
     };
   };
   config = lib.mkIf cfg.enable {
+    garuda.system.type = "dr460nized";
+
     services.xserver = {
       desktopManager.plasma5.enable = gDefault true;
       displayManager = {

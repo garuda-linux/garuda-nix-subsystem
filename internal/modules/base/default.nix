@@ -21,6 +21,7 @@
     ./services.nix
     ./shells.nix
     ./sound.nix
+    ./system_info.nix
     ./managed
   ];
 

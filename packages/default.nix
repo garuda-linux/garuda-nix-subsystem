@@ -11,6 +11,12 @@
       inherit system;
       inherit (inputs) self;
     };
+    garuda-nix-manager = pkgs.qt6Packages.callPackage ./garuda-nix-manager {
+      inherit (internal) launch-terminal;
+    };
+    launch-terminal = pkgs.callPackage ./garuda-libs {
+      inherit pkgs;
+    };
   };
   external = {
     docs = pkgs.runCommand "gns-docs"
@@ -22,8 +28,9 @@
             exit 1
         fi"
       '';
-    launch-terminal = pkgs.callPackage ./garuda-libs {
-      inherit pkgs;
-    };
+  };
+
+  cached = {
+    inherit (internal) installer garuda-update garuda-nix-manager launch-terminal;
   };
 }
