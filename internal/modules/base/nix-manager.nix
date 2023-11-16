@@ -11,7 +11,7 @@ in
   options.garuda.garuda-nix-manager = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = config.garuda.system.gui;
+      default = config.garuda.system.isGui;
       description = "Enable garuda-nix-manager";
     };
   };
