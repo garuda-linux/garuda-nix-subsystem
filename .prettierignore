@@ -1,4 +1,5 @@
-.github/workflows/*
+.github/workflows
 .pre-commit-config.yaml
-configurations/docker-compose/**
+configurations/docker-compose
 flake.lock
+theme

@@ -61,9 +61,6 @@ with garuda-lib;
     # Discard blocks that are not in use by the filesystem
     services.fstrim.enable = gDefault true;
 
-    # Firmware updater for machine hardware
-    services.fwupd.enable = gDefault true;
-
     # Limit systemd journal size
     services.journald.extraConfig = ''
       SystemMaxUse=500M
