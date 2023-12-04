@@ -91,7 +91,9 @@
             <div class="sidebar-scrollbox">
                 <ol class="chapter"><li class="chapter-item expanded affix "><li class="part-title">Welcome</li><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Quick start</li><li class="chapter-item expanded "><a href="../subsystem/quick-start.html" class="active"><strong aria-hidden="true">2.</strong> Using as subsystem of Garuda</a></li><li class="chapter-item expanded "><a href="../nixos-module/quick-start.html"><strong aria-hidden="true">3.</strong> Using as NixOS module</a></li></ol>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
         </nav>
 
         <!-- Track and set sidebar scroll position -->
@@ -186,7 +188,7 @@ garuda-nix-subsystem install # trigger the installation process
 </code></pre>
 <p>The script will first install Nix, the package manager, and proceed by setting up the required subvolumes. After the process is finished, the subsystem may now be entered by rebooting and selecting the new <code>Garuda Nix Subsystem</code> entry in GRUB.</p>
 <h2 id="updating"><a class="header" href="#updating">Updating</a></h2>
-<p>The system may be updated by running <code>sudo garuda-nix-subsystem update</code> from either Garuda or Garuda Nix Subsystem. This sources the latest tagged commit from our <a href="https://gitlab.com/garuda-linux/garuda-nix-subsystem">Garuda Nix Subsystem repo</a>, which also updates the flake's inputs and therefore all package versions.</p>
+<p>The system may be updated by running <code>sudo garuda-nix-subsystem update</code> from either Garuda or by running <code>garuda-update</code> on Garuda Nix Subsystem. This sources the latest tagged commit from our <a href="https://gitlab.com/garuda-linux/garuda-nix-subsystem">Garuda Nix Subsystem repo</a>, which also updates the flake's inputs and therefore all package versions.</p>
 
                     </main>
 
