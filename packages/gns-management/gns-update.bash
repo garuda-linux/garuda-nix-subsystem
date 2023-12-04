@@ -56,9 +56,9 @@ function configureGNS {
 
         packages="$(pacman -Qq garuda-nvidia-config garuda-nvidia-prime-config 2> /dev/null | xargs || true)"
         if [[ "$packages" =~ (^| )garuda-nvidia-prime-config($| ) ]]; then
-            config="$(jq '.v2.host.hardware.nvidia=prime' <<<"$config")"
+            config="$(jq '.v2.host.hardware.nvidia="prime"' <<<"$config")"
         elif [[ "$packages" =~ (^| )garuda-nvidia-config($| ) ]]; then
-            config="$(jq '.v2.host.hardware.nvidia=nvidia' <<<"$config")"
+            config="$(jq '.v2.host.hardware.nvidia="nvidia"' <<<"$config")"
         fi
     fi
 

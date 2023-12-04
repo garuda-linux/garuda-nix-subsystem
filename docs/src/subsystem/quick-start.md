@@ -19,4 +19,4 @@ The script will first install Nix, the package manager, and proceed by setting u
 
 ## Updating
 
-The system may be updated by running `sudo garuda-nix-subsystem update` from either Garuda or Garuda Nix Subsystem. This sources the latest tagged commit from our [Garuda Nix Subsystem repo](https://gitlab.com/garuda-linux/garuda-nix-subsystem), which also updates the flake's inputs and therefore all package versions.
+The system may be updated by running `sudo garuda-nix-subsystem update` from either Garuda or by running `garuda-update` on Garuda Nix Subsystem. This sources the latest tagged commit from our [Garuda Nix Subsystem repo](https://gitlab.com/garuda-linux/garuda-nix-subsystem), which also updates the flake's inputs and therefore all package versions.
