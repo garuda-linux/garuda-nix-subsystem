@@ -41,7 +41,7 @@ with garuda-lib;
       acpid.enable = gDefault true;
       avahi = {
         enable = gDefault true;
-        nssmdns = gDefault true;
+        nssmdns4 = gDefault true;
       };
     };
 
