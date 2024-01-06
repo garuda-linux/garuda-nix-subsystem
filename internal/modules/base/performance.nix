@@ -54,7 +54,7 @@ in
     systemd.oomd = {
       enable = lib.mkForce true; # This is actually the default, anyways...
       enableSystemSlice = gDefault true;
-      enableUserServices = gDefault true;
+      enableUserSlices = gDefault true;
     };
 
     # BPF-based auto-tuning of Linux system parameters
