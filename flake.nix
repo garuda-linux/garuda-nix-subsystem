@@ -12,20 +12,21 @@
   ];
 
   inputs = {
-    # The Chaotic's Nyx
+    # Chaotic's Nyx
     chaotic-nyx.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     chaotic-nyx.inputs.home-manager.follows = "home-manager";
-
-    # Devshell to set up a development environment
-    devshell.url = "github:numtide/devshell";
-    devshell.flake = false;
-
-    # Common used input of our flake inputs
-    flake-utils.url = "github:numtide/flake-utils";
 
     # If you need to, override this to use a different nixpkgs version
     # by default we follow Chaotic Nyx' nyxpkgs-unstable branch
     nixpkgs.follows = "chaotic-nyx/nixpkgs";
+
+    # Modules support for flakes
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
+
+    # Devshell to set up a development environment
+    devshell.url = "github:numtide/devshell";
+    devshell.flake = false;
 
     # Have a local index of nixpkgs for fast launching of apps
     nix-index-database.url = "github:nix-community/nix-index-database";
@@ -33,8 +34,9 @@
 
     # Easy linting of the flake and all kind of other stuff
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
-    pre-commit-hooks.inputs.flake-utils.follows = "flake-utils";
     pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
+    # Only used for the tests of pre-commit-hooks. Override stops double fetch
+    pre-commit-hooks.inputs.nixpkgs-stable.follows = "nixpkgs";
 
     # Home configuration management
     home-manager.url = "github:nix-community/home-manager/master";
