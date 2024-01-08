@@ -12,11 +12,11 @@
         "yafas": "yafas"
       },
       "locked": {
-        "lastModified": 1704556578,
-        "narHash": "sha256-aCCT4796b07jPY+7D61MGghR9qrH6QAn1hH2cWWQ3fI=",
+        "lastModified": 1704643334,
+        "narHash": "sha256-5P+af3EvkuKhiSuHtjLPwvVQ+KYiVFgbjL0FZhXJVkI=",
         "owner": "chaotic-cx",
         "repo": "nyx",
-        "rev": "a486470595d1c6414865b252dd96d988c0aad8f2",
+        "rev": "e558241c59eb83f967493e241b9c580f18f8892f",
         "type": "github"
       },
       "original": {
@@ -43,11 +43,11 @@
     "devshell": {
       "flake": false,
       "locked": {
-        "lastModified": 1701787589,
-        "narHash": "sha256-ce+oQR4Zq9VOsLoh9bZT8Ip9PaMLcjjBUHVPzW5d7Cw=",
+        "lastModified": 1704648272,
+        "narHash": "sha256-zCDhWGl3bVpBKpDZ0p3NuGksZVg69BAChsY5W4KARL4=",
         "owner": "numtide",
         "repo": "devshell",
-        "rev": "44ddedcbcfc2d52a76b64fb6122f209881bd3e1e",
+        "rev": "f54745fd4aae92443817ddc566ce06572b178b5a",
         "type": "github"
       },
       "original": {
@@ -213,11 +213,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1703939133,
-        "narHash": "sha256-Gxe+mfOT6bL7wLC/tuT2F+V+Sb44jNr8YsJ3cyIl4Mo=",
+        "lastModified": 1704668415,
+        "narHash": "sha256-BMzNHFod53iiU4lkR5WHwqQCFmaCLq85sUCskXneXlA=",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "9d3d7e18c6bc4473d7520200d4ddab12f8402d38",
+        "rev": "44493e2b3c3ebcd39a9947e9ed9f2c2af164ec4c",
         "type": "github"
       },
       "original": {
