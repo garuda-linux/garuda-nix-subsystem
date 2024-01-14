@@ -61,11 +61,18 @@ with garuda-lib;
     # Discard blocks that are not in use by the filesystem
     services.fstrim.enable = gDefault true;
 
-    # Limit systemd journal size
+    # Limit systemd journal size and disable coredumps
     services.journald.extraConfig = ''
       SystemMaxUse=500M
       RuntimeMaxUse=10M
     '';
+    systemd.coredump = {
+      enable = false;
+      extraConfig = ''
+      Storage=none
+      ProcessSizeMax=0
+    '';
+    };
 
     # Enable locating files via locate
     services.locate = {
