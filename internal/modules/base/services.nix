@@ -67,11 +67,11 @@ with garuda-lib;
       RuntimeMaxUse=10M
     '';
     systemd.coredump = {
-      enable = false;
+      enable = gDefault false;
       extraConfig = ''
-      Storage=none
-      ProcessSizeMax=0
-    '';
+        Storage=none
+        ProcessSizeMax=0
+      '';
     };
 
     # Enable locating files via locate
