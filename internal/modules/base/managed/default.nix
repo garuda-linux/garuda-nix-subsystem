@@ -29,7 +29,7 @@ in
     virtualisation.virtualbox.guest.enable = lib.mkIf (settings ? hardware) (gDefault (settings.hardware.virt == "oracle"));
     time.timeZone = mkIf (settings ? timezone) (gDefault settings.timezone);
     console.keyMap = mkIf (settings ? keymap) (gDefault settings.keymap);
-    services.xserver.layout = mkIf (settings ? keymap) (gDefault settings.keymap);
+    services.xserver.xkb.layout = mkIf (settings ? keymap) (gDefault settings.keymap);
     i18n = {
       defaultLocale = mkIf (settings ? locale && settings.locale ? LANG) (gDefault settings.locale.LANG);
       extraLocaleSettings = mkIf (settings ? locale) (lib.mapAttrs (_name: gDefault) settings.locale);
