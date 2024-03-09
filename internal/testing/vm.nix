@@ -21,7 +21,7 @@
 
   # Some locale settings
   console.keyMap = "de";
-  services.xserver.layout = "de";
+  services.xserver.xkb.layout = "de";
   time.timeZone = "Europe/Berlin";
 
   system.stateVersion = "23.11";
