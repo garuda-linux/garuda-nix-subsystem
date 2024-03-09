@@ -40,7 +40,7 @@ in
               Font = gDefault "Fira Sans";
             };
           };
-          theme = gDefault "Dr460nized-Sugar-Candy";
+          theme = gDefault "Dr460nized";
         };
       };
       enable = gDefault true;
@@ -110,6 +110,9 @@ in
       QT_STYLE_OVERRIDE = gDefault "kvantum";
       SDL_AUDIODRIVER = gDefault "pipewire";
     };
+
+    # Add xdg-desktop-portal-gtk for Wayland GTK apps (font issues etc.)
+    xdg.portal.extraPortals = gDefault [ pkgs.xdg-desktop-portal-gtk ];
 
     # Use the Dr460nized theme as default /etc/skel folder
     garuda.create-home.skel = gDefault "${gGenerateSkel pkgs "${pkgs.dr460nized-kde-theme}/skel" "dr460nized"}";

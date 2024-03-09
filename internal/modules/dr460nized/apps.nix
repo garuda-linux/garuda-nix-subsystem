@@ -10,7 +10,6 @@ let
 in
 lib.mkIf cfg.enable {
   environment.systemPackages = with pkgs; glib.gExcludableArray config "defaultpackages" [
-    applet-window-appmenu
     applet-window-title
     beautyline-icons
     blurredwallpaper
@@ -18,11 +17,10 @@ lib.mkIf cfg.enable {
     ffmpegthumbnailer
     firedragon
     jamesdsp
+    kdePackages.kdegraphics-thumbnailers
+    kdePackages.kimageformats
+    kdePackages.qtstyleplugin-kvantum
     libinput-gestures
-    libsForQt5.applet-window-buttons
-    libsForQt5.kdegraphics-thumbnailers
-    libsForQt5.kimageformats
-    libsForQt5.qtstyleplugin-kvantum
     resvg
     sshfs
     sweet
