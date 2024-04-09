@@ -9,7 +9,7 @@
 #   categories = ["Network"];
 # }) ];
 
-{ lib, config, osConfig, ... }:
+{ lib, config, osConfig, pkgs, ... }:
 let
   appdir = ".local/share/applications";
   pkgnames = (lib.forEach config.home.packages (x: lib.getName x)) ++ lib.forEach osConfig.environment.systemPackages (x: lib.getName x);
@@ -22,6 +22,11 @@ let
   libreoffice-qt = findPkg "libreoffice";
 in
 {
+  programs.git = {
+    enable = true;
+    package = pkgs.gitFull;
+  };
+
   home.file = lib.mkMerge (
     (lib.optional (builtins.elem "btop" pkgnames) {
       "${appdir}/btop.desktop".text = ''

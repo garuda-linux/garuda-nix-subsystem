@@ -21,6 +21,7 @@ lib.mkIf cfg.enable {
     kdePackages.kimageformats
     kdePackages.qtstyleplugin-kvantum
     libinput-gestures
+    plasma6-applet-window-buttons
     resvg
     sshfs
     sweet

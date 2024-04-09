@@ -28,8 +28,9 @@ in
   config = lib.mkIf cfg.enable {
     garuda.system.type = "dr460nized";
 
+    services.desktopManager.plasma6.enable = gDefault true;
+
     services.xserver = {
-      desktopManager.plasma5.enable = gDefault true;
       displayManager = {
         sddm = {
           autoNumlock = gDefault true;
@@ -41,10 +42,12 @@ in
             };
           };
           theme = gDefault "Dr460nized";
+          wayland.enable = gDefault true;
         };
       };
       enable = gDefault true;
       excludePackages = [ pkgs.xterm ];
+      libinput.touchpad.tapping = gDefault false;
     };
 
     environment.plasma5.excludePackages = with pkgs; [
@@ -115,6 +118,6 @@ in
     xdg.portal.extraPortals = gDefault [ pkgs.xdg-desktop-portal-gtk ];
 
     # Use the Dr460nized theme as default /etc/skel folder
-    garuda.create-home.skel = gDefault "${gGenerateSkel pkgs "${pkgs.dr460nized-kde-theme}/skel" "dr460nized"}";
+    garuda.create-home.skel = gDefault "${gGenerateSkel pkgs "${cfg.themePackage}/skel" "dr460nized"}";
   };
 }

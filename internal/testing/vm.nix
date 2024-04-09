@@ -25,4 +25,21 @@
   time.timeZone = "Europe/Berlin";
 
   system.stateVersion = "23.11";
+
+  # Enhance stability of the VM by disabling wayland
+  services.xserver = {
+    displayManager = {
+      defaultSession = "plasmax11";
+      sddm.wayland.enable = false;
+    };
+  };
+
+  # Virtualisation settings for running "nix run .#internal.vm"
+  # This makes the VM usable
+  virtualisation.vmVariant = {
+    virtualisation = {
+      cores = 4;
+      memorySize = 3072;
+    };
+  };
 }
