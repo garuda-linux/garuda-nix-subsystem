@@ -21,17 +21,19 @@
 
   # Some locale settings
   console.keyMap = "de";
-  services.xserver.xkb.layout = "de";
+  services.xserver = {
+    enable = true;
+    xkb.layout = "de";
+  };
+
+  # Timezone
   time.timeZone = "Europe/Berlin";
 
-  system.stateVersion = "23.11";
-
   # Enhance stability of the VM by disabling wayland
-  services.xserver = {
-    displayManager = {
-      defaultSession = "plasmax11";
-      sddm.wayland.enable = false;
-    };
+  # overriding the actual default
+  services.displayManager = {
+    defaultSession = "plasmax11";
+    sddm.wayland.enable = lib.mkForce false;
   };
 
   # Virtualisation settings for running "nix run .#internal.vm"
@@ -42,4 +44,7 @@
       memorySize = 3072;
     };
   };
+
+  # Nix stuff
+  system.stateVersion = "23.11";
 }

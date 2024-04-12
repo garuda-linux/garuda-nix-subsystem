@@ -30,27 +30,25 @@ in
 
     services.desktopManager.plasma6.enable = gDefault true;
 
-    services.xserver = {
-      displayManager = {
-        sddm = {
-          autoNumlock = gDefault true;
-          enable = gDefault true;
-          settings = {
-            General = {
-              CursorTheme = gDefault "Sweet-cursors";
-              Font = gDefault "Fira Sans";
-            };
-          };
-          theme = gDefault "Dr460nized";
-          wayland.enable = gDefault true;
-        };
-      };
+    services.displayManager = {
       enable = gDefault true;
-      excludePackages = [ pkgs.xterm ];
-      libinput.touchpad.tapping = gDefault false;
+      sddm = {
+        autoNumlock = gDefault true;
+        enable = gDefault true;
+        settings = {
+          General = {
+            CursorTheme = gDefault "Sweet-cursors";
+            Font = gDefault "Fira Sans";
+          };
+        };
+        theme = gDefault "Dr460nized";
+
+        # No gDefault prepended here as assertion wouldn't pass otherwise
+        wayland.enable = true;
+      };
     };
 
-    environment.plasma5.excludePackages = with pkgs; [
+    environment.plasma6.excludePackages = with pkgs; [
       # Pulls in 600 mb worth of mbrola (via espeak), which is a bit silly
       okular
       oxygen
