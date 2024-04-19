@@ -43,9 +43,12 @@ in
         };
         theme = gDefault "Dr460nized";
 
-        # No gDefault prepended here as assertion wouldn't pass otherwise
-        wayland.enable = true;
+        wayland.enable = gDefault false;
       };
+    };
+
+    services.xserver = {
+      enable = gDefault true;
     };
 
     environment.plasma6.excludePackages = with pkgs; [
