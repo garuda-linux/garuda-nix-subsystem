@@ -14,6 +14,7 @@ with garuda-lib;
       curl
       eza
       fastfetch
+      fishPlugins.done
       fishPlugins.autopair
       fishPlugins.puffer
       git
