@@ -7,21 +7,12 @@
 let
   cfg = config.garuda.gaming;
 in
-with garuda-lib;
-{
+with garuda-lib; {
   options.garuda.gaming = {
     enable = lib.mkOption {
       default = false;
       description = ''
         Installs and enables some gaming packages and services.
-      '';
-      example = true;
-      type = lib.types.bool;
-    };
-    leagueOfLegendsFix = lib.mkOption {
-      default = false;
-      description = ''
-        Allows playing League of Legends by disabling vsyscall32.
       '';
       example = true;
       type = lib.types.bool;
@@ -33,7 +24,7 @@ with garuda-lib;
     environment.systemPackages = with pkgs; [
       lutris
       mangohud
-      prismlauncher-qt5
+      prismlauncher
       (retroarch.override {
         cores = with libretro; [
           citra
@@ -62,8 +53,5 @@ with garuda-lib;
       enable = gDefault true;
       gamescopeSession.enable = gDefault true;
     };
-
-    # Fix League of Legends
-    boot.kernel.sysctl."abi.vsyscall32" = lib.mkIf cfg.leagueOfLegendsFix 0;
   };
 }
