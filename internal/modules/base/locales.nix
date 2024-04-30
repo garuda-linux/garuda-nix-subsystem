@@ -4,11 +4,13 @@
 , ...
 }:
 with lib;
-with garuda-lib;
-{
+with garuda-lib; {
   config = {
     # Use the Terminus font for the console
-    console.font = gDefault "${pkgs.terminus_font}/share/consolefonts/ter-120n.psf.gz";
+    console = {
+      earlySetup = true;
+      font = "${pkgs.terminus_font}/share/consolefonts/ter-120n.psf.gz";
+      packages = with pkgs; [ terminus_font ];
+    };
   };
 }
-
