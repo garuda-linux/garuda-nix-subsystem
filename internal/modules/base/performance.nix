@@ -5,30 +5,31 @@
 , ...
 }:
 with lib;
-with garuda-lib;
-let
+with garuda-lib; let
   cfg = config.garuda.performance-tweaks;
 in
 {
   options.garuda.performance-tweaks = {
-    enable = mkOption
-      {
-        default = false;
-        type = types.bool;
-        example = true;
-        description = mdDoc ''
-          If set to true, this module will enable a few performance tweaks.
-        '';
-      };
-    cachyos-kernel = mkOption
-      {
-        default = false;
-        type = types.bool;
-        example = true;
-        description = mdDoc ''
-          If set to true, the subsystem will use the linux_cachyos kernel.
-        '';
-      };
+    enable =
+      mkOption
+        {
+          default = false;
+          type = types.bool;
+          example = true;
+          description = mdDoc ''
+            If set to true, this module will enable a few performance tweaks.
+          '';
+        };
+    cachyos-kernel =
+      mkOption
+        {
+          default = false;
+          type = types.bool;
+          example = true;
+          description = mdDoc ''
+            If set to true, the subsystem will use the linux_cachyos kernel.
+          '';
+        };
   };
 
   config = {
@@ -36,12 +37,8 @@ in
     services.ananicy = mkIf cfg.enable {
       enable = gDefault true;
       package = pkgs.ananicy-cpp;
+      rulesProvider = pkgs.ananicy-cpp-rules;
     };
-
-    # Supply fitting rules for ananicy-cpp 
-    environment.systemPackages = with pkgs; mkIf cfg.enable [
-      ananicy-cpp-rules
-    ];
 
     # 90% ZRAM as swap
     zramSwap = mkIf cfg.enable {
