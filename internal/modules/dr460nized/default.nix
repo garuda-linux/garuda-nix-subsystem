@@ -111,7 +111,6 @@ in
       ALSOFT_DRIVERS = gDefault "pipewire";
       GTK_THEME = gDefault "Sweet-Dark";
       MOZ_USE_XINPUT2 = gDefault "1";
-      NIXOS_OZONE_WL = "1";
       QT_STYLE_OVERRIDE = gDefault "kvantum";
       SDL_AUDIODRIVER = gDefault "pipewire";
     };
