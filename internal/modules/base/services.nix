@@ -90,5 +90,11 @@ with garuda-lib;
       autoPrune.enable = gDefault true;
       autoPrune.flags = [ "-a" ];
     };
+
+    # Frmware updater
+    services.fwupd = {
+      enable = true;
+      daemonSettings.EspLocation = config.boot.loader.efi.efiSysMountPoint;
+    };
   };
 }
