@@ -2,7 +2,7 @@
 let
   modulesPerFile = {
     base = import ./base { inherit inputs overlay; flake-lib = lib; };
-    catppuccin = import ./catppuccin;
+    catppuccin = import ./catppuccin { inherit inputs; flake-lib = lib; };
     dr460nized = import ./dr460nized;
   };
 

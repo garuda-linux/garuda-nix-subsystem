@@ -81,13 +81,6 @@ _: {
     extra-substituters = [ "https://chaotic-nyx.cachix.org" ];
     extra-trusted-public-keys = [ "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=" ];
 
-    # Continue building derivations if one fails
-    keep-going = true;
-
-    # For direnv GC roots
-    keep-derivations = true;
-    keep-outputs = true;
-
     # Show more log lines for failed builds
     log-lines = 20;
 
