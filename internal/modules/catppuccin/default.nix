@@ -1,15 +1,15 @@
 { config, lib, pkgs, garuda-lib, ... }:
 with garuda-lib;
 let
-catppuccin-kde = (catppuccin-kde.override {
-        accents = ["maroon"];
-        flavour = ["mocha"];
-        winDecStyles = ["classic"];
-      })
+  catppuccin-kde =
+    (catppuccin-kde.override {
+      accents = [ "maroon" ];
+      flavour = [ "mocha" ];
+      winDecStyles = [ "classic" ];
+    });
   cfg = config.garuda.catppuccin;
 in
 {
-  imports = [ ./apps.nix ];
   options = {
     garuda.catppuccin = {
       enable = lib.mkOption {
@@ -94,7 +94,7 @@ in
     };
 
     # Catppuccin-specific home-manager configuration
-    garuda.home-manager.modules = gExcludableArray config "home-manager-modules" [ ./dotfiles.nix ];
+    garuda.home-manager.modules = gExcludableArray config "home-manager-modules" [ ./dotfiles.nix inputs.catppuccin.homeManagerModules.catppuccin];
 
     # These need to be enabled for complete functionality
     programs = {
