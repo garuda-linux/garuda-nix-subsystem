@@ -40,10 +40,7 @@ _: {
   # Invididual terminal app configs
   programs = {
     # The better cat replacement
-    bat = {
-      enable = true;
-      config.theme = "Dracula";
-    };
+    bat.enable = true;
 
     # Btop to view resource usage
     btop = {
@@ -67,6 +64,12 @@ _: {
   };
 
   nix.settings = {
+        # Don't warn about dirty flakes and accept flake configs by default
+    extraOptions = ''
+      accept-flake-config = true
+      warn-dirty = false
+    '';
+
     # Use available binary caches, this is not Gentoo
     # this also allows us to use remote builders to reduce build times and batter usage
     builders-use-substitutes = true;
@@ -77,6 +80,19 @@ _: {
     # A few extra binary caches and their public keys
     extra-substituters = [ "https://chaotic-nyx.cachix.org" ];
     extra-trusted-public-keys = [ "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=" ];
+ 
+       # Continue building derivations if one fails
+      keep-going = true;
+
+      # For direnv GC roots
+      keep-derivations = true;
+      keep-outputs = true;
+
+      # Show more log lines for failed builds
+      log-lines = 20;
+
+      # Max number of parallel jobs
+      max-jobs = "auto";
   };
 
   # Enable dircolors
