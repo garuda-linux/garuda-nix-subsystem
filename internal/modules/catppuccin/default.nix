@@ -7,11 +7,11 @@
 with garuda-lib;
 let
   catppuccin-kde =
-    (pkgs.catppuccin-kde.override {
+    pkgs.catppuccin-kde.override {
       accents = [ "maroon" ];
       flavour = [ "mocha" ];
       winDecStyles = [ "classic" ];
-    });
+    };
   cfg = config.garuda.catppuccin;
 in
 {
