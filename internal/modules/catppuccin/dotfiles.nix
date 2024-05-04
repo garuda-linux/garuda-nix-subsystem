@@ -1,7 +1,8 @@
-{ lib, ... }:
+{ hmModule }: { lib, ... }:
 {
   imports = [
     ./metafiles.nix
+    hmModule
   ];
 
   # Base configs (default is mocha flavor)

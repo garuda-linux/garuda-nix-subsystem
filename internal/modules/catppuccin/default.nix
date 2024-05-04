@@ -99,7 +99,7 @@ in
     };
 
     # Catppuccin-specific home-manager configuration
-    # garuda.home-manager.modules = gExcludableArray config "home-manager-configs" [ ./dotfiles.nix ];
+    garuda.home-manager.modules = [ (import ./dotfiles.nix { hmModule = inputs.catppuccin.homeManagerModules.catppuccin; }) ];
 
     # These need to be enabled for complete functionality
     programs = {
