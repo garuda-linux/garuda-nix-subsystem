@@ -18,6 +18,13 @@ in
     internal = true;
     type = types.listOf types.path;
   };
+  options.garuda.home-manager.hmModules = with lib; mkOption {
+    default = [ ];
+    description = "List of home-manager configurations to include for all users.";
+    example = "./dotfiles.nix";
+    internal = true;
+    type = types.listOf types.submodule;
+  };
 
   config = {
     home-manager = {
@@ -31,7 +38,7 @@ in
             home.stateVersion = state_version;
             home.username = username;
 
-            imports = cfg.modules;
+            imports = cfg.modules ++ cfg.hmModules;
           }
         )
         users;

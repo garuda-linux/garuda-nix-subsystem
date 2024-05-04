@@ -6,17 +6,11 @@
                  }:
 with garuda-lib;
 let
-  catppuccin-kde =
-    pkgs.catppuccin-kde.override {
-      accents = [ "maroon" ];
-      flavour = [ "mocha" ];
-      winDecStyles = [ "classic" ];
-    };
   cfg = config.garuda.catppuccin;
 in
 {
   imports = [
-    #./apps.nix
+    ./apps.nix
     inputs.catppuccin.nixosModules.catppuccin
   ];
 
@@ -53,11 +47,11 @@ in
         enable = gDefault true;
         settings = {
           General = {
-            CursorTheme = gDefault "Sweet-cursors";
+            CursorTheme = gDefault "Catppuccin-Mocha-Maroon-Cursors";
             Font = gDefault "Fira Sans";
           };
         };
-        theme = gDefault "Dr460nized";
+        theme = gDefault "catppuccin-sddm-corners";
 
         wayland.enable = gDefault false;
       };
@@ -127,8 +121,5 @@ in
 
     # Add xdg-desktop-portal-gtk for Wayland GTK apps (font issues etc.)
     xdg.portal.extraPortals = gDefault [ pkgs.xdg-desktop-portal-gtk ];
-
-    # Use the Catppuccin theme as default /etc/skel folder
-    garuda.create-home.skel = gDefault "${gGenerateSkel pkgs "${cfg.themePackage}/skel" "catpuccin"}";
   };
 }
