@@ -12,12 +12,9 @@
   ];
 
   inputs = {
-    # Beautiful pastel theming
-    catppuccin.url = "github:catppuccin/nix";
-    catppuccin-vsc = {
-      url = "github:catppuccin/vscode";
-      inputs.nixpkgs.follows = "chaotic-nyx/nixpkgs";
-    };
+    #
+    # OS internals
+    #
 
     # Chaotic's Nyx
     chaotic-nyx = {
@@ -35,16 +32,27 @@
       inputs.nixpkgs-lib.follows = "chaotic-nyx/nixpkgs";
     };
 
-    # Devshell to set up a development environment
-    devshell = {
-      url = "github:numtide/devshell";
-      flake = false;
-    };
-
     # Have a local index of nixpkgs for fast launching of apps
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "chaotic-nyx/nixpkgs";
+    };
+
+    # Home configuration management
+    home-manager = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "chaotic-nyx/nixpkgs";
+    };
+
+
+    #
+    # Development tooling
+    #
+
+    # Devshell to set up a development environment
+    devshell = {
+      url = "github:numtide/devshell";
+      flake = false;
     };
 
     # Easy linting of the flake and all kind of other stuff
@@ -57,9 +65,14 @@
       inputs.nixpkgs-stable.follows = "chaotic-nyx/nixpkgs";
     };
 
-    # Home configuration management
-    home-manager = {
-      url = "github:nix-community/home-manager/master";
+    #
+    # Theming
+    #
+
+    # Beautiful pastel theming
+    catppuccin.url = "github:catppuccin/nix";
+    catppuccin-vsc = {
+      url = "github:catppuccin/vscode";
       inputs.nixpkgs.follows = "chaotic-nyx/nixpkgs";
     };
   };
