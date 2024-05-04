@@ -3,6 +3,7 @@
                           , ...
                           }: {
   imports = [
+    ./autologin.nix
     ./boot.nix
     ./create-home.nix
     ./gaming.nix
