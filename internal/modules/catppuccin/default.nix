@@ -99,7 +99,11 @@ in
     };
 
     # Catppuccin-specific home-manager configuration
-    garuda.home-manager.modules = [ (import ./dotfiles.nix { hmModule = inputs.catppuccin.homeManagerModules.catppuccin; }) ];
+    garuda.home-manager.modules = [
+      (import ./dotfiles.nix {
+        hmModule = inputs.catppuccin.homeManagerModules.catppuccin;
+      })
+    ];
 
     # These need to be enabled for complete functionality
     programs = {
@@ -118,6 +122,10 @@ in
       MOZ_USE_XINPUT2 = gDefault "1";
       SDL_AUDIODRIVER = gDefault "pipewire";
     };
+
+    # Theming
+    catppuccin.enable = true;
+    console.catppuccin.enable = true;
 
     # Add xdg-desktop-portal-gtk for Wayland GTK apps (font issues etc.)
     xdg.portal.extraPortals = gDefault [ pkgs.xdg-desktop-portal-gtk ];

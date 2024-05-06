@@ -1,4 +1,4 @@
-{ hmModule }: { lib, ... }:
+{ hmModule }: { lib, pkgs, ... }:
 {
   imports = [
     ./metafiles.nix
@@ -6,8 +6,10 @@
   ];
 
   # Base configs (default is mocha flavor)
-  catppuccin.enable = true;
-  catppuccin.accent = "maroon";
+  catppuccin = {
+    accent = "maroon";
+    enable = true;
+  };
 
   # Complete theming
   programs = {
@@ -64,6 +66,14 @@
       name = "Fira Sans";
       size = 10;
     };
+  };
+
+  # This is needed to get the cursor on apps like Webstorm
+  home.pointerCursor = {
+    name = "Catppuccin-Mocha-Maroon-Cursors";
+    size = 24;
+    package = pkgs.catppuccin-cursors;
+    x11.defaultCursor = "Catppuccin-Mocha-Maroon-Cursors";
   };
 
   # Compatibility for GNOME apps
