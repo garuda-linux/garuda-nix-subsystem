@@ -1,5 +1,5 @@
 {
-  description = "Garuda Linux Nix subsystem flake ❄️";
+  description = "Garuda Linux NixOS flake ❄️";
 
   nixConfig.extra-substituters = [
     "https://cache.garnix.io"
@@ -12,35 +12,69 @@
   ];
 
   inputs = {
+    #
+    # OS internals
+    #
+
     # Chaotic's Nyx
-    chaotic-nyx.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-    chaotic-nyx.inputs.home-manager.follows = "home-manager";
+    chaotic-nyx = {
+      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+      inputs.home-manager.follows = "home-manager";
+    };
 
     # If you need to, override this to use a different nixpkgs version
     # by default we follow Chaotic Nyx' nyxpkgs-unstable branch
     nixpkgs.follows = "chaotic-nyx/nixpkgs";
 
     # Modules support for flakes
-    flake-parts.url = "github:hercules-ci/flake-parts";
-    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
-
-    # Devshell to set up a development environment
-    devshell.url = "github:numtide/devshell";
-    devshell.flake = false;
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "chaotic-nyx/nixpkgs";
+    };
 
     # Have a local index of nixpkgs for fast launching of apps
-    nix-index-database.url = "github:nix-community/nix-index-database";
-    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Easy linting of the flake and all kind of other stuff
-    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
-    pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
-    # Only used for the tests of pre-commit-hooks. Override stops double fetch
-    pre-commit-hooks.inputs.nixpkgs-stable.follows = "nixpkgs";
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "chaotic-nyx/nixpkgs";
+    };
 
     # Home configuration management
-    home-manager.url = "github:nix-community/home-manager/master";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager/master";
+      inputs.nixpkgs.follows = "chaotic-nyx/nixpkgs";
+    };
+
+
+    #
+    # Development tooling
+    #
+
+    # Devshell to set up a development environment
+    devshell = {
+      url = "github:numtide/devshell";
+      flake = false;
+    };
+
+    # Easy linting of the flake and all kind of other stuff
+    pre-commit-hooks = {
+      url = "github:cachix/pre-commit-hooks.nix";
+      inputs.flake-compat.follows = "chaotic-nyx/nixpkgs";
+      inputs.flake-utils.follows = "chaotic-nyx/flake-utils";
+      inputs.nixpkgs.follows = "chaotic-nyx/nixpkgs";
+      # Only used for the tests of pre-commit-hooks. Override stops double fetch
+      inputs.nixpkgs-stable.follows = "chaotic-nyx/nixpkgs";
+    };
+
+    #
+    # Theming
+    #
+
+    # Beautiful pastel theming
+    catppuccin.url = "github:catppuccin/nix";
+    catppuccin-vsc = {
+      url = "github:catppuccin/vscode";
+      inputs.nixpkgs.follows = "chaotic-nyx/nixpkgs";
+    };
   };
   outputs =
     { flake-parts

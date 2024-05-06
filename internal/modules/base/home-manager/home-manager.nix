@@ -16,7 +16,7 @@ in
     description = "List of home-manager configurations to include for all users.";
     example = "./dotfiles.nix";
     internal = true;
-    type = types.listOf types.path;
+    type = types.listOf types.deferredModule;
   };
 
   config = {
