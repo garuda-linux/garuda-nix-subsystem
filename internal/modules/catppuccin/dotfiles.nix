@@ -76,6 +76,53 @@
     x11.defaultCursor = "Catppuccin-Mocha-Maroon-Cursors";
   };
 
+  # Some likely static configs
+  home.file =
+    {
+      ".config/konsolerc".text = ''
+        [Desktop Entry]
+        DefaultProfile=Catppuccin.profile
+
+        [General]
+        ConfigVersion=1
+
+        [KonsoleWindow]
+        ShowWindowTitleOnTitleBar=true
+
+        [MainWindow]
+        ToolBarsMovable=Disabled
+
+        [MemorySettings]
+        EnableMemoryMonitoring=true
+        MemoryLimitValue=1024
+
+        [SearchSettings]
+        SearchRegExpression=true
+
+        [UiSettings]
+        ColorScheme=
+      '';
+      ".local/share/konsole/Catppuccin-Mocha.colorscheme".source = ./static/Catppuccin-Mocha.colorscheme;
+      ".local/share/konsole/Catppuccin.profile".text = ''
+        [Appearance]
+        ColorScheme=Catppuccin-Mocha
+        Font=JetBrainsMonoNL Nerd Font,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+
+        [Cursor Options]
+        CursorShape=1
+
+        [General]
+        Command=/run/current-system/sw/bin/fish
+        Name=Catppuccin
+        Parent=FALLBACK/
+        TerminalCenter=true
+
+        [Scrolling]
+        HistoryMode=2
+        HistorySize=10000
+      '';
+    };
+
   # Compatibility for GNOME apps
   dconf.enable = true;
 
