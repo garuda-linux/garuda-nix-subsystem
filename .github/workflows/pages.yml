@@ -17,6 +17,12 @@ jobs:
         uses: peaceiris/actions-mdbook@v1
         with:
           mdbook-version: latest
+      - name: Install further deps 📦
+        run: |
+          sudo apt-get install -y --no-install-recommends cargo
+          cargo install mdbook-admonish
+          cargo install mdbook-emojicodes
+          PATH=$HOME/.cargo/bin:$PATH
       - name: Install and build 🔧
         run: cd docs && mdbook build
       - name: Deploy 🚀
