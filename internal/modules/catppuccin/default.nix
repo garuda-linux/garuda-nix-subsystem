@@ -71,7 +71,7 @@ in
             Font = gDefault "Fira Sans";
           };
         };
-        theme = "Breeze";
+        theme = gDefault "Breeze";
         # theme = "catppuccin-sddm-corners"; - until Catppuccin is KDE 6 updated
         wayland.enable = gDefault false;
       };
@@ -144,6 +144,12 @@ in
       GTK_THEME = gDefault "Catppuccin-Mocha-Standard-Maroon-Dark";
       MOZ_USE_XINPUT2 = gDefault "1";
       SDL_AUDIODRIVER = gDefault "pipewire";
+    };
+
+    # Plymouth theme
+    boot.plymouth = {
+      theme = "catppuccin-mocha";
+      themePackages = [ (pkgs.catppuccin-plymouth.override { variant = "mocha"; }) ];
     };
 
     # Theming
