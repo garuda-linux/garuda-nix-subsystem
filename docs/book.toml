@@ -1,5 +1,5 @@
 [book]
-authors = ["dr460nf1r3"]
+authors = ["dr460nf1r3", "TNE"]
 description = "Contains the documentation for the Garuda Nix subsystem"
 language = "en"
 multilingual = false
@@ -7,8 +7,21 @@ src = "src"
 title = "Garuda Nix Subsystem documentation"
 
 [output.html]
-additional-css = ["theme/css/custom.css"]
-default-theme = "dark"
+additional-css = ["./mdbook-admonish.css", "theme/css/custom.css", "./theme/catppuccin.css", "./theme/catppuccin-admonish.css"]
+default-theme = "mocha"
+preferred-dark-theme = "mocha"
 git-repository-icon = "fa-code-fork"
 git-repository-url = "https://gitlab.com/garuda-linux/garuda-nix-subsystem"
 site-url = "https://nix.garudalinux.org"
+
+[preprocessor]
+
+[preprocessor.admonish]
+after = ["links"]
+command = "mdbook-admonish"
+assets_version = "3.0.2" # do not edit: managed by `mdbook-admonish install`
+
+[preprocessor.catppuccin]
+assets_version = "2.1.0" # DO NOT EDIT: Managed by `mdbook-catppuccin install`
+
+[preprocessor.emojicodes]
