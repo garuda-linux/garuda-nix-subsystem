@@ -7,7 +7,7 @@ with garuda-lib;
   options.garuda.create-home = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = config.garuda.system.isGui;
       internal = true;
     };
     skel = lib.mkOption {

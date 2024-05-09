@@ -8,7 +8,7 @@ with garuda-lib;
   options = {
     garuda.audio.pipewire.enable =
       mkOption {
-        default = true;
+        default = config.garuda.system.isGui;
         type = types.bool;
         example = false;
         description = ''
@@ -16,9 +16,9 @@ with garuda-lib;
         '';
       };
   };
-  config = {
+  config = mkIf cfg.pipewire.enable {
     # Pipewire & wireplumber configuration
-    services.pipewire = mkIf cfg.pipewire.enable {
+    services.pipewire = {
       alsa.enable = gDefault true;
       alsa.support32Bit = gDefault true;
       enable = gDefault true;
@@ -28,9 +28,9 @@ with garuda-lib;
     };
 
     # Enable the realtime kit
-    security.rtkit.enable = mkIf cfg.pipewire.enable (gDefault true);
+    security.rtkit.enable = gDefault true;
 
     # Disable PulseAudio
-    hardware.pulseaudio.enable = mkIf cfg.pipewire.enable (gDefault false);
+    hardware.pulseaudio.enable = gDefault false;
   };
 }

@@ -16,7 +16,7 @@ with garuda-lib;
     kernelParams = gExcludableArray config "kernelparameters" [ "acpi_call" "quiet" ];
     # Enables Plymouth with the bgrt theme (UEFI splash screen)
     plymouth = {
-      enable = gDefault true;
+      enable = gDefault config.garuda.system.isGui;
       theme = gDefault "bgrt";
     };
     tmp = {

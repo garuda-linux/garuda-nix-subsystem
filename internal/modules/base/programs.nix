@@ -38,15 +38,15 @@ with garuda-lib;
     };
 
     # Run Appimages with appimage-run
-    boot.binfmt.registrations = lib.genAttrs [ "appimage" "AppImage" ] (ext: {
+    boot.binfmt.registrations = lib.mkIf config.garuda.system.isGui (lib.genAttrs [ "appimage" "AppImage" ] (ext: {
       interpreter = "/run/current-system/sw/bin/appimage-run";
       magicOrExtension = ext;
       recognitionType = "extension";
-    });
+    }));
 
     # Run unpatched linux binaries with nix-ld
     programs.nix-ld = {
-      enable = gDefault true;
+      enable = gDefault config.garuda.system.isGui;
       libraries = with pkgs; [
         SDL2
         curl
@@ -70,7 +70,7 @@ with garuda-lib;
     };
 
     # Easy launching of apps via "comma", contains command-not-found database
-    programs.nix-index-database.comma.enable = gDefault true;
+    programs.nix-index-database.comma.enable = gDefault config.garuda.system.isGui;
     programs.command-not-found.enable = gDefault false;
   };
 }

@@ -1,4 +1,5 @@
-{ garuda-lib
+{ config
+, garuda-lib
 , pkgs
 , ...
 }:
@@ -50,7 +51,7 @@ with garuda-lib; {
 
     # Direnv for per-directory environment variables
     direnv = {
-      enable = true;
+      enable = config.garuda.system.isGui;
       nix-direnv.enable = true;
     };
 

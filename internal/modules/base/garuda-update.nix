@@ -1,4 +1,6 @@
-{ pkgs
+{ config
+, lib
+, pkgs
 , ...
 }:
 let
@@ -19,6 +21,6 @@ in
 {
   config = {
     # This is the default updater for GNS (irrelevant for non-GNS users)
-    environment.systemPackages = [ garuda-update ];
+    environment.systemPackages = lib.mkIf config.garuda.system.isGui [ garuda-update ];
   };
 }

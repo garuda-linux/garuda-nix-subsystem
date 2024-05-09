@@ -8,7 +8,7 @@ with garuda-lib;
   options = {
     garuda.networking = {
       enable = mkOption {
-        default = true;
+        default = config.garuda.system.isGui;
         type = types.bool;
         example = true;
         description = ''
@@ -16,11 +16,19 @@ with garuda-lib;
         '';
       };
       iwd = mkOption {
-        default = true;
+        default = config.garuda.system.isGui;
         type = types.bool;
         example = true;
         description = ''
           If set to true, iwd will be used as the wireless backend.
+        '';
+      };
+      tweakKernel = mkOption {
+        default = true;
+        type = types.bool;
+        example = true;
+        description = ''
+          If set to true, kernel parameters will be set to improve networking performance.
         '';
       };
     };
@@ -28,7 +36,7 @@ with garuda-lib;
   config = lib.mkIf cfg.enable {
     networking = {
       networkmanager = {
-        enable = gDefault true;
+        enable = gDefault config.garuda.system.isGui;
         unmanaged = [ "lo" "docker0" "virbr0" ];
         wifi = {
           backend = gDefault (if cfg.iwd then "iwd" else "wpa_supplicant");
@@ -38,7 +46,7 @@ with garuda-lib;
       # Disable non-NetworkManager
       useDHCP = gDefault false;
       wireless.iwd = lib.mkIf cfg.iwd {
-        enable = gDefault true;
+        enable = gDefault config.garuda.system.isGui;
         settings = {
           General.AddressRandomization = gDefault "once";
           General.AddressRandomizationRange = gDefault "full";
@@ -47,11 +55,11 @@ with garuda-lib;
     };
 
     # Enable wireless database
-    hardware.wirelessRegulatoryDatabase = gDefault true;
+    hardware.wirelessRegulatoryDatabase = gDefault config.garuda.system.isGui;
 
     # Enable BBR & cake
-    boot.kernelModules = [ "tcp_bbr" ];
-    boot.kernel.sysctl = {
+    boot.kernelModules = lib.mkIf cfg.tweakKernel [ "tcp_bbr" ];
+    boot.kernel.sysctl = lib.mkIf cfg.tweakKernel {
       "net.core.default_qdisc" = "cake";
       "net.ipv4.tcp_congestion_control" = "bbr";
       "net.ipv4.tcp_fin_timeout" = 5;

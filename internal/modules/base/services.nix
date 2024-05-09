@@ -34,14 +34,14 @@ with garuda-lib;
 
   config = {
     # Bluetooth
-    hardware.bluetooth.enable = gDefault true;
+    hardware.bluetooth.enable = gDefault config.garuda.system.isGui;
 
     # Handle ACPI events
     services = {
-      acpid.enable = gDefault true;
+      acpid.enable = gDefault config.garuda.system.isGui;
       avahi = {
-        enable = gDefault true;
-        nssmdns4 = gDefault true;
+        enable = gDefault config.garuda.system.isGui;
+        nssmdns4 = gDefault config.garuda.system.isGui;
       };
     };
 
@@ -83,7 +83,7 @@ with garuda-lib;
     };
 
     # Power profiles daemon
-    services.power-profiles-daemon.enable = gDefault true;
+    services.power-profiles-daemon.enable = gDefault config.garuda.system.isGui;
 
     # Docker
     virtualisation.docker = {
@@ -93,7 +93,7 @@ with garuda-lib;
 
     # Frmware updater
     services.fwupd = {
-      enable = true;
+      enable = config.garuda.system.isGui;
       daemonSettings.EspLocation = config.boot.loader.efi.efiSysMountPoint;
     };
   };

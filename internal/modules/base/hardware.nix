@@ -29,9 +29,9 @@ with garuda-lib;
       };
       enableRedistributableFirmware = gDefault true;
       opengl = {
-        driSupport = gDefault true;
-        driSupport32Bit = gDefault true;
-        enable = gDefault true;
+        driSupport = gDefault config.garuda.system.isGui;
+        driSupport32Bit = gDefault config.garuda.system.isGui;
+        enable = gDefault config.garuda.system.isGui;
       };
     };
   };
