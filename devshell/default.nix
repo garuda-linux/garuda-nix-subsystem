@@ -30,6 +30,8 @@ rec {
       { package = "commitizen"; }
       { package = "manix"; }
       { package = "mdbook"; }
+      { package = "mdbook-admonish"; }
+      { package = "mdbook-emojicodes"; }
       { package = "nix-melt"; }
       { package = "pre-commit"; }
       { package = "yamlfix"; }
