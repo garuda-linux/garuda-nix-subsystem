@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" class="dark" dir="ltr">
+<html lang="en" class="mocha" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
@@ -29,7 +29,10 @@
         <link rel="stylesheet" href="../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href=".././mdbook-admonish.css">
         <link rel="stylesheet" href="../theme/css/custom.css">
+        <link rel="stylesheet" href=".././theme/catppuccin.css">
+        <link rel="stylesheet" href=".././theme/catppuccin-admonish.css">
 
     </head>
     <body class="sidebar-visible no-js">
@@ -37,7 +40,7 @@
         <!-- Provide site root to javascript -->
         <script>
             var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "dark";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "mocha" : "mocha";
         </script>
 
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
@@ -62,7 +65,7 @@
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             var html = document.querySelector('html');
-            html.classList.remove('dark')
+            html.classList.remove('mocha')
             html.classList.add(theme);
             var body = document.querySelector('body');
             body.classList.remove('no-js')
@@ -91,9 +94,7 @@
             <div class="sidebar-scrollbox">
                 <ol class="chapter"><li class="chapter-item expanded affix "><li class="part-title">Welcome</li><li class="chapter-item expanded "><a href="../intro.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">Quick start</li><li class="chapter-item expanded "><a href="../subsystem/quick-start.html"><strong aria-hidden="true">2.</strong> Using as subsystem of Garuda</a></li><li class="chapter-item expanded "><a href="../nixos-module/quick-start.html" class="active"><strong aria-hidden="true">3.</strong> Using as NixOS module</a></li></ol>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
-                <div class="sidebar-resize-indicator"></div>
-            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <!-- Track and set sidebar scroll position -->
@@ -136,6 +137,10 @@
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="latte">Latte</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="frappe">Frappé</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="macchiato">Macchiato</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mocha">Mocha</button></li>
                         </ul>
                         <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
@@ -179,17 +184,17 @@
                     <main>
                         <p>To make use of this flake, you can use it as follows - <a href="https://nixos.wiki/wiki/Flakes#Enable_flakes">we assume flakes to be enabled</a>:</p>
 <pre><code class="language-nix">{
-  description = &quot;My configuration&quot;;
+  description = "My configuration";
 
   inputs = {
-    nixpkgs.url = &quot;github:NixOS/nixpkgs/nixpkgs-unstable&quot;;
-    garuda.url = &quot;gitlab:garuda-linux/garuda-nix-subsystem/stable&quot;;
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    garuda.url = "gitlab:garuda-linux/garuda-nix-subsystem/stable";
   };
 
   outputs = { garuda, nixpkgs, ... }: {
     nixosConfigurations = {
       hostname = garuda.lib.garudaSystem {
-        system = &quot;x86_64-linux&quot;;
+        system = "x86_64-linux";
         modules = [
           ./configuration.nix # Your system configuration.
         ];
@@ -206,7 +211,7 @@
   imports = [ ./hardware-configuration.nix ];
 
   # Hostname
-  networking.hostName = &quot;yourmachine&quot;;
+  networking.hostName = "yourmachine";
 
   # Enabling the dr460nized desktop version
   # as well as the linux-cachyos kernel and gaming
