@@ -1,0 +1,19 @@
+[Desktop Entry]
+DefaultProfile=Catppuccin.profile
+
+[KonsoleWindow]
+SaveGeometryOnExit=true
+ShowMenuBarByDefault=false
+
+[MainWindow]
+MenuBar=Disabled
+RestorePositionForNextInstance=true
+State=AAAA/wAAAAD9AAAAAAAAA4EAAAIEAAAABAAAAAQAAAAIAAAACPwAAAABAAAAAwAAAAIAAAAWAG0AYQBpAG4AVABvAG8AbABCAGEAcgAAAAAA/////wAAAAAAAAAAAAAAHABzAGUAcwBzAGkAbwBuAFQAbwBvAGwAYgBhAHIAAAAAAAAAAfsAAAAAAAAAAA==
+StatusBar=Disabled
+
+[MemorySettings]
+EnableMemoryMonitoring=true
+MemoryLimitValue=1024
+
+[SearchSettings]
+SearchRegExpression=true

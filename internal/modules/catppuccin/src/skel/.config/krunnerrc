@@ -1,0 +1,5 @@
+[General]
+FreeFloating=true
+
+[Plugins]
+baloosearchEnabled=true

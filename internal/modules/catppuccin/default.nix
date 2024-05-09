@@ -6,6 +6,26 @@
                  }:
 with garuda-lib;
 let
+  catppuccin-settings = pkgs.stdenvNoCC.mkDerivation {
+    pname = "catppuccin-settings";
+    version = "0.0.2";
+    src = ./src;
+    installPhase = ''
+      runHook preInstall
+      install -d $out/skel
+      cp -ar skel/{.config,.local} $out/skel
+      install -d $out/share
+      cp -ar share/{konsole,plasma,wallpapers} $out/share
+      runHook postInstall
+    '';
+    meta = with lib; {
+      description = "Garuda NixOS flake Catppuccin NixOS configs";
+      homepage = "https://garudalinux.org";
+      license = licenses.gpl3Only;
+      maintainers = [ maintainers.dr460nf1r3 ];
+      platforms = platforms.all;
+    };
+  };
   cfg = config.garuda.catppuccin;
 in
 {
@@ -25,7 +45,7 @@ in
         type = lib.types.bool;
       };
       themePackage = lib.mkOption {
-        default = catppuccin-kde;
+        default = pkgs.catppuccin-kde;
         description = ''
           The theme package to use.
         '';
@@ -51,8 +71,8 @@ in
             Font = gDefault "Fira Sans";
           };
         };
-        theme = gDefault "catppuccin-sddm-corners";
-
+        theme = "Breeze";
+        # theme = "catppuccin-sddm-corners"; - until Catppuccin is KDE 6 updated
         wayland.enable = gDefault false;
       };
     };
@@ -104,6 +124,9 @@ in
         hmModule = inputs.catppuccin.homeManagerModules.catppuccin;
       })
     ];
+
+    # Use the custom Catppuccin settings package as default /etc/skel folder
+    garuda.create-home.skel = gDefault "${gGenerateSkel pkgs "${catppuccin-settings}/skel" "catppuccin"}";
 
     # These need to be enabled for complete functionality
     programs = {

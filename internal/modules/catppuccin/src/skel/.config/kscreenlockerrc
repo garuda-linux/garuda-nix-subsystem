@@ -1,0 +1,4 @@
+[Daemon]
+Autolock=true
+LockGrace=60
+Timeout=20
