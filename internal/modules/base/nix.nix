@@ -20,13 +20,6 @@ with garuda-lib;
       min-free = ${toString (100 * 1024 * 1024)}
     '';
 
-    # Do daily garbage collections
-    gc = {
-      automatic = gDefault true;
-      dates = "daily";
-      options = "--delete-older-than 7d";
-    };
-
     settings = {
       # Allow using flakes & automatically optimize the nix store
       auto-optimise-store = gDefault true;
@@ -80,8 +73,8 @@ with garuda-lib;
         | "${pkgs.gawk}/bin/awk" 'match($0, /^(.*\/result) -> \/nix\/store\/[^-]+-nixos-system/, a) \
         { print a[1] }' | xargs -r -d\\n rm
     '';
-    before = [ "nix-gc.service" ];
-    wantedBy = [ "nix-gc.service" ];
+    before = [ "nh-clean.service" ];
+    wantedBy = [ "nh-clean.service" ];
   };
 
   # Overlays from the overlays folder
@@ -89,10 +82,11 @@ with garuda-lib;
     overlay
   ];
 
+  # Improved nix rebuild UX & cleanup timer
   programs.nh = {
     clean = {
       enable = true;
-      extraArgs = "--keep-since 5d --keep 10";
+      extraArgs = "--keep-since 7d --keep 10";
     };
     enable = true;
   };
