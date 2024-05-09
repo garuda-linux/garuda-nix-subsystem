@@ -18,6 +18,7 @@ with garuda-lib; {
       "....." = "cd ../../../../";
       "......" = "cd ../../../../../";
       "bat" = "bat --style header --style snip --style changes";
+      "boot" = "nh os boot";
       "cat" = "bat --style header --style snip --style changes";
       "cls" = "clear";
       "dd" = "dd progress=status";
@@ -36,8 +37,11 @@ with garuda-lib; {
       "ls" = "eza -al --color=always --group-directories-first --icons";
       "psmem" = "ps auxf | sort -nr -k 4";
       "psmem10" = "ps auxf | sort -nr -k 4 | head -1";
+      "reb" = "nh os switch";
+      "roll" = "nh os switch -- --rollback";
       "su" = "sudo su -";
       "tarnow" = "tar acf ";
+      "test" = "nh os test";
       "tree" = "eza --git --color always -T";
       "untar" = "tar zxvf ";
       "vdir" = "vdir --color=auto";
@@ -63,6 +67,7 @@ with garuda-lib; {
         "...." = "cd ../../../";
         "....." = "cd ../../../../";
         "......" = "cd ../../../../../";
+        "boot" = "nh os boot";
         "cls" = "clear";
         "diffnix" = "nvd diff $(sh -c 'ls -d1v /nix/var/nix/profiles/system-*-link|tail -n 2')";
         "edit" = "sops";
@@ -71,12 +76,12 @@ with garuda-lib; {
         "gpr" = "git pull --rebase";
         "gpull" = "git pull";
         "gpush" = "git push";
-        "reb" = " sudo nixos-rebuild switch -L";
-        "roll" = "sudo nixos-rebuild switch --rollback";
-        "run" = "nix run nixpkgs#";
+        "reb" = "nh os switch";
+        "roll" = "nh os switch -- --rollback";
+        "run" = "comma ";
         "su" = "sudo su -";
         "tarnow" = "tar acf ";
-        "test" = "sudo nixos-rebuild switch --test";
+        "test" = "nh os test";
         "tree" = "eza --git --color always -T";
         "untar" = "tar zxvf ";
         "use" = "nix shell nixpkgs#";

@@ -84,7 +84,16 @@ with garuda-lib;
     wantedBy = [ "nix-gc.service" ];
   };
 
+  # Overlays from the overlays folder
   nixpkgs.overlays = [
     overlay
   ];
+
+  programs.nh = {
+    clean = {
+      enable = true;
+      extraArgs = "--keep-since 5d --keep 10";
+    };
+    enable = true;
+  };
 }
