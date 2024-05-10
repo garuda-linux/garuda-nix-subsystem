@@ -1,4 +1,5 @@
 { config
+, garuda-lib
 , lib
 , ...
 }:
@@ -62,6 +63,6 @@ in
     '';
 
     # No X turns this off, so re-enable it
-    gtk.iconCache.enable = gDefault true;
+    gtk.iconCache.enable = garuda-lib.gDefault true;
   };
 }
