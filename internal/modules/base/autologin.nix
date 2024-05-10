@@ -60,5 +60,8 @@ in
           exec ${cfg.startupCommand}
       fi
     '';
+
+    # No X turns this off, so re-enable it
+    gtk.iconCache.enable = gDefault true;
   };
 }

@@ -70,7 +70,15 @@ with garuda-lib;
     };
 
     # Easy launching of apps via "comma", contains command-not-found database
-    programs.nix-index-database.comma.enable = gDefault config.garuda.system.isGui;
-    programs.command-not-found.enable = gDefault false;
+    programs = {
+      nix-index-database.comma.enable = gDefault config.garuda.system.isGui;
+      command-not-found.enable = gDefault false;
+    };
+
+    # Disabled by default, but very useful
+    xdg.portal = {
+      enable = gDefault config.garuda.system.isGui;
+      xdgOpenUsePortal = gDefault config.garuda.system.isGui;
+    };
   };
 }
