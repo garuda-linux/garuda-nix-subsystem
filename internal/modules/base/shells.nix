@@ -42,7 +42,7 @@ with garuda-lib; {
       "roll" = "nh os switch -- --rollback";
       "su" = "sudo su -";
       "tarnow" = "tar acf ";
-      "test" = "nh os test";
+      "testb" = "nh os test";
       "tree" = "eza --git --color always -T";
       "untar" = "tar zxvf ";
       "vdir" = "vdir --color=auto";
@@ -52,7 +52,7 @@ with garuda-lib; {
     # Direnv for per-directory environment variables
     direnv = {
       enable = config.garuda.system.isGui;
-      nix-direnv.enable = true;
+      nix-direnv.enable = config.garuda.system.isGui;
     };
 
     # The fish shell, default for terminals
@@ -82,7 +82,7 @@ with garuda-lib; {
         "run" = "comma ";
         "su" = "sudo su -";
         "tarnow" = "tar acf ";
-        "test" = "nh os test";
+        "testb" = "nh os test";
         "tree" = "eza --git --color always -T";
         "untar" = "tar zxvf ";
         "use" = "nix shell nixpkgs#";
