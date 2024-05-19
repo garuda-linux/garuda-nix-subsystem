@@ -59,7 +59,6 @@
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
       inputs.flake-compat.follows = "chaotic-nyx/nixpkgs";
-      inputs.flake-utils.follows = "chaotic-nyx/flake-utils";
       inputs.nixpkgs.follows = "chaotic-nyx/nixpkgs";
       # Only used for the tests of pre-commit-hooks. Override stops double fetch
       inputs.nixpkgs-stable.follows = "chaotic-nyx/nixpkgs";
