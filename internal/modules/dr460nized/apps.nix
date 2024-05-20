@@ -19,6 +19,7 @@ lib.mkIf cfg.enable {
     jamesdsp
     kdePackages.kdegraphics-thumbnailers
     kdePackages.kimageformats
+    kdePackages.kio-admin
     kdePackages.qtstyleplugin-kvantum
     libinput-gestures
     plasma6-applet-window-buttons
