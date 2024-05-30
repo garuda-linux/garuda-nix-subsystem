@@ -107,7 +107,7 @@ with garuda-lib; {
       };
       shellInit = gDefault ''
         set fish_greeting
-        ${pkgs.fastfetch}/bin/fastfetch -L nixos --load-config paleofetch.jsonc
+        ${pkgs.fastfetch}/bin/fastfetch
       '';
     };
 
