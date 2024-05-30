@@ -1,7 +1,7 @@
 _: {
   # Git shall be used a lot on flaky systems
   programs.git = {
-    diff-so-fancy.enable = true;
+    difftastic.enable = true;
     enable = true;
     extraConfig = {
       core = { editor = "micro"; };
