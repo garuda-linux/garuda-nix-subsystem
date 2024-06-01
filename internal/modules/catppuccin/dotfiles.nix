@@ -70,6 +70,7 @@
 
   # This is needed to get the cursor on apps like Webstorm
   home.pointerCursor = {
+    gtk.enable = true;
     name = "Catppuccin-Mocha-Maroon-Cursors";
     size = 24;
     package = pkgs.catppuccin-cursors;
