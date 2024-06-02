@@ -17,6 +17,7 @@ lib.mkIf cfg.enable {
       variant = "mocha";
       themeList = [ "bat" "btop" "kvantum" ];
     })
+    catppuccin-cursors
     (catppuccin-gtk.override {
       accents = [ "maroon" ];
       variant = "mocha";
@@ -43,8 +44,6 @@ lib.mkIf cfg.enable {
     plasma6-applet-window-buttons
     resvg
     sshfs
-    sweet
-    sweet-nova
     vlc
     xdg-desktop-portal
   ];
