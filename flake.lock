@@ -92,11 +92,11 @@
         "yafas": "yafas"
       },
       "locked": {
-        "lastModified": 1717397536,
-        "narHash": "sha256-Tea0kay1a8RDEhnwgpbqbaUmDgv0nn+tpDWr3vQOptU=",
+        "lastModified": 1717434269,
+        "narHash": "sha256-2BJx7nu7TjguvqxmIGWnDwk8CVG/59Bx6l2GDeYNdp8=",
         "owner": "chaotic-cx",
         "repo": "nyx",
-        "rev": "674c54d623c62f6c21cd2dc7e0a73c4b718aca00",
+        "rev": "e64efec5b797dcd2978241e6343cb75214324d65",
         "type": "github"
       },
       "original": {
@@ -209,11 +209,11 @@
     "devshell": {
       "flake": false,
       "locked": {
-        "lastModified": 1713532798,
-        "narHash": "sha256-wtBhsdMJA3Wa32Wtm1eeo84GejtI43pMrFrmwLXrsEc=",
+        "lastModified": 1717408969,
+        "narHash": "sha256-Q0OEFqe35fZbbRPPRdrjTUUChKVhhWXz3T9ZSKmaoVY=",
         "owner": "numtide",
         "repo": "devshell",
-        "rev": "12e914740a25ea1891ec619bb53cf5e6ca922e40",
+        "rev": "1ebbe68d57457c8cae98145410b164b5477761f4",
         "type": "github"
       },
       "original": {
