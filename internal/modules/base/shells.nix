@@ -115,36 +115,80 @@ with garuda-lib; {
     starship = {
       enable = gDefault true;
       settings = {
+        aws.symbol = gDefault "  ";
+        buf.symbol = gDefault " ";
+        c.symbol = gDefault " ";
         cmd_duration = {
           disabled = gDefault false;
           format = gDefault "took [$duration]($style)";
           min_time = gDefault 1;
         };
+        conda.symbol = gDefault " ";
+        crystal.symbol = gDefault " ";
+        dart.symbol = gDefault " ";
         directory = {
+          read_only = gDefault " 󰌾";
           style = gDefault "purple";
           truncate_to_repo = gDefault true;
           truncation_length = gDefault 0;
           truncation_symbol = gDefault "repo: ";
         };
+        docker_context.symbol = gDefault " ";
+        elixir.symbol = gDefault " ";
+        elm.symbol = gDefault " ";
+        fennel.symbol = gDefault " ";
+        fossil_branch.symbol = gDefault " ";
+        git_branch.symbol = gDefault " ";
+        golang.symbol = gDefault " ";
+        guix_shell.symbol = gDefault " ";
+        haskell.symbol = gDefault " ";
+        haxe.symbol = gDefault " ";
+        hg_branch.symbol = gDefault " ";
         hostname = {
           disabled = gDefault false;
           format = gDefault "[$hostname]($style) in ";
           ssh_only = gDefault false;
+          ssh_symbol = gDefault " ";
           style = gDefault "bold dimmed red";
           trim_at = gDefault "-";
         };
+        java.symbol = gDefault " ";
+        julia.symbol = gDefault " ";
+        kotlin.symbol = gDefault " ";
+        lua.symbol = gDefault " ";
+        memory_usage.symbol = gDefault "󰍛 ";
+        meson.symbol = gDefault "󰔷 ";
+        nim.symbol = gDefault "󰆥 ";
+        nix_shell.symbol = gDefault " ";
+        nodejs.symbol = gDefault " ";
+        ocaml.symbol = gDefault " ";
+        os = {
+          disabled = false;
+          symbols.NixOS = gDefault " ";
+        };
+        package.symbol = gDefault "󰏗 ";
+        perl.symbol = gDefault " ";
+        php.symbol = gDefault " ";
+        pijul_channel.symbol = " ";
+        python.symbol = gDefault " ";
+        rlang.symbol = gDefault "󰟔 ";
+        ruby.symbol = gDefault " ";
+        rust.symbol = gDefault " ";
+        scala.symbol = gDefault " ";
         scan_timeout = gDefault 10;
         status = {
           disabled = gDefault false;
           map_symbol = gDefault true;
         };
         sudo.disabled = gDefault false;
+        swift.symbol = gDefault " ";
         username = {
           format = gDefault " [$user]($style)@";
           show_always = gDefault true;
           style_root = gDefault "bold red";
           style_user = gDefault "bold red";
         };
+        zig.symbol = gDefault " ";
       };
     };
 
