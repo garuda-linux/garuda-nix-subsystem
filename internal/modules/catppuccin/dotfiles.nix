@@ -36,8 +36,6 @@
     gtk3.extraConfig = {
       gtk-application-prefer-dark-theme = true;
       gtk-button-images = true;
-      gtk-cursor-theme-name = "Catppuccin-Mocha-Maroon-Cursors";
-      gtk-cursor-theme-size = 24;
       gtk-decoration-layout = "close,maximize,minimize:";
       gtk-enable-animations = true;
       gtk-icon-theme-name = "Papirus-Dark";
@@ -52,8 +50,6 @@
     };
     gtk4.extraConfig = {
       gtk-application-prefer-dark-theme = true;
-      gtk-cursor-theme-name = "Catppuccin-Mocha-Maroon-Cursors";
-      gtk-cursor-theme-size = 24;
       gtk-decoration-layout = "close,maximize,minimize:";
       gtk-enable-animations = true;
       gtk-icon-theme-name = "Papirus-Dark";
@@ -71,10 +67,10 @@
   # This is needed to get the cursor on apps like Webstorm
   home.pointerCursor = {
     gtk.enable = true;
-    name = "Catppuccin-Mocha-Maroon-Cursors";
+    name = "catppuccin-mocha-maroon-cursors";
     size = 24;
     package = pkgs.catppuccin-cursors;
-    x11.defaultCursor = "Catppuccin-Mocha-Maroon-Cursors";
+    x11.defaultCursor = "catppuccin-mocha-maroon-cursors";
   };
 
   # Compatibility for GNOME apps
