@@ -28,8 +28,9 @@ with garuda-lib;
         intel.updateMicrocode = gDefault true;
       };
       enableRedistributableFirmware = gDefault true;
-      opengl = {
+      graphics = {
         enable = gDefault config.garuda.system.isGui;
+        enable32Bit = gDefault config.garuda.system.isGui;
       };
     };
   };
