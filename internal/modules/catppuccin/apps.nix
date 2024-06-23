@@ -17,7 +17,7 @@ lib.mkIf cfg.enable {
       variant = "mocha";
       themeList = [ "bat" "btop" "kvantum" ];
     })
-    catppuccin-cursors
+    catppuccin-cursors.mochaMaroon
     (catppuccin-gtk.override {
       accents = [ "maroon" ];
       variant = "mocha";
