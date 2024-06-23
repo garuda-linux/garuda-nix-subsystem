@@ -162,10 +162,6 @@ with garuda-lib; {
         nix_shell.symbol = gDefault " ";
         nodejs.symbol = gDefault " ";
         ocaml.symbol = gDefault " ";
-        os = {
-          disabled = false;
-          symbols.NixOS = gDefault " ";
-        };
         package.symbol = gDefault "󰏗 ";
         perl.symbol = gDefault " ";
         php.symbol = gDefault " ";
@@ -183,7 +179,7 @@ with garuda-lib; {
         sudo.disabled = gDefault false;
         swift.symbol = gDefault " ";
         username = {
-          format = gDefault " [$user]($style)@";
+          format = gDefault " [$user]($style)@";
           show_always = gDefault true;
           style_root = gDefault "bold red";
           style_user = gDefault "bold red";
