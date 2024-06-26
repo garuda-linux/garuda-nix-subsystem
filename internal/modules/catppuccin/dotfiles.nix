@@ -1,4 +1,4 @@
-{ hmModule }: { lib, pkgs, ... }:
+{ hmModule }: { lib, ... }:
 {
   imports = [
     ./metafiles.nix
@@ -9,6 +9,7 @@
   catppuccin = {
     accent = "maroon";
     enable = true;
+    pointerCursor.enable = true;
   };
 
   # Complete theming
@@ -67,9 +68,7 @@
   # This is needed to get the cursor on apps like Webstorm
   home.pointerCursor = {
     gtk.enable = true;
-    name = "catppuccin-mocha-maroon-cursors";
     size = 24;
-    package = pkgs.catppuccin-cursors;
     x11.defaultCursor = "catppuccin-mocha-maroon-cursors";
   };
 
