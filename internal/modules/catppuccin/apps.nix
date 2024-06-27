@@ -31,7 +31,6 @@ lib.mkIf cfg.enable {
       accent = "maroon";
       flavor = "mocha";
     })
-    catppuccin-sddm-corners # Not KDE 6 compatible yet
     ffmpegthumbnailer
     firedragon
     jamesdsp

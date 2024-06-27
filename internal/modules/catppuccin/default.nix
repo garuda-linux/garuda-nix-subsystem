@@ -64,16 +64,13 @@ in
       enable = gDefault true;
       sddm = {
         autoNumlock = gDefault true;
-        enable = gDefault true;
-        settings = {
-          General = {
-            CursorTheme = gDefault "Catppuccin-Mocha-Maroon-Cursors";
-            Font = gDefault "Fira Sans";
-          };
+        catppuccin = {
+          assertQt6Sddm = true;
+          enable = true;
+          font = "Fira Sans";
         };
-        theme = gDefault "Breeze";
-        # theme = "catppuccin-sddm-corners"; - until Catppuccin is KDE 6 updated
-        wayland.enable = gDefault false;
+        enable = gDefault true;
+        wayland.enable = gDefault true;
       };
     };
 

@@ -1,4 +1,4 @@
-_: {
+{ lib, ... }: {
   # Git shall be used a lot on flaky systems
   programs.git = {
     difftastic.enable = true;
@@ -46,7 +46,7 @@ _: {
     btop = {
       enable = true;
       settings = {
-        color_theme = "TTY";
+        color_theme = lib.mkDefault "TTY";
         proc_tree = true;
         theme_background = false;
       };
@@ -57,7 +57,6 @@ _: {
       enable = true;
       settings = {
         "autosu" = true;
-        "colorscheme" = "geany";
         "mkparents" = true;
       };
     };
