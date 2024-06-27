@@ -46,5 +46,8 @@ in
 
     # This is the default home-manager configuration
     garuda.home-manager.modules = gExcludableArray config "home-manager-modules" [ ./dotfiles.nix ];
+
+    # Backup files with a .bak extension, ensure not failing activation because of this
+    home-manager.backupFileExtension = ".bak";
   };
 }
