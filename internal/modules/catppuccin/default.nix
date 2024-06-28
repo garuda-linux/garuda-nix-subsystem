@@ -138,7 +138,6 @@ in
     # Enable Kvantum for theming & Pipewire
     environment.variables = {
       ALSOFT_DRIVERS = gDefault "pipewire";
-      GTK_THEME = gDefault "Catppuccin-Mocha-Standard-Maroon-Dark";
       MOZ_USE_XINPUT2 = gDefault "1";
       SDL_AUDIODRIVER = gDefault "pipewire";
     };
