@@ -2,11 +2,11 @@
   "nodes": {
     "catppuccin": {
       "locked": {
-        "lastModified": 1719592953,
-        "narHash": "sha256-pvWudX7LM7nFkutIxi5KCjv8RITAuiA547MtRZJ25LE=",
+        "lastModified": 1719709086,
+        "narHash": "sha256-AOSqDyzQV8I6+LpIoXdNh/DaH2qR3MCX4pGqDOhusL8=",
         "owner": "catppuccin",
         "repo": "nix",
-        "rev": "63e0859743908a53e58b3ceeca06a145a45c4435",
+        "rev": "6459b5a4a7fb5dd7b2ce1f86bc025da7e5c0aa4b",
         "type": "github"
       },
       "original": {
@@ -157,11 +157,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1719588253,
-        "narHash": "sha256-A03i8xiVgP14DCmV5P7VUv37eodCjY4e1iai0b2EuuM=",
+        "lastModified": 1719677234,
+        "narHash": "sha256-qO9WZsj/0E6zcK4Ht1y/iJ8XfwbBzq7xdqhBh44OP/M=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "7e68e55d2e16d3a1e92a679430728c35a30fd24e",
+        "rev": "36317d4d38887f7629876b0e43c8d9593c5cc48d",
         "type": "github"
       },
       "original": {
@@ -224,11 +224,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1719111455,
-        "narHash": "sha256-rnIxHx+fLpydjMQsbpZ21kblUr/lMqSaAtMA4+qMMEE=",
+        "lastModified": 1719716875,
+        "narHash": "sha256-uO0lphIrwlaN1gpjwSJPFSzjoNiS5VR8IYNy0VhtyNs=",
         "owner": "nix-community",
         "repo": "nix-index-database",
-        "rev": "4293f532d0107dfb7e6f8b34a0421dc8111320e6",
+        "rev": "2b0d5f3a4229c581e2bb839ac0b992feb366eba5",
         "type": "github"
       },
       "original": {
