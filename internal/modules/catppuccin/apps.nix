@@ -32,7 +32,7 @@ lib.mkIf cfg.enable {
       flavor = "mocha";
     })
     ffmpegthumbnailer
-    firedragon
+    # firedragon
     jamesdsp
     kdePackages.kdegraphics-thumbnailers
     kdePackages.kimageformats

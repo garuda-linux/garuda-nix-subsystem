@@ -15,7 +15,7 @@ lib.mkIf cfg.enable {
     blurredwallpaper
     dr460nized-kde-theme
     ffmpegthumbnailer
-    firedragon
+    # firedragon
     jamesdsp
     kdePackages.kdegraphics-thumbnailers
     kdePackages.kimageformats
