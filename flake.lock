@@ -49,11 +49,11 @@
         "yafas": "yafas"
       },
       "locked": {
-        "lastModified": 1721082386,
-        "narHash": "sha256-LA4kcRbsMSOcORRelQzhBhA8PvyfdbaoXGYXY8H1P4I=",
+        "lastModified": 1721134628,
+        "narHash": "sha256-hUYnfPwlDfrmAHNdzRBaXeEnxpfAKYyyfJo3AFie5u8=",
         "owner": "chaotic-cx",
         "repo": "nyx",
-        "rev": "b1ecb501161bae54fbc9fd27200bd34d40c4a47a",
+        "rev": "7eeff58148cf73cbe7d56120e244f354537f0e56",
         "type": "github"
       },
       "original": {
@@ -157,11 +157,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1720734513,
-        "narHash": "sha256-neWQ8eNtLTd+YMesb7WjKl1SVCbDyCm46LUgP/g/hdo=",
+        "lastModified": 1721135958,
+        "narHash": "sha256-H548rpPMsn25LDKn1PCFmPxmWlClJJGnvdzImHkqjuY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "90ae324e2c56af10f20549ab72014804a3064c7f",
+        "rev": "afd2021bedff2de92dfce0e257a3d03ae65c603d",
         "type": "github"
       },
       "original": {
