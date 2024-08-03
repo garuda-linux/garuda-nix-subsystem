@@ -12,17 +12,17 @@ lib.mkIf cfg.enable {
   environment.systemPackages = with pkgs; glib.gExcludableArray config "defaultpackages" [
     applet-window-title
     beautyline-icons
-    blurredwallpaper
     dr460nized-kde-theme
     ffmpegthumbnailer
-    # firedragon
+    firedragon
     jamesdsp
+    kdePackages.applet-window-buttons6
     kdePackages.kdegraphics-thumbnailers
     kdePackages.kimageformats
     kdePackages.kio-admin
     kdePackages.qtstyleplugin-kvantum
     libinput-gestures
-    plasma6-applet-window-buttons
+    plasma-plugin-blurredwallpaper
     resvg
     sshfs
     sweet

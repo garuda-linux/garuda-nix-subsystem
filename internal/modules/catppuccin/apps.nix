@@ -11,17 +11,12 @@ in
 lib.mkIf cfg.enable {
   environment.systemPackages = with pkgs; glib.gExcludableArray config "defaultpackages" [
     applet-window-title
-    blurredwallpaper
     (catppuccin.override {
       accent = "maroon";
       variant = "mocha";
       themeList = [ "bat" "btop" "kvantum" ];
     })
     catppuccin-cursors.mochaMaroon
-    (catppuccin-gtk.override {
-      accents = [ "maroon" ];
-      variant = "mocha";
-    })
     (catppuccin-kde.override {
       accents = [ "maroon" ];
       flavour = [ "mocha" ];
@@ -32,15 +27,16 @@ lib.mkIf cfg.enable {
       flavor = "mocha";
     })
     ffmpegthumbnailer
-    # firedragon
+    firedragon
     jamesdsp
+    kdePackages.applet-window-buttons6
     kdePackages.kdegraphics-thumbnailers
     kdePackages.kimageformats
     kdePackages.kio-admin
     kdePackages.qtstyleplugin-kvantum
     kdePackages.sddm-kcm
     libinput-gestures
-    plasma6-applet-window-buttons
+    plasma-plugin-blurredwallpaper
     resvg
     sshfs
     vlc
