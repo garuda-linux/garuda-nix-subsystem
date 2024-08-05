@@ -23,11 +23,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1722725027,
-        "narHash": "sha256-h7i7mBrCCtpJW9tDv6/4mrT1gJI6LDpSdj7u2XTgE1I=",
+        "lastModified": 1722824506,
+        "narHash": "sha256-tCR37ajHB89kx5qjwgQVRMtO3VuH7iRNy00qVcwKtQ4=",
         "owner": "catppuccin",
         "repo": "vscode",
-        "rev": "ceb5b20db7a3106cf008d5b608542dd4bce4c77f",
+        "rev": "67f4146babb2f8624de0a2096a651bcc8a223e0d",
         "type": "github"
       },
       "original": {
