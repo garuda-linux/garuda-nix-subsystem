@@ -9,7 +9,10 @@
 with garuda-lib;
 {
   # General nix settings
-  nix = {
+  nix = rec {
+    # Channels are dead, long live flakes
+    channel.enable = false;
+
     # Make builds run with low priority so my system stays responsive
     daemonCPUSchedPolicy = "idle";
     daemonIOSchedClass = "idle";
@@ -37,6 +40,9 @@ with garuda-lib;
 
       # Max number of parallel jobs
       max-jobs = gDefault "auto";
+
+      # https://github.com/NixOS/nix/issues/8890#issuecomment-1703988345
+      nix-path = nixPath;
     };
 
     # Make legacy nix commands consistent as well
