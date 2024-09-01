@@ -39,15 +39,6 @@ with garuda-lib; {
     # Enable gamemode
     programs.gamemode.enable = gDefault true;
 
-    # Instant replays
-    services.replay-sorcery = {
-      enable = gDefault true;
-      autoStart = false;
-      settings = {
-        videoQuality = "auto";
-      };
-    };
-
     # Enable Steam
     programs.steam = {
       enable = gDefault true;
