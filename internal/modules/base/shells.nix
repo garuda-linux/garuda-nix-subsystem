@@ -150,7 +150,6 @@ with garuda-lib; {
           ssh_only = gDefault false;
           ssh_symbol = gDefault " ";
           style = gDefault "bold dimmed red";
-          trim_at = gDefault "-";
         };
         java.symbol = gDefault " ";
         julia.symbol = gDefault " ";
