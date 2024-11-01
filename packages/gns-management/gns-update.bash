@@ -111,7 +111,7 @@ if [ "$INSTALLING" == "true" ]; then
 else
     echo -e "\033[1;33m-->\033[1;34m Updating Garuda Nix Subsystem 🍵\033[0m"
 fi
-nix flake update "$MNT_DIR/etc/nixos" --override-input garuda "[[GNS_SELF]]"
+nix flake update --flake "$MNT_DIR/etc/nixos" --override-input garuda "[[GNS_SELF]]"
 if [ "$FROM_HOST" == "true" ]; then
     nixos-install -j auto --no-root-password --root "$MNT_DIR" --flake "$MNT_DIR/etc/nixos#$HOSTNAME"
 elif [ "$INSTALLING" == "false" ]; then
