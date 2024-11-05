@@ -70,19 +70,6 @@ with garuda-lib;
     fi
   '';
 
-  # Clean results periodically
-  systemd.services.nix-clean-result = {
-    description = "Auto clean all result symlinks created by nixos-rebuild test";
-    serviceConfig.Type = "oneshot";
-    script = ''
-      "${config.nix.package.out}/bin/nix-store" --gc --print-roots \
-        | "${pkgs.gawk}/bin/awk" 'match($0, /^(.*\/result) -> \/nix\/store\/[^-]+-nixos-system/, a) \
-        { print a[1] }' | xargs -r -d\\n rm
-    '';
-    before = [ "nh-clean.service" ];
-    wantedBy = [ "nh-clean.service" ];
-  };
-
   # Overlays from the overlays folder
   nixpkgs.overlays = [
     overlay
@@ -92,7 +79,8 @@ with garuda-lib;
   programs.nh = {
     clean = {
       enable = true;
-      extraArgs = "--keep-since 7d --keep 10";
+      extraArgs = "--keep-since 3d --keep 2";
+      dates = "daily";
     };
     enable = true;
   };
