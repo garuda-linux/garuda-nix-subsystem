@@ -3,7 +3,6 @@
 , garuda-lib
 , flake-inputs
 , lib
-, pkgs
 , ...
 }:
 with garuda-lib;
