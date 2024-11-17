@@ -11,12 +11,15 @@ let
   users = lib.attrsets.filterAttrs (_name: user: user.isNormalUser) config.users.users;
 in
 {
-  options.garuda.home-manager.modules = with lib; mkOption {
-    default = [ ];
-    description = "List of home-manager configurations to include for all users.";
-    example = "./dotfiles.nix";
-    internal = true;
-    type = types.listOf types.deferredModule;
+  options.garuda = {
+    home-manager.modules = with lib; mkOption {
+      default = [ ];
+      description = "List of home-manager configurations to include for all users.";
+      example = "./dotfiles.nix";
+      internal = true;
+      type = types.listOf types.deferredModule;
+    };
+    excludes = gCreateExclusionOption "home-manager-modules";
   };
 
   config = {
@@ -45,7 +48,9 @@ in
       users;
 
     # This is the default home-manager configuration
-    garuda.home-manager.modules = gExcludableArray config "home-manager-modules" [ ./dotfiles.nix ];
+    garuda.home-manager.modules = gExcludableArray config "home-manager-modules" [
+      (lib.mkBefore ./dotfiles.nix)
+    ];
 
     # Backup files with a .bak extension, ensure not failing activation because of this
     home-manager.backupFileExtension = ".bak";

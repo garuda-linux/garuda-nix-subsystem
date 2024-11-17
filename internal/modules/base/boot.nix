@@ -4,7 +4,9 @@
 }:
 with garuda-lib;
 {
-  boot = {
+  options.garuda.excludes = gCreateExclusionOption "kernelparameters";
+
+  config.boot = {
     consoleLogLevel = gDefault 0;
     # Make use of the systemd initrd
     initrd = {
