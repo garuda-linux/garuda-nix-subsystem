@@ -75,6 +75,6 @@ in
     };
 
     # Use the Linux_cachyos kernel
-    boot.kernelPackages = mkIf cfg.cachyos-kernel pkgs.linuxPackages_cachyos;
+    boot.kernelPackages = gDefault (if cfg.cachyos-kernel then pkgs.linuxPackages_cachyos else pkgs.linuxPackages_latest);
   };
 }
