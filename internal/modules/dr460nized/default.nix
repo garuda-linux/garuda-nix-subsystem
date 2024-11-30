@@ -71,7 +71,7 @@ in
       packages = with pkgs;
         gExcludableArray config "defaultpackages" [
           fira
-          (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+          nerd-fonts.jetbrains-mono
           noto-fonts
           noto-fonts-cjk-sans
           noto-fonts-emoji
