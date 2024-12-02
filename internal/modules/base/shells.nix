@@ -12,41 +12,51 @@ with garuda-lib; {
 
   # Programs & global config
   programs = {
-    bash.shellAliases = {
-      ".." = "cd ..";
-      "..." = "cd ../../";
-      "...." = "cd ../../../";
-      "....." = "cd ../../../../";
-      "......" = "cd ../../../../../";
-      "bat" = "bat --style header --style snip --style changes";
-      "boot" = "nh os boot";
-      "cat" = "bat --style header --style snip --style changes";
-      "cls" = "clear";
-      "dd" = "dd progress=status";
-      "dir" = "dir --color=auto";
-      "egrep" = "egrep --color=auto";
-      "fastfetch" = "fastfetch -l nixos";
-      "fgrep" = "fgrep --color=auto";
-      "gcommit" = "git commit -m";
-      "gitlog" = "git log --oneline --graph --decorate --all";
-      "glcone" = "git clone";
-      "gpr" = "git pull --rebase";
-      "gpull" = "git pull";
-      "gpush" = "git push";
-      "ip" = "ip --color=auto";
-      "jctl" = "journalctl -p 3 -xb";
-      "ls" = "eza -al --color=always --group-directories-first --icons";
-      "psmem" = "ps auxf | sort -nr -k 4";
-      "psmem10" = "ps auxf | sort -nr -k 4 | head -1";
-      "reb" = "nh os switch";
-      "roll" = "nh os switch -- --rollback";
-      "su" = "sudo su -";
-      "tarnow" = "tar acf ";
-      "testb" = "nh os test";
-      "tree" = "eza --git --color always -T";
-      "untar" = "tar zxvf ";
-      "vdir" = "vdir --color=auto";
-      "wget" = "wget -c";
+    bash = {
+      # Execute fish in case we aren't using a login shell
+      interactiveShellInit = ''
+        if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" && -z ''${BASH_EXECUTION_STRING} ]]
+        then
+          shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=""
+          exec ${pkgs.fish}/bin/fish $LOGIN_OPTION
+        fi
+      '';
+      shellAliases = {
+        ".." = "cd ..";
+        "..." = "cd ../../";
+        "...." = "cd ../../../";
+        "....." = "cd ../../../../";
+        "......" = "cd ../../../../../";
+        "bat" = "bat --style header --style snip --style changes";
+        "boot" = "nh os boot";
+        "cat" = "bat --style header --style snip --style changes";
+        "cls" = "clear";
+        "dd" = "dd progress=status";
+        "dir" = "dir --color=auto";
+        "egrep" = "egrep --color=auto";
+        "fastfetch" = "fastfetch -l nixos";
+        "fgrep" = "fgrep --color=auto";
+        "gcommit" = "git commit -m";
+        "gitlog" = "git log --oneline --graph --decorate --all";
+        "glcone" = "git clone";
+        "gpr" = "git pull --rebase";
+        "gpull" = "git pull";
+        "gpush" = "git push";
+        "ip" = "ip --color=auto";
+        "jctl" = "journalctl -p 3 -xb";
+        "ls" = "eza -al --color=always --group-directories-first --icons";
+        "psmem" = "ps auxf | sort -nr -k 4";
+        "psmem10" = "ps auxf | sort -nr -k 4 | head -1";
+        "reb" = "nh os switch";
+        "roll" = "nh os switch -- --rollback";
+        "su" = "sudo su -";
+        "tarnow" = "tar acf ";
+        "testb" = "nh os test";
+        "tree" = "eza --git --color always -T";
+        "untar" = "tar zxvf ";
+        "vdir" = "vdir --color=auto";
+        "wget" = "wget -c";
+      };
     };
 
     # Direnv for per-directory environment variables
