@@ -11,8 +11,14 @@ update:
   script:
     - nix flake update
     - nix flake update --flake ./internal/updater --inputs-from . --override-input nixpkgs "nixpkgs"
-    - git config --global user.name "$GIT_AUTHOR_NAME"
-    - git config --global user.email "$GIT_AUTHOR_EMAIL"
+    - |
+      if git diff --exit-code; then
+        echo "No changes to flake.lock"
+        exit 0;
+      fi
+    - |
+      git config --global user.name "$GIT_AUTHOR_NAME"
+      git config --global user.email "$GIT_AUTHOR_EMAIL"
     - git add flake.lock internal/updater/flake.lock
     - "git commit -m 'chore(flake.lock): bump flakes'"
     - git push "$REPO_URL" HEAD:main

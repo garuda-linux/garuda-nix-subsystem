@@ -53,6 +53,6 @@ in
     ];
 
     # Backup files with a .bak extension, ensure not failing activation because of this
-    home-manager.backupFileExtension = ".bak";
+    home-manager.backupFileExtension = "bak";
   };
 }
