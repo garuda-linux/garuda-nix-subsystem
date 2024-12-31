@@ -21,6 +21,6 @@ in
 {
   config = {
     # This is the default updater for GNS (irrelevant for non-GNS users)
-    environment.systemPackages = lib.mkIf config.garuda.system.isGui [ garuda-update ];
+    environment.systemPackages = lib.mkIf (config.garuda.system.isGui || config.garuda.managed.config != null) [ garuda-update ];
   };
 }
