@@ -2,11 +2,9 @@
   description = "Garuda Linux NixOS flake ❄️";
 
   nixConfig.extra-substituters = [
-    "https://cache.garnix.io"
     "https://nyx.chaotic.cx"
   ];
   nixConfig.extra-trusted-public-keys = [
-    "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
     "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
     "nyx.chaotic.cx-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
   ];
