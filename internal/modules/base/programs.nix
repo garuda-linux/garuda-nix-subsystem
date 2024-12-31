@@ -6,7 +6,7 @@
 }:
 with garuda-lib;
 {
-  options.garuda.excludes = gCreateExclusionOption "defaultpackages";
+  options.garuda.excludes = (gCreateExclusionOption "defaultpackages") // (gCreateExclusionOption "nixldlibraries");
   config = {
     # Default applications
     environment.systemPackages = with pkgs; gExcludableArray config "defaultpackages" [
@@ -47,7 +47,7 @@ with garuda-lib;
     # Run unpatched linux binaries with nix-ld
     programs.nix-ld = {
       enable = gDefault config.garuda.system.isGui;
-      libraries = with pkgs; [
+      libraries = with pkgs; gExcludableArray config "nixldlibraries" [
         SDL2
         curl
         freetype
