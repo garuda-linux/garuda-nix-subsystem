@@ -31,6 +31,6 @@ with garuda-lib;
     security.rtkit.enable = gDefault true;
 
     # Disable PulseAudio
-    hardware.pulseaudio.enable = gDefault false;
+    services.pulseaudio.enable = gDefault false;
   };
 }
