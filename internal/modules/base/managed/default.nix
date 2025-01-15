@@ -27,6 +27,7 @@ in
     networking.hostName = gDefault managed.hostname;
     virtualisation.vmware.guest.enable = lib.mkIf (settings ? hardware) (gDefault (settings.hardware.virt == "vmware"));
     virtualisation.virtualbox.guest.enable = lib.mkIf (settings ? hardware) (gDefault (settings.hardware.virt == "oracle"));
+    virtualisation.qemu.guestAgent.enable = lib.mkIf (settings ? hardware) (gDefault (settings.hardware.virt == "kvm"));
     time.timeZone = mkIf (settings ? timezone) (gDefault settings.timezone);
     console.keyMap = mkIf (settings ? keymap) (gDefault settings.keymap);
     services.xserver.xkb.layout = mkIf (settings ? keymap) (gDefault settings.keymap);
