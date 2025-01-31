@@ -77,7 +77,6 @@ with garuda-lib;
     # Enable locating files via locate
     services.locate = {
       enable = gDefault true;
-      localuser = null;
       interval = "hourly";
       package = pkgs.plocate;
     };
