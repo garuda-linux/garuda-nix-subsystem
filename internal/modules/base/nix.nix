@@ -3,6 +3,7 @@
 , garuda-lib
 , flake-inputs
 , lib
+, pkgs
 , ...
 }:
 with garuda-lib;
@@ -46,6 +47,9 @@ with garuda-lib;
 
     # Make legacy nix commands consistent as well
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
+
+    # Use the Lix package manager
+    package = pkgs.lix;
 
     # Automtaically pin registries based on inputs
     registry = lib.mapAttrs (_: v: { flake = v; }) flake-inputs;
