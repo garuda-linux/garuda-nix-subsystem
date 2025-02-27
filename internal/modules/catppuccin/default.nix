@@ -77,8 +77,8 @@ in
     environment.plasma6.excludePackages = with pkgs; [
       # Pulls in 600 mb worth of mbrola (via espeak), which is a bit silly
       kdePackages.okular
-      oxygen
-      plasma-browser-integration
+      kdePackages.oxygen
+      kdePackages.plasma-browser-integration
     ];
 
     # Allow GTK applications to show an appmenu on KDE
