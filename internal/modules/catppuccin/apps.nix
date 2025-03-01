@@ -29,22 +29,7 @@ lib.mkIf cfg.enable {
     ffmpegthumbnailer
     firedragon
     jamesdsp
-    # TODO: https://github.com/NixOS/nixpkgs/issues/382742#event-16394731420
-    (kdePackages.applet-window-buttons6.overrideAttrs (old: {
-      version = "0.13.0-master";
-      src = pkgs.fetchFromGitHub {
-        owner = "moodyhunter";
-        repo = "applet-window-buttons6";
-        rev = "master";
-        hash = "sha256-POr56g3zqs10tmCbKN+QcF6P6OL84tQNkA+Jtk1LUfY=";
-      };
-      patches = (old.patches or [ ]) ++ [
-        (pkgs.fetchpatch {
-          url = "https://github.com/moodyhunter/applet-window-buttons6/commit/e27cd7559581e84b559a5da2c7bc6ea5a3f5bf15.patch";
-          hash = "sha256-1GwZh2ZR9+cB+4ggiwsNN1KT5m8tsi/AEGZK0Cx5sdw=";
-        })
-      ];
-    }))
+    kdePackages.applet-window-buttons6
     kdePackages.kdegraphics-thumbnailers
     kdePackages.kimageformats
     kdePackages.kio-admin
