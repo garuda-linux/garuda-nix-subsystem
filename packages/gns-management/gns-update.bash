@@ -62,7 +62,10 @@ function configureGNS {
         fi
     fi
 
-    VIRT="$(systemd-detect-virt || echo "none")"
+    VIRT="$(systemd-detect-virt || true)"
+    if [ -z "$VIRT" ]; then
+        VIRT="none"
+    fi
     jq --arg UUID "$BTRFS_UUID" --arg VIRT "$VIRT" --arg version "[[GNS_CURRENT_VERSION]]" '.version=($version|tonumber) | del(.v2.auto) | .v2.auto.uuid=$UUID | .v2.auto.hardware.virt=$VIRT' <<<"$config" >"$MNT_DIR/etc/nixos/garuda-managed.json"
 }
 
