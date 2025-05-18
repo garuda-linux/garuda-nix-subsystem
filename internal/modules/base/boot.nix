@@ -11,7 +11,6 @@ with garuda-lib;
     # Make use of the systemd initrd
     initrd = {
       systemd.enable = gDefault true;
-      systemd.strip = gDefault true;
       verbose = gDefault false;
     };
     # Make it quiet by default
