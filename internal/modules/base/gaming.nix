@@ -25,7 +25,7 @@ with garuda-lib; {
       lutris
       mangohud
       prismlauncher
-      (retroarch.override {
+      (retroarch.overrideAttrs {
         cores = with libretro; [
           citra
           flycast
