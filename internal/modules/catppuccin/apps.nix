@@ -12,18 +12,18 @@ lib.mkIf cfg.enable {
   environment.systemPackages = with pkgs; glib.gExcludableArray config "defaultpackages" [
     applet-window-title
     (catppuccin.override {
-      accent = "maroon";
+      accent = "mauve";
       variant = "mocha";
       themeList = [ "bat" "btop" "kvantum" ];
     })
-    catppuccin-cursors.mochaMaroon
+    catppuccin-cursors.mochaMauve
     (catppuccin-kde.override {
-      accents = [ "maroon" ];
+      accents = [ "mauve" ];
       flavour = [ "mocha" ];
       winDecStyles = [ "classic" ];
     })
     (catppuccin-papirus-folders.override {
-      accent = "maroon";
+      accent = "mauve";
       flavor = "mocha";
     })
     ffmpegthumbnailer

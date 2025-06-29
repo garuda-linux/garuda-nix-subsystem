@@ -64,11 +64,6 @@ in
       enable = gDefault true;
       sddm = {
         autoNumlock = gDefault true;
-        catppuccin = {
-          assertQt6Sddm = true;
-          enable = true;
-          font = "Fira Sans";
-        };
         enable = gDefault true;
         wayland.enable = gDefault true;
       };
@@ -118,7 +113,7 @@ in
     # Catppuccin-specific home-manager configuration
     garuda.home-manager.modules = [
       (import ./dotfiles.nix {
-        hmModule = inputs.catppuccin.homeManagerModules.catppuccin;
+        hmModule = inputs.catppuccin.homeModules.catppuccin;
       })
     ];
 
@@ -149,8 +144,15 @@ in
     };
 
     # Theming
-    catppuccin.enable = true;
-    console.catppuccin.enable = true;
+    catppuccin = {
+      enable = true;
+      sddm = {
+        assertQt6Sddm = true;
+        enable = true;
+        font = "Fira Sans";
+      };
+      tty.enable = true;
+    };
 
     # Add xdg-desktop-portal-gtk for Wayland GTK apps (font issues etc.)
     xdg.portal.extraPortals = gDefault [ pkgs.xdg-desktop-portal-gtk ];

@@ -9,7 +9,7 @@ toolBarFont=Fira Sans,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
 Theme=Papirus-Dark
 
 [KDE]
-LookAndFeelPackage=Catppuccin-Mocha-Maroon
+LookAndFeelPackage=Catppuccin-Mocha-Mauve
 SingleClick=true
 widgetStyle=Breeze
 
