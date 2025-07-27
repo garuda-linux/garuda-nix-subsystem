@@ -7,7 +7,7 @@ src = "src"
 title = "Garuda Nix Subsystem documentation"
 
 [output.html]
-additional-css = ["./mdbook-admonish.css", "theme/css/custom.css", "./theme/catppuccin.css", "./theme/catppuccin-admonish.css"]
+additional-css = ["./theme/mdbook-admonish.css", "./theme/catppuccin.css", "./theme/catppuccin-admonish.css"]
 default-theme = "mocha"
 preferred-dark-theme = "mocha"
 git-repository-icon = "fa-code-fork"
@@ -16,12 +16,8 @@ site-url = "https://nix.garudalinux.org"
 
 [preprocessor]
 
-[preprocessor.admonish]
 after = ["links"]
 command = "mdbook-admonish"
-assets_version = "3.0.2" # do not edit: managed by `mdbook-admonish install`
-
-[preprocessor.catppuccin]
-assets_version = "2.1.0" # DO NOT EDIT: Managed by `mdbook-catppuccin install`
+assets_version = "3.1.0" # do not edit: managed by `mdbook-admonish install`
 
 [preprocessor.emojicodes]
