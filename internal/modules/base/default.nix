@@ -1,5 +1,4 @@
-{ inputs, overlay, ... }: { flake-inputs
-                          , config
+{ inputs, overlay, ... }: { config
                           , ...
                           }: {
   imports = [
