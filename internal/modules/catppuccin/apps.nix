@@ -27,7 +27,7 @@ lib.mkIf cfg.enable {
       flavor = "mocha";
     })
     ffmpegthumbnailer
-    firedragon
+    firedragon-bin
     jamesdsp
     kdePackages.applet-window-buttons6
     kdePackages.kdegraphics-thumbnailers

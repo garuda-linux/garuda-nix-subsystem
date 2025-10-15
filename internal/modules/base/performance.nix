@@ -54,8 +54,8 @@ in
       enableRootSlice = gDefault true;
       enableUserSlices = gDefault true;
       enableSystemSlice = gDefault true;
-      extraConfig = {
-        "DefaultMemoryPressureDurationSec" = "20s";
+      settings.OOM = {
+        "DefaultMemoryPressureDurationSec" = gDefault "20s";
       };
     };
 

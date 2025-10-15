@@ -14,7 +14,7 @@ lib.mkIf cfg.enable {
     beautyline-icons
     dr460nized-kde-theme
     ffmpegthumbnailer
-    firedragon
+    firedragon-bin
     jamesdsp
     kdePackages.applet-window-buttons6
     kdePackages.kdegraphics-thumbnailers
