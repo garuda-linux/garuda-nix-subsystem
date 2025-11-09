@@ -1,13 +1,17 @@
 { lib, ... }: {
   # Git shall be used a lot on flaky systems
   programs.git = {
-    difftastic.enable = true;
     enable = true;
-    extraConfig = {
+    settings = {
       core = { editor = "micro"; };
       init = { defaultBranch = "main"; };
       pull = { rebase = true; };
     };
+  };
+
+  programs.difftastic = {
+    enable = true;
+    git.enable = true;
   };
 
   # Suggested GPG settings
