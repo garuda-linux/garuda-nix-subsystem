@@ -29,6 +29,7 @@ in
     garuda.system.type = "dr460nized";
 
     services.desktopManager.plasma6.enable = gDefault true;
+    services.desktopManager.plasma6.enableQt5Integration = gDefault false;
 
     services.displayManager = {
       enable = gDefault true;
