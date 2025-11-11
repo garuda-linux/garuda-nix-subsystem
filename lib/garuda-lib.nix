@@ -87,6 +87,6 @@ in
       mkdir -p "$out/"{.cache,.config,.local/share}
       rsync -a "$src/" "$out"
     '';
-    inherit (pkgs.hostPlatform) system;
+    inherit (pkgs.stdenv.hostPlatform) system;
   };
 }
