@@ -14,9 +14,8 @@
     ./networking.nix
     (import ./nix.nix { inherit overlay; })
     ./nix-manager.nix
-    ./nyx.nix
     ./performance.nix
-    ./pkgs-overrides.nix
+    # ./pkgs-overrides.nix
     ./programs.nix
     ./services.nix
     ./shells.nix

@@ -80,10 +80,6 @@
       # We are using flakes, so enable the experimental features
       experimental-features = [ "nix-command" "flakes" ];
 
-      # A few extra binary caches and their public keys
-      extra-substituters = [ "https://chaotic-nyx.cachix.org" ];
-      extra-trusted-public-keys = [ "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8=" ];
-
       # Show more log lines for failed builds
       log-lines = 20;
 

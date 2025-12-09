@@ -8,7 +8,6 @@ let
 
   default = { ... }: {
     imports = [
-      inputs.chaotic-nyx.nixosModules.default
       inputs.home-manager.nixosModules.home-manager
       inputs.nix-index-database.nixosModules.nix-index
     ] ++ builtins.attrValues modulesPerFile;

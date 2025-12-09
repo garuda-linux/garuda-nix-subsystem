@@ -37,7 +37,7 @@ in
     services.ananicy = mkIf cfg.enable {
       enable = gDefault true;
       package = pkgs.ananicy-cpp;
-      rulesProvider = pkgs.ananicy-rules-cachyos_git;
+      rulesProvider = pkgs.ananicy-rules-cachyos;
     };
 
     # 90% ZRAM as swap

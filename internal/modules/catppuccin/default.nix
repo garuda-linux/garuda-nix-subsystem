@@ -77,9 +77,6 @@ in
       kdePackages.plasma-browser-integration
     ];
 
-    # Allow GTK applications to show an appmenu on KDE
-    chaotic.appmenu-gtk3-module.enable = gDefault true;
-
     # Fix "the name ca.desrt.dconf was not provided by any .service files"
     # https://nix-community.github.io/home-manager/index.html
     programs.dconf.enable = true;

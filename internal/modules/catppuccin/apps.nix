@@ -10,7 +10,6 @@ let
 in
 lib.mkIf cfg.enable {
   environment.systemPackages = with pkgs; glib.gExcludableArray config "defaultpackages" [
-    applet-window-title
     (catppuccin.override {
       accent = "mauve";
       variant = "mocha";

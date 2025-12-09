@@ -1,45 +1,29 @@
 {
   description = "Garuda Linux NixOS flake ❄️";
 
-  nixConfig.extra-substituters = [
-    "https://nyx.chaotic.cx"
-  ];
-  nixConfig.extra-trusted-public-keys = [
-    "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
-    "nyx.chaotic.cx-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8="
-  ];
-
   inputs = {
     #
     # OS internals
     #
 
-    # Chaotic's Nyx
-    chaotic-nyx = {
-      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-      inputs.home-manager.follows = "home-manager";
-    };
-
-    # If you need to, override this to use a different nixpkgs version
-    # by default we follow Chaotic Nyx' nyxpkgs-unstable branch
-    nixpkgs.follows = "chaotic-nyx/nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     # Modules support for flakes
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "chaotic-nyx/nixpkgs";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
     # Have a local index of nixpkgs for fast launching of apps
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
-      inputs.nixpkgs.follows = "chaotic-nyx/nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Home configuration management
     home-manager = {
       url = "github:nix-community/home-manager/master";
-      inputs.nixpkgs.follows = "chaotic-nyx/nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
 
@@ -56,8 +40,7 @@
     # Easy linting of the flake and all kind of other stuff
     pre-commit-hooks = {
       url = "github:cachix/git-hooks.nix";
-      inputs.flake-compat.follows = "chaotic-nyx/nixpkgs";
-      inputs.nixpkgs.follows = "chaotic-nyx/nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     #
@@ -68,7 +51,7 @@
     catppuccin.url = "github:catppuccin/nix";
     catppuccin-vsc = {
       url = "github:catppuccin/vscode";
-      inputs.nixpkgs.follows = "chaotic-nyx/nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
   outputs =
