@@ -20,16 +20,6 @@ in
             If set to true, this module will enable a few performance tweaks.
           '';
         };
-    cachyos-kernel =
-      mkOption
-        {
-          default = false;
-          type = types.bool;
-          example = true;
-          description = mdDoc ''
-            If set to true, the subsystem will use the linux_cachyos kernel.
-          '';
-        };
   };
 
   config = {
@@ -73,8 +63,5 @@ in
       # ZRAM is in memory, no need to readahead
       "vm.page-cluster" = 0;
     };
-
-    # Use the Linux_cachyos kernel
-    boot.kernelPackages = gDefault (if cfg.cachyos-kernel then pkgs.linuxPackages_cachyos else pkgs.linuxPackages_latest);
   };
 }
