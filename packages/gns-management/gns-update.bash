@@ -89,7 +89,8 @@ if [[ -v BTRFS_UUID ]]; then
 fi
 if [[ -v MNT_DIR ]] && [ "$FROM_HOST" == "true" ]; then
     echo -e "\033[1;33m-->\033[1;34m Mounting Garuda Nix Subsystem subvolumes\033[0m"
-    MNT_DIR=$(mktemp -d)
+    mkdir -p /run/gns
+    MNT_DIR=$(TMPDIR=/run/gns mktemp -d)
     mount -o subvol=@nix-subsystem "UUID=$BTRFS_UUID" "$MNT_DIR"
     mkdir -p "$MNT_DIR/nix"
     mount -o subvol=@nix "UUID=$BTRFS_UUID" "$MNT_DIR/nix"
