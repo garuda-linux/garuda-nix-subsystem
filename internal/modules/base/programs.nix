@@ -64,7 +64,7 @@ with garuda-lib;
         stdenv.cc.cc
         util-linux
         vulkan-loader
-        xorg.libX11
+        libx11
         zlib
       ];
     };
