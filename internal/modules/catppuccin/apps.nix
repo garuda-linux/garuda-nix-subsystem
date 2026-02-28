@@ -40,7 +40,6 @@ lib.mkIf cfg.enable {
       kdePackages.kimageformats
       kdePackages.kio-admin
       kdePackages.qtstyleplugin-kvantum
-      kdePackages.sddm-kcm
       libinput-gestures
       plasma-plugin-blurredwallpaper
       resvg

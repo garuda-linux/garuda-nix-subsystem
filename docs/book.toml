@@ -2,7 +2,6 @@
 authors = ["dr460nf1r3", "Garuda Linux Team"]
 description = "Contains the documentation for the Garuda Nix subsystem"
 language = "en"
-multilingual = false
 src = "src"
 title = "Garuda Nix Subsystem ❄️ documentation"
 
@@ -10,6 +9,5 @@ title = "Garuda Nix Subsystem ❄️ documentation"
 additional-css = ["./theme/catppuccin.css"]
 default-theme = "mocha"
 preferred-dark-theme = "mocha"
-git-repository-icon = "fa-code-fork"
 git-repository-url = "https://gitlab.com/garuda-linux/garuda-nix-subsystem"
 site-url = "https://nix.garudalinux.org"

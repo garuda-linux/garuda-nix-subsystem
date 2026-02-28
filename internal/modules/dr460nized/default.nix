@@ -39,20 +39,12 @@ in
 
     services.displayManager = {
       enable = gDefault true;
-      sddm = {
-        autoNumlock = gDefault true;
-        enable = gDefault true;
-        settings = {
-          General = {
-            CursorTheme = gDefault "Sweet-cursors";
-            Font = gDefault "Fira Sans";
-          };
-        };
-        theme = gDefault "Dr460nized";
-
-        wayland.enable = gDefault false;
-      };
+      plasma-login-manager.enable = gDefault true;
     };
+    environment.etc."plasmalogin.conf.d/dr460nized.conf".text = ''
+      [Greeter][Wallpaper][org.kde.image][General]
+      Image=file://${cfg.themePackage}/share/wallpapers/garuda-wallpapers/Malefor.jpg
+    '';
 
     services.xserver = {
       enable = gDefault true;

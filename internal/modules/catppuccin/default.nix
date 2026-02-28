@@ -10,7 +10,7 @@ with garuda-lib;
 let
   catppuccin-settings = pkgs.stdenvNoCC.mkDerivation {
     pname = "catppuccin-settings";
-    version = "0.0.2";
+    version = "0.0.3";
     src = ./src;
     installPhase = ''
       runHook preInstall
@@ -65,12 +65,12 @@ in
 
     services.displayManager = {
       enable = gDefault true;
-      sddm = {
-        autoNumlock = gDefault true;
-        enable = gDefault true;
-        wayland.enable = gDefault true;
-      };
+      plasma-login-manager.enable = gDefault true;
     };
+    environment.etc."plasmalogin.conf.d/catppuccin.conf".text = ''
+      [Greeter][Wallpaper][org.kde.image][General]
+      Image=file://${catppuccin-settings}/share/wallpapers/Shaded_Landscape/contents/images/3840x2160.png
+    '';
 
     environment.plasma6.excludePackages = with pkgs; [
       # Pulls in 600 mb worth of mbrola (via espeak), which is a bit silly
@@ -103,11 +103,11 @@ in
             "Noto Fonts Emoji"
           ];
           sansSerif = gDefault [
-            "Fira"
+            "Inter"
             "Noto Fonts Emoji"
           ];
           serif = gDefault [
-            "Fira"
+            "Inter"
             "Noto Fonts Emoji"
           ];
           emoji = gDefault [ "Noto Fonts Emoji" ];
@@ -120,19 +120,16 @@ in
       };
     };
 
-    # Catppuccin-specific home-manager configuration
     garuda.home-manager.modules = [
       (import ./dotfiles.nix {
         hmModule = inputs.catppuccin.homeModules.catppuccin;
       })
     ];
 
-    # Use the custom Catppuccin settings package as default /etc/skel folder
     garuda.create-home.skel = gDefault "${gGenerateSkel pkgs "${catppuccin-settings}/skel"
       "catppuccin"
     }";
 
-    # These need to be enabled for complete functionality
     programs = {
       direnv = {
         enable = gDefault true;
@@ -142,31 +139,24 @@ in
       partition-manager.enable = gDefault true;
     };
 
-    # Enable Kvantum for theming & Pipewire
     environment.variables = {
       ALSOFT_DRIVERS = gDefault "pipewire";
       MOZ_USE_XINPUT2 = gDefault "1";
       SDL_AUDIODRIVER = gDefault "pipewire";
     };
 
-    # Plymouth theme
+    environment.systemPackages = [ catppuccin-settings ];
+
     boot.plymouth = {
       theme = "catppuccin-mocha";
       themePackages = [ (pkgs.catppuccin-plymouth.override { variant = "mocha"; }) ];
     };
 
-    # Theming
     catppuccin = {
       enable = true;
-      sddm = {
-        assertQt6Sddm = true;
-        enable = true;
-        font = "Inter";
-      };
       tty.enable = true;
     };
 
-    # Add xdg-desktop-portal-gtk for Wayland GTK apps (font issues etc.)
     xdg.portal.extraPortals = gDefault [ pkgs.xdg-desktop-portal-gtk ];
   };
 }
