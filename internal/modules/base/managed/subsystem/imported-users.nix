@@ -33,13 +33,11 @@ in
   };
 
   config = lib.mkIf (cfg.enable && config.garuda.subsystem.enable) {
-    users.users = mapAttrs
-      (_name: value: {
-        isNormalUser = true;
-        inherit (value) uid;
-        initialHashedPassword = value.passwordHash;
-        extraGroups = lib.mkIf value.wheel [ "wheel" ];
-      })
-      cfg.users;
+    users.users = mapAttrs (_name: value: {
+      isNormalUser = true;
+      inherit (value) uid;
+      initialHashedPassword = value.passwordHash;
+      extraGroups = lib.mkIf value.wheel [ "wheel" ];
+    }) cfg.users;
   };
 }

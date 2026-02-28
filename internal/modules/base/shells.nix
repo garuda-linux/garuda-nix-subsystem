@@ -1,9 +1,11 @@
-{ config
-, garuda-lib
-, pkgs
-, ...
+{
+  config,
+  garuda-lib,
+  pkgs,
+  ...
 }:
-with garuda-lib; {
+with garuda-lib;
+{
   # Use micro as editor
   environment.sessionVariables = {
     EDITOR = gDefault "${pkgs.micro}/bin/micro";

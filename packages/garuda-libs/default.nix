@@ -4,7 +4,13 @@ let
 in
 pkgs.writeShellApplication {
   name = "launch-terminal";
-  runtimeInputs = with pkgs; [ util-linux coreutils mktemp gnused xterm ];
+  runtimeInputs = with pkgs; [
+    util-linux
+    coreutils
+    mktemp
+    gnused
+    xterm
+  ];
 
   text = executable;
 }

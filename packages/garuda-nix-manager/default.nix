@@ -1,4 +1,15 @@
-{ stdenv, wrapQtAppsHook, qtbase, cmake, jq, lib, coreutils, makeDesktopItem, copyDesktopItems, launch-terminal }:
+{
+  stdenv,
+  wrapQtAppsHook,
+  qtbase,
+  cmake,
+  jq,
+  lib,
+  coreutils,
+  makeDesktopItem,
+  copyDesktopItems,
+  launch-terminal,
+}:
 stdenv.mkDerivation (final: {
   pname = "garuda-nix-manager";
   version = "1.0.0";
@@ -9,7 +20,11 @@ stdenv.mkDerivation (final: {
   };
 
   buildInputs = [ qtbase ];
-  nativeBuildInputs = [ wrapQtAppsHook cmake copyDesktopItems ];
+  nativeBuildInputs = [
+    wrapQtAppsHook
+    cmake
+    copyDesktopItems
+  ];
 
   qtWrapperArgs = [
     "--suffix PATH : ${lib.makeBinPath [ launch-terminal ]}"
@@ -29,12 +44,20 @@ stdenv.mkDerivation (final: {
       icon = final.pname;
       desktopName = name;
       genericName = name;
-      categories = [ "System" "X-Garuda-Setup" ];
+      categories = [
+        "System"
+        "X-Garuda-Setup"
+      ];
     })
   ];
 
   postFixup = ''
     wrapProgram "$out/lib/garuda-nix-manager/garuda-nix-manager-pkexec" \
-      --prefix PATH : ${lib.makeBinPath [ jq coreutils ]}
+      --prefix PATH : ${
+        lib.makeBinPath [
+          jq
+          coreutils
+        ]
+      }
   '';
 })

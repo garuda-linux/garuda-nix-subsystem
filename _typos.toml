@@ -1,0 +1,9 @@
+[default]
+extend-ignore-identifiers-re = [
+  "sx",
+  "AutoSyncronize",
+  "thumbnailers"
+]
+
+[type.css]
+check-file = false

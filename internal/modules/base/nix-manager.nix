@@ -1,4 +1,9 @@
-{ lib, pkgs, config, ... }:
+{
+  lib,
+  pkgs,
+  config,
+  ...
+}:
 let
   cfg = config.garuda.garuda-nix-manager;
   package_list = pkgs.writeTextFile {

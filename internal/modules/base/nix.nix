@@ -1,10 +1,11 @@
 { overlay }:
-{ config
-, garuda-lib
-, flake-inputs
-, lib
-, pkgs
-, ...
+{
+  config,
+  garuda-lib,
+  flake-inputs,
+  lib,
+  pkgs,
+  ...
 }:
 with garuda-lib;
 {
@@ -32,7 +33,10 @@ with garuda-lib;
       builders-use-substitutes = true;
 
       # We are using flakes, so enable the experimental features
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
 
       # Users allowed to use Nix
       allowed-users = [ "@wheel" ];

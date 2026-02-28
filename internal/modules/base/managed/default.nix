@@ -1,15 +1,30 @@
-{ config, lib, garuda-lib, pkgs, ... }:
+{
+  config,
+  lib,
+  garuda-lib,
+  pkgs,
+  ...
+}:
 with lib;
 with garuda-lib;
 let
   cfg = config.garuda.managed;
   managed = builtins.fromJSON (builtins.readFile cfg.config);
   unmerged_settings = managed.v2;
-  settings = attrsets.recursiveUpdate (attrsets.recursiveUpdate unmerged_settings.auto (unmerged_settings.host or { })) (unmerged_settings.user or { });
+  settings = attrsets.recursiveUpdate (attrsets.recursiveUpdate unmerged_settings.auto (
+    unmerged_settings.host or { }
+  )) (unmerged_settings.user or { });
 in
 {
   imports = [
-    (import ./subsystem { inherit settings config lib garuda-lib; })
+    (import ./subsystem {
+      inherit
+        settings
+        config
+        lib
+        garuda-lib
+        ;
+    })
     (mkRenamedOptionModule [ "garuda" "subsystem" "config" ] [ "garuda" "managed" "config" ])
   ];
 
@@ -25,9 +40,15 @@ in
 
   config = mkIf (cfg.config != null) {
     networking.hostName = gDefault managed.hostname;
-    virtualisation.vmware.guest.enable = lib.mkIf (settings ? hardware) (gDefault (settings.hardware.virt == "vmware"));
-    virtualisation.virtualbox.guest.enable = lib.mkIf (settings ? hardware) (gDefault (settings.hardware.virt == "oracle"));
-    services.qemuGuest.enable = lib.mkIf (settings ? hardware) (gDefault (settings.hardware.virt == "kvm"));
+    virtualisation.vmware.guest.enable = lib.mkIf (settings ? hardware) (
+      gDefault (settings.hardware.virt == "vmware")
+    );
+    virtualisation.virtualbox.guest.enable = lib.mkIf (settings ? hardware) (
+      gDefault (settings.hardware.virt == "oracle")
+    );
+    services.qemuGuest.enable = lib.mkIf (settings ? hardware) (
+      gDefault (settings.hardware.virt == "kvm")
+    );
     time.timeZone = mkIf (settings ? timezone) (gDefault settings.timezone);
     console.keyMap = mkIf (settings ? keymap) (gDefault settings.keymap);
     services.xserver.xkb.layout = mkIf (settings ? keymap) (gDefault settings.keymap);
@@ -37,7 +58,12 @@ in
     };
 
     environment.systemPackages = mkIf (settings ? extrapackages) (
-      lists.remove null (map (pkg: pkgs."${pkg}" or (warn "${builtins.baseNameOf cfg.config}: Package \"${pkg}\" does not exist" null)) settings.extrapackages)
+      lists.remove null (
+        map (
+          pkg:
+          pkgs."${pkg}" or (warn "${builtins.baseNameOf cfg.config}: Package \"${pkg}\" does not exist" null)
+        ) settings.extrapackages
+      )
     );
   };
 }

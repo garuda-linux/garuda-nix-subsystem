@@ -1,7 +1,8 @@
-{ config
-, garuda-lib
-, lib
-, ...
+{
+  config,
+  garuda-lib,
+  lib,
+  ...
 }:
 with lib;
 let
@@ -9,36 +10,30 @@ let
 in
 {
   options.garuda.noSddmAutologin = {
-    enable =
-      mkOption
-        {
-          default = false;
-          type = types.bool;
-          example = true;
-          description = mdDoc ''
-            Whether to enable autologin to desktop instead of using SDDM.
-          '';
-        };
-    user =
-      mkOption
-        {
-          default = null;
-          type = types.string;
-          example = "nixos";
-          description = mdDoc ''
-            The user to automatically login.
-          '';
-        };
-    startupCommand =
-      mkOption
-        {
-          default = null;
-          type = types.string;
-          example = "startplasma-wayland";
-          description = mdDoc ''
-            The command to be executed after login.
-          '';
-        };
+    enable = mkOption {
+      default = false;
+      type = types.bool;
+      example = true;
+      description = mdDoc ''
+        Whether to enable autologin to desktop instead of using SDDM.
+      '';
+    };
+    user = mkOption {
+      default = null;
+      type = types.string;
+      example = "nixos";
+      description = mdDoc ''
+        The user to automatically login.
+      '';
+    };
+    startupCommand = mkOption {
+      default = null;
+      type = types.string;
+      example = "startplasma-wayland";
+      description = mdDoc ''
+        The command to be executed after login.
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {

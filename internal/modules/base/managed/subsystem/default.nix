@@ -1,4 +1,10 @@
-{ config, lib, garuda-lib, settings, ... }:
+{
+  config,
+  lib,
+  garuda-lib,
+  settings,
+  ...
+}:
 with lib;
 with garuda-lib;
 let
@@ -31,8 +37,8 @@ in
         device = "nodev";
       };
     };
-    garuda.subsystem.imported-users.users = builtins.listToAttrs (builtins.map
-      (x: {
+    garuda.subsystem.imported-users.users = builtins.listToAttrs (
+      builtins.map (x: {
         inherit (x) name;
         value = {
           passwordHash = x.hashed_password;
@@ -40,15 +46,18 @@ in
           inherit (x) home;
           inherit (x) wheel;
         };
-      })
-      settings.users);
+      }) settings.users
+    );
     garuda.subsystem.imported-users.shared-home.uuid = settings.uuid;
-    systemd.mounts = [{
-      what = "UUID=${settings.uuid}";
-      options = "subvol=@,compress=zstd,noatime,noauto,nofail";
-      where = "/run/garuda/subsystem/root";
-      wantedBy = lib.mkForce [ ];
-    }] ++ lib.lists.optional cfg.import-networkmanager {
+    systemd.mounts = [
+      {
+        what = "UUID=${settings.uuid}";
+        options = "subvol=@,compress=zstd,noatime,noauto,nofail";
+        where = "/run/garuda/subsystem/root";
+        wantedBy = lib.mkForce [ ];
+      }
+    ]
+    ++ lib.lists.optional cfg.import-networkmanager {
       what = "/run/garuda/subsystem/root/etc/NetworkManager/system-connections";
       options = "bind,noauto,nofail";
       where = "/etc/NetworkManager/system-connections";

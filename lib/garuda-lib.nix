@@ -6,10 +6,30 @@ let
   gDefault = lib.mkOverride 950;
 
   # This is terrible, but a perfect example of the sunk cost fallacy
-  isUniqueVariable = type:
+  isUniqueVariable =
+    type:
     let
-      uniqueTypes = [ "bool" "str" "raw" "int" "float" "number" "nonEmptyStr" "package" "pkgs" "path" "uniq" "unique" "enum" "intBetween" ];
-      uniqueTypeSpecial = [ "strMatching " "unsignedInt" "signedInt" ];
+      uniqueTypes = [
+        "bool"
+        "str"
+        "raw"
+        "int"
+        "float"
+        "number"
+        "nonEmptyStr"
+        "package"
+        "pkgs"
+        "path"
+        "uniq"
+        "unique"
+        "enum"
+        "intBetween"
+      ];
+      uniqueTypeSpecial = [
+        "strMatching "
+        "unsignedInt"
+        "signedInt"
+      ];
     in
     if builtins.elem type.name uniqueTypes then
       true
@@ -18,16 +38,19 @@ let
     else
       false;
 
-  isNonUniqueVariable = type:
+  isNonUniqueVariable =
+    type:
     let
-      nonUnique = [ "listOf" "attrsOf" "lazyAttrsOf" ];
+      nonUnique = [
+        "listOf"
+        "attrsOf"
+        "lazyAttrsOf"
+      ];
     in
-    if builtins.elem type.name nonUnique then
-      true
-    else
-      false;
+    if builtins.elem type.name nonUnique then true else false;
 
-  setDefaultAttrs = path: options: value:
+  setDefaultAttrs =
+    path: options: value:
     let
       attrbypath = lib.attrByPath path null options;
       combined_path = lib.showOption path;
@@ -51,9 +74,14 @@ in
   inherit gDefault;
 
   # Remove excluded options from the output array
-  gExcludableArray = config: name: lib.filter
-    (x: !(config.garuda.excludes."${name}".excludeAll or false) &&
-      !(lib.lists.any (y: builtins.unsafeDiscardStringContext x == builtins.unsafeDiscardStringContext y) (config.garuda.excludes."${name}".exclude or [ ]))
+  gExcludableArray =
+    config: name:
+    lib.filter (
+      x:
+      !(config.garuda.excludes."${name}".excludeAll or false)
+      && !(lib.lists.any (
+        y: builtins.unsafeDiscardStringContext x == builtins.unsafeDiscardStringContext y
+      ) (config.garuda.excludes."${name}".exclude or [ ]))
     );
 
   # Define options = [] for the exclusion variable
@@ -78,15 +106,17 @@ in
   version = 2;
 
   # Generate /etc/skel from a path. This ensures that certain directories are always available to mount from with the correct permissions.
-  gGenerateSkel = pkgs: skel: name: derivation {
-    name = "skel-${name}";
-    src = skel;
-    builder = pkgs.writeShellScript "build-skel-${name}" ''
-      PATH="${pkgs.rsync}/bin:${pkgs.coreutils}/bin"
-      set -e
-      mkdir -p "$out/"{.cache,.config,.local/share}
-      rsync -a "$src/" "$out"
-    '';
-    inherit (pkgs.stdenv.hostPlatform) system;
-  };
+  gGenerateSkel =
+    pkgs: skel: name:
+    derivation {
+      name = "skel-${name}";
+      src = skel;
+      builder = pkgs.writeShellScript "build-skel-${name}" ''
+        PATH="${pkgs.rsync}/bin:${pkgs.coreutils}/bin"
+        set -e
+        mkdir -p "$out/"{.cache,.config,.local/share}
+        rsync -a "$src/" "$out"
+      '';
+      inherit (pkgs.stdenv.hostPlatform) system;
+    };
 }

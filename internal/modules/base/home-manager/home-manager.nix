@@ -1,8 +1,9 @@
-{ config
-, lib
-, utils
-, garuda-lib
-, ...
+{
+  config,
+  lib,
+  utils,
+  garuda-lib,
+  ...
 }:
 with garuda-lib;
 let
@@ -12,13 +13,15 @@ let
 in
 {
   options.garuda = {
-    home-manager.modules = with lib; mkOption {
-      default = [ ];
-      description = "List of home-manager configurations to include for all users.";
-      example = "./dotfiles.nix";
-      internal = true;
-      type = types.listOf types.deferredModule;
-    };
+    home-manager.modules =
+      with lib;
+      mkOption {
+        default = [ ];
+        description = "List of home-manager configurations to include for all users.";
+        example = "./dotfiles.nix";
+        internal = true;
+        type = types.listOf types.deferredModule;
+      };
     excludes = gCreateExclusionOption "home-manager-modules";
   };
 
@@ -27,25 +30,26 @@ in
       # Make home-manager use the same Nixpkgs as the rest of the system
       useGlobalPkgs = true;
       # Maps each user to a home-manager configuration
-      users = builtins.mapAttrs
-        (username: user:
-          { ... }: {
-            home.homeDirectory = user.home;
-            home.stateVersion = state_version;
-            home.username = username;
+      users = builtins.mapAttrs (
+        username: user:
+        { ... }:
+        {
+          home.homeDirectory = user.home;
+          home.stateVersion = state_version;
+          home.username = username;
 
-            imports = cfg.modules;
-          }
-        )
-        users;
+          imports = cfg.modules;
+        }
+      ) users;
     };
 
     # Creates a systemd service for each user that runs home-manager
-    systemd.services = lib.mapAttrs'
-      (username: _user: lib.nameValuePair "home-manager-${utils.escapeSystemdPath username}" {
+    systemd.services = lib.mapAttrs' (
+      username: _user:
+      lib.nameValuePair "home-manager-${utils.escapeSystemdPath username}" {
         after = [ "create-homedirs.service" ];
-      })
-      users;
+      }
+    ) users;
 
     # This is the default home-manager configuration
     garuda.home-manager.modules = gExcludableArray config "home-manager-modules" [

@@ -8,38 +8,49 @@
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # Modules support for flakes
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
-    # Have a local index of nixpkgs for fast launching of apps
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Home configuration management
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-
     #
     # Development tooling
     #
 
-    # Devshell to set up a development environment
     devshell = {
       url = "github:numtide/devshell";
-      flake = false;
     };
 
-    # Easy linting of the flake and all kind of other stuff
-    pre-commit-hooks = {
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    git-hooks = {
       url = "github:cachix/git-hooks.nix";
+      inputs.flake-compat.follows = "flake-compat";
+      inputs.gitignore.follows = "gitignore";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    #
+    # Deduplication
+    #
+
+    flake-compat.url = "github:edolstra/flake-compat";
+
+    gitignore = {
+      url = "github:hercules-ci/gitignore.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -47,76 +58,111 @@
     # Theming
     #
 
-    # Beautiful pastel theming
-    catppuccin.url = "github:catppuccin/nix";
+    catppuccin = {
+      url = "github:catppuccin/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     catppuccin-vsc = {
       url = "github:catppuccin/vscode";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
   outputs =
-    { flake-parts
-    , nixpkgs
-    , pre-commit-hooks
-    , ...
-    } @ inputs:
+    {
+      flake-parts,
+      nixpkgs,
+      ...
+    }@inputs:
     let
       internal = import ./internal {
         inherit lib;
         overlay = import ./packages/overlay.nix {
           inherit inputs lib;
         };
-        inputs = inputs // { inherit nixpkgs; };
+        inputs = inputs // {
+          inherit nixpkgs;
+        };
       };
 
       lib = import ./lib { inherit inputs nixpkgs internal; };
 
       perSystem =
-        { pkgs
-        , system
-        , ...
+        {
+          pkgs,
+          system,
+          config,
+          ...
         }:
         let
-          packages = import ./packages { inherit system pkgs inputs lib; };
+          packages = import ./packages {
+            inherit
+              system
+              pkgs
+              inputs
+              lib
+              ;
+          };
         in
         {
-          checks.pre-commit-check = pre-commit-hooks.lib.${system}.run {
-            hooks = {
-              actionlint.enable = true;
-              commitizen.enable = true;
+          treefmt = {
+            projectRootFile = "flake.nix";
+            programs = {
               deadnix.enable = true;
-              nil.enable = true;
-              nixpkgs-fmt.enable = true;
+              nixfmt.enable = true;
               prettier.enable = true;
               statix.enable = true;
-              yamllint.enable = true;
+              typos.enable = true;
             };
-            src = ./.;
           };
 
-          devShells = import ./devshell {
-            inherit inputs nixpkgs system pkgs packages;
+          pre-commit.settings = {
+            package = pkgs.prek;
+            hooks = {
+              commitizen.enable = true;
+              check-json.enable = true;
+              check-yaml.enable = true;
+              deadnix.enable = true;
+              flake-checker.enable = true;
+              nil.enable = true;
+              nixfmt.enable = true;
+              prettier.enable = true;
+              statix.enable = true;
+              typos.enable = true;
+            };
           };
 
-          formatter = pkgs.nixpkgs-fmt;
+          devshells = import ./devshell {
+            inherit
+              nixpkgs
+              pkgs
+              packages
+              config
+              ;
+          };
+
+          formatter = config.treefmt.build.wrapper;
 
           packages = packages.external;
         };
     in
     flake-parts.lib.mkFlake { inherit inputs; } {
-      # Flake modules
-      imports = [ inputs.pre-commit-hooks.flakeModule ];
+      imports = [
+        inputs.devshell.flakeModule
+        inputs.git-hooks.flakeModule
+        inputs.treefmt-nix.flakeModule
+      ];
 
-      # The available systems
-      systems = [ "x86_64-linux" "aarch64-linux" ];
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
 
-      # Regular flake stuff
       flake = {
         inherit lib;
         inherit internal;
       };
 
-      # This applies to all systems
       inherit perSystem;
     };
 }

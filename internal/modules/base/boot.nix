@@ -1,6 +1,7 @@
-{ config
-, garuda-lib
-, ...
+{
+  config,
+  garuda-lib,
+  ...
 }:
 with garuda-lib;
 {
@@ -14,7 +15,10 @@ with garuda-lib;
       verbose = gDefault false;
     };
     # Make it quiet by default
-    kernelParams = gExcludableArray config "kernelparameters" [ "acpi_call" "quiet" ];
+    kernelParams = gExcludableArray config "kernelparameters" [
+      "acpi_call"
+      "quiet"
+    ];
     tmp = {
       # Clean /tmp on boot if not using tmpfs
       cleanOnBoot = gDefault (!config.boot.tmp.useTmpfs);

@@ -1,34 +1,37 @@
-{ lib
-, pkgs
-, garuda-lib
-, config
-, ...
+{
+  lib,
+  pkgs,
+  garuda-lib,
+  config,
+  ...
 }:
 let
   cfg = config.garuda.dr460nized;
   glib = garuda-lib;
 in
 lib.mkIf cfg.enable {
-  environment.systemPackages = with pkgs; glib.gExcludableArray config "defaultpackages" [
-    beautyline-icons
-    dr460nized-kde-theme
-    ffmpegthumbnailer
-    firedragon-bin
-    jamesdsp
-    kdePackages.applet-window-buttons6
-    kdePackages.kdegraphics-thumbnailers
-    kdePackages.kimageformats
-    kdePackages.kio-admin
-    kdePackages.qtstyleplugin-kvantum
-    libinput-gestures
-    plasma-plugin-blurredwallpaper
-    resvg
-    sshfs
-    sweet
-    sweet-nova
-    vlc
-    xdg-desktop-portal
-  ];
+  environment.systemPackages =
+    with pkgs;
+    glib.gExcludableArray config "defaultpackages" [
+      beautyline-icons
+      dr460nized-kde-theme
+      ffmpegthumbnailer
+      firedragon-bin
+      jamesdsp
+      kdePackages.applet-window-buttons6
+      kdePackages.kdegraphics-thumbnailers
+      kdePackages.kimageformats
+      kdePackages.kio-admin
+      kdePackages.qtstyleplugin-kvantum
+      libinput-gestures
+      plasma-plugin-blurredwallpaper
+      resvg
+      sshfs
+      sweet
+      sweet-nova
+      vlc
+      xdg-desktop-portal
+    ];
 
   xdg.mime.defaultApplications =
     let

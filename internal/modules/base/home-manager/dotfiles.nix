@@ -1,11 +1,18 @@
-{ lib, ... }: {
+{ lib, ... }:
+{
   # Git shall be used a lot on flaky systems
   programs.git = {
     enable = true;
     settings = {
-      core = { editor = "micro"; };
-      init = { defaultBranch = "main"; };
-      pull = { rebase = true; };
+      core = {
+        editor = "micro";
+      };
+      init = {
+        defaultBranch = "main";
+      };
+      pull = {
+        rebase = true;
+      };
     };
   };
 
@@ -41,7 +48,7 @@
     };
   };
 
-  # Invididual terminal app configs
+  # Individual terminal app configs
   programs = {
     # The better cat replacement
     bat.enable = true;
@@ -78,7 +85,10 @@
       builders-use-substitutes = true;
 
       # We are using flakes, so enable the experimental features
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
 
       # Show more log lines for failed builds
       log-lines = 20;

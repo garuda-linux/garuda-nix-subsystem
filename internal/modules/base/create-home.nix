@@ -1,4 +1,10 @@
-{ config, lib, pkgs, garuda-lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  garuda-lib,
+  ...
+}:
 let
   cfg = config.garuda.create-home;
 in
@@ -32,11 +38,11 @@ with garuda-lib;
         function create_home_if_empty {
           [ -z "$(ls -A "$1")" ] && rm -r "$1" && "${pkgs.linux-pam}/bin/mkhomedir_helper" "$2" 0022 "${cfg.skel}" && echo "Created home directory for $2" || echo "Home directory for $2 already exists"
         }
-        ${
-          lib.strings.concatLines (lib.mapAttrsToList (name: user: ''
+        ${lib.strings.concatLines (
+          lib.mapAttrsToList (name: user: ''
             create_home_if_empty "${user.home}" "${name}" 
-          '') (lib.attrsets.filterAttrs (_name: user: user.isNormalUser) config.users.users))
-        }
+          '') (lib.attrsets.filterAttrs (_name: user: user.isNormalUser) config.users.users)
+        )}
       '';
     };
   };

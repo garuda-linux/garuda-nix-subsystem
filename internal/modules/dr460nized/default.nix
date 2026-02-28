@@ -1,4 +1,10 @@
-{ config, lib, pkgs, garuda-lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  garuda-lib,
+  ...
+}:
 with garuda-lib;
 let
   cfg = config.garuda.dr460nized;
@@ -66,7 +72,8 @@ in
     # Define the default fonts Fira Sans & Jetbrains Mono Nerd Fonts
     fonts = {
       enableDefaultPackages = gDefault false;
-      packages = with pkgs;
+      packages =
+        with pkgs;
         gExcludableArray config "defaultpackages" [
           fira
           nerd-fonts.jetbrains-mono
@@ -77,9 +84,18 @@ in
       fontconfig = {
         cache32Bit = gDefault true;
         defaultFonts = {
-          monospace = gDefault [ "JetBrains Mono Nerd Font" "Noto Fonts Emoji" ];
-          sansSerif = gDefault [ "Fira" "Noto Fonts Emoji" ];
-          serif = gDefault [ "Fira" "Noto Fonts Emoji" ];
+          monospace = gDefault [
+            "JetBrains Mono Nerd Font"
+            "Noto Fonts Emoji"
+          ];
+          sansSerif = gDefault [
+            "Fira"
+            "Noto Fonts Emoji"
+          ];
+          serif = gDefault [
+            "Fira"
+            "Noto Fonts Emoji"
+          ];
           emoji = gDefault [ "Noto Fonts Emoji" ];
         };
         # This fixes emoji stuff

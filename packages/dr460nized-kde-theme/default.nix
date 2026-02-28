@@ -1,12 +1,12 @@
-{ beautyline-icons
-, callPackage
-, fetchFromGitLab
-, fetchurl
-, lib
-, plasma-plugin-blurredwallpaper
-, stdenvNoCC
-, sweet-nova
-,
+{
+  beautyline-icons,
+  callPackage,
+  fetchFromGitLab,
+  fetchurl,
+  lib,
+  plasma-plugin-blurredwallpaper,
+  stdenvNoCC,
+  sweet-nova,
 }:
 
 let

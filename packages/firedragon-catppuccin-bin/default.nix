@@ -1,22 +1,22 @@
-{ callPackage
-, lib
-, stdenv
-, fetchurl
-, wrapGAppsHook3
-, autoPatchelfHook
-, alsa-lib
-, curl
-, dbus-glib
-, gtk3
-, libXtst
-, libva
-, pciutils
-, pipewire
-, adwaita-icon-theme
-, patchelfUnstable
-, # have to use patchelfUnstable to support --no-clobber-old-sections
-  undmg
-,
+{
+  callPackage,
+  lib,
+  stdenv,
+  fetchurl,
+  wrapGAppsHook3,
+  autoPatchelfHook,
+  alsa-lib,
+  curl,
+  dbus-glib,
+  gtk3,
+  libXtst,
+  libva,
+  pciutils,
+  pipewire,
+  adwaita-icon-theme,
+  patchelfUnstable,
+  # have to use patchelfUnstable to support --no-clobber-old-sections
+  undmg,
 }:
 
 let

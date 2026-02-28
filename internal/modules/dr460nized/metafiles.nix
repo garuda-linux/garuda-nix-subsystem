@@ -9,16 +9,30 @@
 #   categories = ["Network"];
 # }) ];
 
-{ lib, config, osConfig, pkgs, ... }:
+{
+  lib,
+  config,
+  osConfig,
+  pkgs,
+  ...
+}:
 let
   appdir = ".local/share/applications";
-  pkgnames = (lib.forEach config.home.packages (x: lib.getName x)) ++ lib.forEach osConfig.environment.systemPackages (x: lib.getName x);
-  findPkg = name:
+  pkgnames =
+    (lib.forEach config.home.packages (x: lib.getName x))
+    ++ lib.forEach osConfig.environment.systemPackages (x: lib.getName x);
+  findPkg =
+    name:
     let
       home = lib.findFirst (x: (lib.getName x) == name) null config.home.packages;
       system = lib.findFirst (x: (lib.getName x) == name) null osConfig.environment.systemPackages;
     in
-    if home != null then home else if system != null then system else builtins.throw ("garuda-nix-subsystem: package not found: " + name);
+    if home != null then
+      home
+    else if system != null then
+      system
+    else
+      builtins.throw ("garuda-nix-subsystem: package not found: " + name);
   libreoffice-qt = findPkg "libreoffice";
 in
 {
@@ -48,8 +62,8 @@ in
         X-KDE-SubstituteUID=false
         X-KDE-Username=
       '';
-    }) ++
-    (lib.optional (builtins.elem "fish" pkgnames) {
+    })
+    ++ (lib.optional (builtins.elem "fish" pkgnames) {
       "${appdir}/fish.desktop".text = ''
         [Desktop Entry]
         Categories=ConsoleOnly;System;
@@ -67,8 +81,8 @@ in
         X-KDE-SubstituteUID=false
         X-KDE-Username=
       '';
-    }) ++
-    (lib.optional (builtins.elem "micro" pkgnames) {
+    })
+    ++ (lib.optional (builtins.elem "micro" pkgnames) {
       "${appdir}/micro.desktop".text = ''
         [Desktop Entry]
         Categories=Utility;TextEditor;Development;
@@ -88,8 +102,8 @@ in
         X-KDE-SubstituteUID=false
         X-KDE-Username=
       '';
-    }) ++
-    (lib.optional (builtins.elem "libreoffice" pkgnames) {
+    })
+    ++ (lib.optional (builtins.elem "libreoffice" pkgnames) {
       "${appdir}/startcenter.desktop".text = ''
         [Desktop Action Base]
         Exec=${libreoffice-qt}/bin/soffice --base
@@ -151,7 +165,7 @@ in
         GenericName=Formula Editor
         Icon=org.libreoffice.LibreOffice.math
         InitialPreference=5
-        Keywords=Equation;OpenDocument Formula;Formula;odf;MathML;
+        Keywords=Equation;OpenDocument Formula;Formula;of;MathML;
         MimeType=application/vnd.oasis.opendocument.formula;application/vnd.sun.xml.math;application/vnd.oasis.opendocument.formula-template;text/mathml;application/mathml+xml;
         Name=LibreOffice Math
         NoDisplay=false

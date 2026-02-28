@@ -1,12 +1,13 @@
-{ callPackage
-, fetchFromGitLab
-, gnome-icon-theme
-, gtk3
-, hicolor-icon-theme
-, jdupes
-, lib
-, stdenvNoCC
-, ...
+{
+  callPackage,
+  fetchFromGitLab,
+  gnome-icon-theme,
+  gtk3,
+  hicolor-icon-theme,
+  jdupes,
+  lib,
+  stdenvNoCC,
+  ...
 }:
 
 let

@@ -1,33 +1,37 @@
-{ config
-, garuda-lib
-, lib
-, pkgs
-, ...
+{
+  config,
+  garuda-lib,
+  lib,
+  pkgs,
+  ...
 }:
 with garuda-lib;
 {
-  options.garuda.excludes = (gCreateExclusionOption "defaultpackages") // (gCreateExclusionOption "nixldlibraries");
+  options.garuda.excludes =
+    (gCreateExclusionOption "defaultpackages") // (gCreateExclusionOption "nixldlibraries");
   config = {
     # Default applications
-    environment.systemPackages = with pkgs; gExcludableArray config "defaultpackages" [
-      bat
-      curl
-      eza
-      fastfetch
-      fishPlugins.done
-      fishPlugins.autopair
-      fishPlugins.puffer
-      git
-      htop
-      killall
-      micro
-      nvd
-      rsync
-      screen
-      tldr
-      ugrep
-      wget
-    ];
+    environment.systemPackages =
+      with pkgs;
+      gExcludableArray config "defaultpackages" [
+        bat
+        curl
+        eza
+        fastfetch
+        fishPlugins.done
+        fishPlugins.autopair
+        fishPlugins.puffer
+        git
+        htop
+        killall
+        micro
+        nvd
+        rsync
+        screen
+        tldr
+        ugrep
+        wget
+      ];
 
     # We want to be insulted on wrong passwords
     security.sudo = {
@@ -38,35 +42,39 @@ with garuda-lib;
     };
 
     # Run Appimages with appimage-run
-    boot.binfmt.registrations = lib.mkIf config.garuda.system.isGui (lib.genAttrs [ "appimage" "AppImage" ] (ext: {
-      interpreter = "/run/current-system/sw/bin/appimage-run";
-      magicOrExtension = ext;
-      recognitionType = "extension";
-    }));
+    boot.binfmt.registrations = lib.mkIf config.garuda.system.isGui (
+      lib.genAttrs [ "appimage" "AppImage" ] (ext: {
+        interpreter = "/run/current-system/sw/bin/appimage-run";
+        magicOrExtension = ext;
+        recognitionType = "extension";
+      })
+    );
 
     # Run unpatched linux binaries with nix-ld
     programs.nix-ld = {
       enable = gDefault config.garuda.system.isGui;
-      libraries = with pkgs; gExcludableArray config "nixldlibraries" [
-        SDL2
-        curl
-        freetype
-        gdk-pixbuf
-        glib
-        glibc
-        icu
-        libglvnd
-        libnotify
-        libsecret
-        libunwind
-        libuuid
-        openssl
-        stdenv.cc.cc
-        util-linux
-        vulkan-loader
-        libx11
-        zlib
-      ];
+      libraries =
+        with pkgs;
+        gExcludableArray config "nixldlibraries" [
+          SDL2
+          curl
+          freetype
+          gdk-pixbuf
+          glib
+          glibc
+          icu
+          libglvnd
+          libnotify
+          libsecret
+          libunwind
+          libuuid
+          openssl
+          stdenv.cc.cc
+          util-linux
+          vulkan-loader
+          libx11
+          zlib
+        ];
     };
 
     # Easy launching of apps via "comma", contains command-not-found database

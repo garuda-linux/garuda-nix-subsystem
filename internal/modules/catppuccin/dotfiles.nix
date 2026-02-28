@@ -1,4 +1,5 @@
-{ hmModule }: { pkgs, ... }:
+{ hmModule }:
+{ pkgs, ... }:
 {
   imports = [
     ./metafiles.nix

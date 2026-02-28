@@ -1,13 +1,15 @@
-{ config
-, garuda-lib
-, pkgs
-, lib
-, ...
+{
+  config,
+  garuda-lib,
+  pkgs,
+  lib,
+  ...
 }:
 let
   cfg = config.garuda.gaming;
 in
-with garuda-lib; {
+with garuda-lib;
+{
   options.garuda.gaming = {
     enable = lib.mkOption {
       default = false;

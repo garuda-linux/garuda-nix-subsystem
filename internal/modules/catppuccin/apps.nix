@@ -1,46 +1,53 @@
-{ lib
-, pkgs
-, garuda-lib
-, config
-, ...
+{
+  lib,
+  pkgs,
+  garuda-lib,
+  config,
+  ...
 }:
 let
   cfg = config.garuda.catppuccin;
   glib = garuda-lib;
 in
 lib.mkIf cfg.enable {
-  environment.systemPackages = with pkgs; glib.gExcludableArray config "defaultpackages" [
-    (catppuccin.override {
-      accent = "mauve";
-      variant = "mocha";
-      themeList = [ "bat" "btop" "kvantum" ];
-    })
-    catppuccin-cursors.mochaMauve
-    (catppuccin-kde.override {
-      accents = [ "mauve" ];
-      flavour = [ "mocha" ];
-      winDecStyles = [ "classic" ];
-    })
-    (catppuccin-papirus-folders.override {
-      accent = "mauve";
-      flavor = "mocha";
-    })
-    ffmpegthumbnailer
-    firedragon-bin
-    jamesdsp
-    kdePackages.applet-window-buttons6
-    kdePackages.kdegraphics-thumbnailers
-    kdePackages.kimageformats
-    kdePackages.kio-admin
-    kdePackages.qtstyleplugin-kvantum
-    kdePackages.sddm-kcm
-    libinput-gestures
-    plasma-plugin-blurredwallpaper
-    resvg
-    sshfs
-    vlc
-    xdg-desktop-portal
-  ];
+  environment.systemPackages =
+    with pkgs;
+    glib.gExcludableArray config "defaultpackages" [
+      (catppuccin.override {
+        accent = "mauve";
+        variant = "mocha";
+        themeList = [
+          "bat"
+          "btop"
+          "kvantum"
+        ];
+      })
+      catppuccin-cursors.mochaMauve
+      (catppuccin-kde.override {
+        accents = [ "mauve" ];
+        flavour = [ "mocha" ];
+        winDecStyles = [ "classic" ];
+      })
+      (catppuccin-papirus-folders.override {
+        accent = "mauve";
+        flavor = "mocha";
+      })
+      ffmpegthumbnailer
+      firedragon-bin
+      jamesdsp
+      kdePackages.applet-window-buttons6
+      kdePackages.kdegraphics-thumbnailers
+      kdePackages.kimageformats
+      kdePackages.kio-admin
+      kdePackages.qtstyleplugin-kvantum
+      kdePackages.sddm-kcm
+      libinput-gestures
+      plasma-plugin-blurredwallpaper
+      resvg
+      sshfs
+      vlc
+      xdg-desktop-portal
+    ];
 
   xdg.mime.defaultApplications =
     let

@@ -1,8 +1,9 @@
-{ config
-, garuda-lib
-, pkgs
-, lib
-, ...
+{
+  config,
+  garuda-lib,
+  pkgs,
+  lib,
+  ...
 }:
 let
   cfg = config.garuda;
@@ -46,14 +47,24 @@ with garuda-lib;
     };
 
     # Filesystem deduplication in the background
-    services.beesd.filesystems = lib.mkIf (cfg.btrfs-maintenance.deduplication && cfg.btrfs-maintenance.enable && cfg.btrfs-maintenance.uuid != null) {
-      root = {
-        extraOptions = [ "--loadavg-target" "1.0" ];
-        hashTableSizeMB = 2048;
-        spec = "UUID=${cfg.btrfs-maintenance.uuid}";
-        verbosity = "crit";
-      };
-    };
+    services.beesd.filesystems =
+      lib.mkIf
+        (
+          cfg.btrfs-maintenance.deduplication
+          && cfg.btrfs-maintenance.enable
+          && cfg.btrfs-maintenance.uuid != null
+        )
+        {
+          root = {
+            extraOptions = [
+              "--loadavg-target"
+              "1.0"
+            ];
+            hashTableSizeMB = 2048;
+            spec = "UUID=${cfg.btrfs-maintenance.uuid}";
+            verbosity = "crit";
+          };
+        };
 
     # Enable regular scrubbing of BTRFS filesystems
     services.btrfs.autoScrub.enable = lib.mkIf cfg.btrfs-maintenance.enable true;

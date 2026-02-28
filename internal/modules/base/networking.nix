@@ -1,4 +1,9 @@
-{ config, lib, garuda-lib, ... }:
+{
+  config,
+  lib,
+  garuda-lib,
+  ...
+}:
 let
   cfg = config.garuda.networking;
 in
@@ -37,7 +42,11 @@ with garuda-lib;
     networking = {
       networkmanager = {
         enable = gDefault config.garuda.system.isGui;
-        unmanaged = [ "lo" "docker0" "virbr0" ];
+        unmanaged = [
+          "lo"
+          "docker0"
+          "virbr0"
+        ];
         wifi = {
           backend = gDefault (if cfg.iwd then "iwd" else "wpa_supplicant");
           powersave = gDefault false;

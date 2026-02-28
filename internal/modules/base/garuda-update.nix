@@ -1,12 +1,16 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 let
   garuda-update = pkgs.writeShellApplication {
     name = "garuda-update";
-    runtimeInputs = with pkgs; [ nix coreutils ];
+    runtimeInputs = with pkgs; [
+      nix
+      coreutils
+    ];
     text = ''
       unset LD_PRELOAD LD_LIBRARY_PATH
       if [ "$EUID" -ne 0 ]; then
@@ -21,6 +25,8 @@ in
 {
   config = {
     # This is the default updater for GNS (irrelevant for non-GNS users)
-    environment.systemPackages = lib.mkIf (config.garuda.system.isGui || config.garuda.managed.config != null) [ garuda-update ];
+    environment.systemPackages = lib.mkIf (
+      config.garuda.system.isGui || config.garuda.managed.config != null
+    ) [ garuda-update ];
   };
 }

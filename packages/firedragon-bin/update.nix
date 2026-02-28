@@ -1,13 +1,14 @@
-{ coreutils
-, curl
-, findutils
-, git
-, jq
-, lib
-, nix
-, nix-prefetch-git
-, writeShellScript
-, ...
+{
+  coreutils,
+  curl,
+  findutils,
+  git,
+  jq,
+  lib,
+  nix,
+  nix-prefetch-git,
+  writeShellScript,
+  ...
 }:
 let
   path = lib.makeBinPath [

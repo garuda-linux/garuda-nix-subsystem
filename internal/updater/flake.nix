@@ -6,7 +6,9 @@
     nixpkgs.url = "github:NixOS/nixpkgs";
   };
 
-  outputs = { nixpkgs, ... }: {
-    packages = nixpkgs.lib.mapAttrs (_: package: { inherit (package) nix; }) nixpkgs.legacyPackages;
-  };
+  outputs =
+    { nixpkgs, ... }:
+    {
+      packages = nixpkgs.lib.mapAttrs (_: package: { inherit (package) nix; }) nixpkgs.legacyPackages;
+    };
 }

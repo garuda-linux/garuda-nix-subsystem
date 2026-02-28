@@ -1,9 +1,11 @@
-{ inputs, ... }: { config
-                 , lib
-                 , pkgs
-                 , garuda-lib
-                 , ...
-                 }:
+{ inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  garuda-lib,
+  ...
+}:
 with garuda-lib;
 let
   catppuccin-settings = pkgs.stdenvNoCC.mkDerivation {
@@ -84,7 +86,8 @@ in
     # Define the default fonts Fira Sans & Jetbrains Mono Nerd Fonts
     fonts = {
       enableDefaultPackages = gDefault false;
-      packages = with pkgs;
+      packages =
+        with pkgs;
         gExcludableArray config "defaultpackages" [
           fira
           nerd-fonts.jetbrains-mono
@@ -95,9 +98,18 @@ in
       fontconfig = {
         cache32Bit = gDefault true;
         defaultFonts = {
-          monospace = gDefault [ "JetBrains Mono Nerd Font" "Noto Fonts Emoji" ];
-          sansSerif = gDefault [ "Fira" "Noto Fonts Emoji" ];
-          serif = gDefault [ "Fira" "Noto Fonts Emoji" ];
+          monospace = gDefault [
+            "JetBrains Mono Nerd Font"
+            "Noto Fonts Emoji"
+          ];
+          sansSerif = gDefault [
+            "Fira"
+            "Noto Fonts Emoji"
+          ];
+          serif = gDefault [
+            "Fira"
+            "Noto Fonts Emoji"
+          ];
           emoji = gDefault [ "Noto Fonts Emoji" ];
         };
         enable = gDefault true;
@@ -116,7 +128,9 @@ in
     ];
 
     # Use the custom Catppuccin settings package as default /etc/skel folder
-    garuda.create-home.skel = gDefault "${gGenerateSkel pkgs "${catppuccin-settings}/skel" "catppuccin"}";
+    garuda.create-home.skel = gDefault "${gGenerateSkel pkgs "${catppuccin-settings}/skel"
+      "catppuccin"
+    }";
 
     # These need to be enabled for complete functionality
     programs = {

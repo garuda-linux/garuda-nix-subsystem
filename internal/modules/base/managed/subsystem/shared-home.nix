@@ -1,19 +1,27 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.garuda.subsystem;
   users = config.garuda.subsystem.imported-users;
 in
 {
   config.systemd = lib.mkIf (cfg.enable && users.shared-home.enable) {
-    mounts = [{
-      what = "UUID=${users.shared-home.uuid}";
-      options = "subvol=@home,compress=zstd,noatime,noauto,nofail";
-      where = "/run/garuda/subsystem/sharedhome/new";
-      wantedBy = lib.mkForce [ ];
-    }] ++ (builtins.concatLists (
-      (lib.attrsets.mapAttrsToList
-        (name: _value: [
-          # Mount the .config 
+    mounts = [
+      {
+        what = "UUID=${users.shared-home.uuid}";
+        options = "subvol=@home,compress=zstd,noatime,noauto,nofail";
+        where = "/run/garuda/subsystem/sharedhome/new";
+        wantedBy = lib.mkForce [ ];
+      }
+    ]
+    ++ (builtins.concatLists (
+      (lib.attrsets.mapAttrsToList (
+        name: _value: [
+          # Mount the .config
           {
             what = "/run/garuda/subsystem/sharedhome/old/${name}/.config";
             where = "/run/garuda/subsystem/sharedhome/new/${name}/.config";
@@ -64,10 +72,12 @@ in
               ];
             };
           }
-        ])) users.users
+        ]
+      ))
+        users.users
     ));
-    services = lib.mkMerge (lib.attrsets.mapAttrsToList
-      (name: _value: {
+    services = lib.mkMerge (
+      lib.attrsets.mapAttrsToList (name: _value: {
         "garuda-sharedhome-${name}-init" = {
           unitConfig = {
             RequiresMountsFor = [
@@ -87,7 +97,7 @@ in
           wantedBy = lib.mkForce [ ];
           after = [ "create-homedirs.service" ];
         };
-      })
-      users.users);
+      }) users.users
+    );
   };
 }

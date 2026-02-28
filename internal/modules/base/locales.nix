@@ -1,11 +1,13 @@
-{ config
-, garuda-lib
-, lib
-, pkgs
-, ...
+{
+  config,
+  garuda-lib,
+  lib,
+  pkgs,
+  ...
 }:
 with lib;
-with garuda-lib; {
+with garuda-lib;
+{
   config = {
     # Use the Terminus font for the console
     console = {

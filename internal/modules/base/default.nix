@@ -1,6 +1,9 @@
-{ inputs, overlay, ... }: { config
-                          , ...
-                          }: {
+{ inputs, overlay, ... }:
+{
+  config,
+  ...
+}:
+{
   imports = [
     ./autologin.nix
     ./boot.nix
@@ -28,5 +31,6 @@
   _module.args.flake-inputs = inputs;
 
   # Custom label for boot menu entries
-  system.nixos.label = builtins.concatStringsSep "-" [ "garuda-nix-subsystem-" ] + config.system.nixos.version;
+  system.nixos.label =
+    builtins.concatStringsSep "-" [ "garuda-nix-subsystem-" ] + config.system.nixos.version;
 }
