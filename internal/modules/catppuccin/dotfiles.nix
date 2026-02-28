@@ -45,7 +45,7 @@
       gtk-xft-dpi = 98304;
     };
     font = {
-      name = "Fira Sans";
+      name = "Inter";
       size = 10;
     };
     theme = {

@@ -83,13 +83,13 @@ in
     # https://nix-community.github.io/home-manager/index.html
     programs.dconf.enable = true;
 
-    # Define the default fonts Fira Sans & Jetbrains Mono Nerd Fonts
+    # Define the default fonts Inter & Jetbrains Mono Nerd Fonts
     fonts = {
       enableDefaultPackages = gDefault false;
       packages =
         with pkgs;
         gExcludableArray config "defaultpackages" [
-          fira
+          inter
           nerd-fonts.jetbrains-mono
           noto-fonts
           noto-fonts-cjk-sans
@@ -161,7 +161,7 @@ in
       sddm = {
         assertQt6Sddm = true;
         enable = true;
-        font = "Fira Sans";
+        font = "Inter";
       };
       tty.enable = true;
     };

@@ -75,7 +75,7 @@ digitalclock.writeConfig(
   "enabledCalendarPlugins",
   "alternatecalendar,astronomicalevents,holidaysevents",
 );
-digitalclock.writeConfig("fontFamily", "Fira Sans ExtraBold");
+digitalclock.writeConfig("fontFamily", "Inter");
 digitalclock.writeConfig("fontStyleName", "Regular");
 digitalclock.writeConfig("fontWeight", 400);
 digitalclock.writeConfig("showWeekNumbers", true);
