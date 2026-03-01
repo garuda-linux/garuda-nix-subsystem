@@ -71,6 +71,12 @@
         "mkparents" = true;
       };
     };
+
+    # Starship prompt
+    starship = {
+      enable = true;
+      settings = import ../starship-settings.nix { inherit lib; };
+    };
   };
 
   nix = {
@@ -100,6 +106,9 @@
 
   # Enable dircolors
   programs.dircolors.enable = true;
+
+  # Enable eza
+  programs.eza.enable = true;
 
   # Show home-manager news
   news.display = "notify";

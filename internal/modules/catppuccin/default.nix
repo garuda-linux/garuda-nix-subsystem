@@ -69,7 +69,7 @@ in
     };
     environment.etc."plasmalogin.conf.d/catppuccin.conf".text = ''
       [Greeter][Wallpaper][org.kde.image][General]
-      Image=file://${catppuccin-settings}/share/wallpapers/Shaded_Landscape/contents/images/3840x2160.png
+      Image=file://${catppuccin-settings}/share/wallpapers/Tree/contents/images/Tree.jpg
     '';
 
     environment.plasma6.excludePackages = with pkgs; [

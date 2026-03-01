@@ -1,0 +1,12 @@
+{
+  "KPlugin": {
+    "Authors": [
+      {
+        "Email": "c@orangc.net",
+        "Name": "orangci"
+      }
+    ],
+    "Id": "Tree",
+    "Name": "Catppuccin Tree"
+  }
+}
