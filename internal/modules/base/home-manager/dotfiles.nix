@@ -75,7 +75,7 @@
     # Starship prompt
     starship = {
       enable = true;
-      settings = import ../starship-settings.nix { inherit lib; };
+      settings = lib.mapAttrsRecursive (_: lib.mkDefault) (import ../starship-settings.nix);
     };
   };
 

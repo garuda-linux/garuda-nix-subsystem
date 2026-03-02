@@ -127,7 +127,7 @@ with garuda-lib;
     # The starship prompt
     starship = {
       enable = gDefault true;
-      settings = lib.mapAttrsRecursive (_: gDefault) (import ./starship-settings.nix { inherit lib; });
+      settings = lib.mapAttrsRecursive (_: gDefault) (import ./starship-settings.nix);
     };
 
     # Easy terminal tabbing
