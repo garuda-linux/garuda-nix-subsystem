@@ -24,6 +24,7 @@ lib.mkIf cfg.enable {
       kdePackages.kio-admin
       kdePackages.qtstyleplugin-kvantum
       libinput-gestures
+      plasma-panel-colorizer
       plasma-plugin-blurredwallpaper
       resvg
       sshfs
