@@ -79,10 +79,10 @@ with garuda-lib;
     '';
     systemd.coredump = {
       enable = gDefault false;
-      extraConfig = ''
-        Storage=none
-        ProcessSizeMax=0
-      '';
+      settings.Coredump = {
+        Storage = "none";
+        ProcessSizeMax = 0;
+      };
     };
 
     # Enable locating files via locate
