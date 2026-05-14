@@ -35,6 +35,7 @@ tag:
     - nix build .#internal.ci-full --dry-run >/dev/null
     - git tag -f v2
     - git push --atomic -f $REPO_URL v2 HEAD:refs/heads/stable
-  only:
-    refs: [main]
-    variables: [$UPDATE != "true"]
+  rules:
+    - if: "$CI_MERGE_REQUEST_ID"
+      when: never
+    - if: '$CI_COMMIT_BRANCH == "main" && $UPDATE != "true"'
