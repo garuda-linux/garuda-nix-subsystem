@@ -36,6 +36,8 @@ tag:
     - git tag -f v2
     - git push --atomic -f $REPO_URL v2 HEAD:refs/heads/stable
   rules:
-    - if: "$CI_MERGE_REQUEST_ID"
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "merge_request"'
       when: never
     - if: '$CI_COMMIT_BRANCH == "main" && $UPDATE != "true"'
+      when: on_success
+    - when: never
