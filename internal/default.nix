@@ -16,7 +16,7 @@
   inherit
     ((lib.garudaSystem {
       system = "x86_64-linux";
-      modules = [ ./testing/vm.nix ];
+      modules = [ ./testing/vm-dr460nized-bare.nix ];
     }).config.system.build
     )
     vm
