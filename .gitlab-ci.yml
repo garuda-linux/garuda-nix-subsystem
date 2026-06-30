@@ -4,7 +4,6 @@ variables:
   GIT_AUTHOR_EMAIL: ci@garudalinux.org
   GIT_AUTHOR_NAME: Gitlab CI
   GIT_STRATEGY: clone
-  REPO_URL: $CI_SERVER_PROTOCOL://gitlab-ci-token:$ACCESS_TOKEN@$CI_SERVER_HOST/$CI_PROJECT_PATH.git
 update:
   stage: update
   image: nixpkgs/nix-flakes:latest
@@ -21,7 +20,7 @@ update:
       git config --global user.email "$GIT_AUTHOR_EMAIL"
     - git add flake.lock internal/updater/flake.lock
     - "git commit -m 'chore(flake.lock): bump flakes'"
-    - git push "$REPO_URL" HEAD:main
+    - git push "$CI_REPOSITORY_URL" HEAD:main
   only:
     variables: [$UPDATE == "true"]
     refs: [main]
@@ -34,7 +33,7 @@ tag:
     - nix build .#internal.ci-bare --dry-run >/dev/null
     - nix build .#internal.ci-full --dry-run >/dev/null
     - git tag -f v2
-    - git push --atomic -f $REPO_URL v2 HEAD:refs/heads/stable
+    - git push --atomic -f $CI_REPOSITORY_URL v2 HEAD:refs/heads/stable
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "merge_request"'
       when: never
