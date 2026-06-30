@@ -41,7 +41,7 @@ with lib;
 
     # This should never be changed unless you know exactly what you are doing.
     # This has no impact on any package updates or OS version.
-    system.stateVersion = "25.11";
+    system.stateVersion = "26.05";
 }
 EOF
     fi
