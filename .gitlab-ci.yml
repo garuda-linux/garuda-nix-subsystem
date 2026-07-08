@@ -4,6 +4,7 @@ variables:
   GIT_AUTHOR_EMAIL: ci@garudalinux.org
   GIT_AUTHOR_NAME: Gitlab CI
   GIT_STRATEGY: clone
+
 update:
   stage: update
   image: nixpkgs/nix-flakes:latest
@@ -21,9 +22,16 @@ update:
     - git add flake.lock internal/updater/flake.lock
     - "git commit -m 'chore(flake.lock): bump flakes'"
     - git push "$CI_REPOSITORY_URL" HEAD:main
+    - >
+      nix run nixpkgs#curl -- -X POST
+      -F "token=$CI_JOB_TOKEN"
+      -F "ref=main"
+      -F "variables[UPDATE]=false"
+      "$CI_API_V4_URL/projects/$CI_PROJECT_ID/trigger/pipeline"
   only:
     variables: [$UPDATE == "true"]
     refs: [main]
+
 tag:
   stage: tag
   image: nixpkgs/nix-flakes:latest
