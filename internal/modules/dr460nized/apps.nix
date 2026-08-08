@@ -28,7 +28,6 @@ lib.mkIf cfg.enable {
       plasma-plugin-blurredwallpaper
       resvg
       sshfs
-      sweet
       sweet-nova
       vlc
       xdg-desktop-portal
