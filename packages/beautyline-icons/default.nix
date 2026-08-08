@@ -1,7 +1,6 @@
 {
   callPackage,
   fetchFromGitLab,
-  gnome-icon-theme,
   gtk3,
   hicolor-icon-theme,
   jdupes,
@@ -31,7 +30,6 @@ stdenvNoCC.mkDerivation rec {
   ];
 
   propagatedBuildInputs = [
-    gnome-icon-theme
     hicolor-icon-theme
   ];
 
