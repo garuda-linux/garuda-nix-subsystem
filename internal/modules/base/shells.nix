@@ -59,7 +59,7 @@ in
           "gpush" = "git push";
           "ip" = "ip --color=auto";
           "jctl" = "journalctl -p 3 -xb";
-          "ls" = "eza -al --color=always --group-directories-first --icons";
+          "ls" = "eza -al --color=always --group-directories-first --icons always";
           "psmem" = "ps auxf | sort -nr -k 4";
           "psmem10" = "ps auxf | sort -nr -k 4 | head -1";
           "reb" = "nh os switch";
@@ -124,7 +124,7 @@ in
           "gitlog" = "git log --oneline --graph --decorate --all";
           "ip" = "ip --color=auto";
           "jctl" = "journalctl -p 3 -xb";
-          "ls" = "eza -al --color=always --group-directories-first --icons";
+          "ls" = "eza -al --color=always --group-directories-first --icons always";
           "psmem" = "ps auxf | sort -nr -k 4";
           "psmem10" = "ps auxf | sort -nr -k 4 | head -1";
           "vdir" = "vdir --color=auto";
