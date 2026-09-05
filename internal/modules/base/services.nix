@@ -73,10 +73,10 @@ with garuda-lib;
     services.fstrim.enable = gDefault true;
 
     # Limit systemd journal size and disable coredumps
-    services.journald.extraConfig = ''
-      SystemMaxUse=500M
-      RuntimeMaxUse=10M
-    '';
+    services.journald.settings.Journal = {
+      SystemMaxUse = "500M";
+      RuntimeMaxUse = "10M";
+    };
     systemd.coredump = {
       enable = gDefault false;
       settings.Coredump = {
