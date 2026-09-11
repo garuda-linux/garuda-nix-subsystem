@@ -33,12 +33,8 @@
   # Timezone
   time.timeZone = "Europe/Berlin";
 
-  # Enhance stability of the VM by disabling wayland
-  # overriding the actual default
-  services.displayManager = {
-    defaultSession = "plasmax11";
-    sddm.wayland.enable = lib.mkForce false;
-  };
+  # Enhance stability of the VM by forcing the X11 session
+  services.displayManager.defaultSession = "plasmax11";
 
   # Virtualisation settings for running "nix run .#internal.vm"
   # This makes the VM usable

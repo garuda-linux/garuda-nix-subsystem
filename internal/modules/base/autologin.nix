@@ -6,16 +6,16 @@
 }:
 with lib;
 let
-  cfg = config.garuda.noSddmAutologin;
+  cfg = config.garuda.noLoginManagerAutologin;
 in
 {
-  options.garuda.noSddmAutologin = {
+  options.garuda.noLoginManagerAutologin = {
     enable = mkOption {
       default = false;
       type = types.bool;
       example = true;
       description = mdDoc ''
-        Whether to enable autologin to desktop instead of using SDDM.
+        Whether to enable autologin to desktop instead of using the login manager.
       '';
     };
     user = mkOption {
@@ -44,7 +44,7 @@ in
       # only.
       displayManager = {
         enable = lib.mkForce false;
-        sddm.enable = lib.mkForce false;
+        plasma-login-manager.enable = lib.mkForce false;
       };
       getty.autologinUser = cfg.user;
       xserver.enable = lib.mkForce false;
