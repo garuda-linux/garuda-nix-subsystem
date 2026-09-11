@@ -12,8 +12,6 @@ if [[ ${#FILES[@]} -eq 0 ]]; then
   )
 fi
 
-have() { command -v "$1" >/dev/null 2>&1; }
-
 refresh_firedragon() {
   local file="$1" variant project_id base v
   
@@ -30,12 +28,10 @@ refresh_firedragon() {
   declare -A fnames=(
     ["aarch64-linux"]="${base}.linux-arm64.tar.xz"
     ["x86_64-linux"]="${base}.linux-x64.tar.xz"
-    ["aarch64-darwin"]="${base}.darwin-arm64.dmg"
-    ["x86_64-darwin"]="${base}.darwin-x64.dmg"
   )
-  
-  local tmp arch url hash json='{"version":"'"$v"'","sources":{}}'
-  for arch in aarch64-linux x86_64-linux aarch64-darwin x86_64-darwin; do
+
+  local arch url hash json='{"version":"'"$v"'","sources":{}}'
+  for arch in aarch64-linux x86_64-linux; do
     url="https://gitlab.com/api/v4/projects/${project_id}/packages/generic/firedragon/${v}/${fnames[$arch]}"
     hash="$(nix-prefetch-url --type sha256 "$url" 2>/dev/null | tr -d '[:space:]' | tail -n1)"
     json="$(jq --arg a "$arch" --arg u "$url" --arg s "$hash" \
@@ -50,30 +46,20 @@ refresh_firedragon() {
 }
 
 refresh_gitlab_head() {
-  local file="$1" group owner repo branch rev date short hash
-  
+  local file="$1" group owner repo rev date short hash stamp out
+
   case "$file" in
-    *beautyline-icons*) group="garuda-linux" owner="themes-and-settings/artwork" repo="beautyline" branch="master" ;;
-    *dr460nized-kde-theme*) group="garuda-linux" owner="themes-and-settings/settings" repo="garuda-dr460nized" branch="main" ;;
+    *beautyline-icons*) group="garuda-linux" owner="themes-and-settings/artwork" repo="beautyline" ;;
+    *dr460nized-kde-theme*) group="garuda-linux" owner="themes-and-settings/settings" repo="garuda-dr460nized" ;;
     *) echo "unknown git package: $file" >&2; return 1 ;;
   esac
   rev="$(jq -r '.rev' "$file")"
-  
-  if ! have nix-prefetch-git; then echo "nix-prefetch-git missing" >&2; return 1; fi
-  
-  local out
-  out="$(nix-prefetch-git --url "https://gitlab.com/${group}/${owner}/${repo}" --rev "$rev" --quiet 2>/dev/null || \
-         nix-prefetch-git "https://gitlab.com/${group}/${owner}/${repo}" "$rev" 2>/dev/null)"
+
+  out="$(nix-prefetch-git --url "https://gitlab.com/${group}/${owner}/${repo}" --rev "$rev" --quiet)"
   hash="$(jq -r '.hash' <<<"$out")"
-  date="$(jq -r '.date // empty' <<<"$out")"
-  
-  if [[ -z "$date" || "$date" == "null" ]]; then
-    date="$(TZ=UTC git ls-remote "https://gitlab.com/${group}/${owner}/${repo}" "$branch" 2>/dev/null || true)"
-  fi
+  date="$(jq -r '.date' <<<"$out")"
   short="${rev:0:7}"
-  
-  local stamp
-  stamp="$(date -u -d "$date" +%Y%m%d%H%M%S 2>/dev/null || date -u +%Y%m%d%H%M%S)"
+  stamp="$(date -u -d "$date" +%Y%m%d%H%M%S)"
   
   jq --arg v "unstable-${stamp}-${short}" --arg r "$rev" --arg h "$hash" \
     '.version=$v | .rev=$r | .hash=$h' "$file" >"$file.tmp" && mv "$file.tmp" "$file"
