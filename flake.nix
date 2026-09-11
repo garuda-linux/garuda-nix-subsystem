@@ -29,6 +29,7 @@
 
     devshell = {
       url = "github:numtide/devshell";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     treefmt-nix = {
