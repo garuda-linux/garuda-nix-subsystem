@@ -3,8 +3,8 @@ set -e
 unset LD_PRELOAD LD_LIBRARY_PATH
 
 function createOriginalConfiguration {
-    if ! [ -f "$MNT_DIR/etc/nixos/flake.nix" ]; then
-    cat > "$MNT_DIR/etc/nixos/flake.nix" << EOF
+  if ! [ -f "$MNT_DIR/etc/nixos/flake.nix" ]; then
+    cat >"$MNT_DIR/etc/nixos/flake.nix" <<EOF
 {
     description = "Garuda Linux Nix Subsystem Flake";
 
@@ -24,9 +24,9 @@ function createOriginalConfiguration {
     };
 }
 EOF
-    fi
-    if ! [ -f "$MNT_DIR/etc/nixos/configuration.nix" ]; then
-    cat > "$MNT_DIR/etc/nixos/configuration.nix" <<- EOF
+  fi
+  if ! [ -f "$MNT_DIR/etc/nixos/configuration.nix" ]; then
+    cat >"$MNT_DIR/etc/nixos/configuration.nix" <<-EOF
 { config, pkgs, lib, ... }:
 with lib;
 {
@@ -44,19 +44,19 @@ with lib;
     system.stateVersion = "26.05";
 }
 EOF
-    fi
+  fi
 
-    if ! [ -f "$MNT_DIR/etc/nixos/hardware-configuration.nix" ]; then
+  if ! [ -f "$MNT_DIR/etc/nixos/hardware-configuration.nix" ]; then
     nixos-generate-config --root "$MNT_DIR"
-    fi
+  fi
 
-    if ! [ -f "$MNT_DIR/etc/nixos/garuda-managed.json" ]; then
-    jq -n --arg installVersion "[[GNS_CURRENT_VERSION]]" --arg hostname "$HOSTNAME" '{"installVersion":$installVersion|tonumber, "version":$installVersion|tonumber, "hostname":$hostname, "v2": { "subsystem": true }}' > "$MNT_DIR/etc/nixos/garuda-managed.json"
-    fi
+  if ! [ -f "$MNT_DIR/etc/nixos/garuda-managed.json" ]; then
+    jq -n --arg installVersion "[[GNS_CURRENT_VERSION]]" --arg hostname "$HOSTNAME" '{"installVersion":$installVersion|tonumber, "version":$installVersion|tonumber, "hostname":$hostname, "v2": { "subsystem": true }}' >"$MNT_DIR/etc/nixos/garuda-managed.json"
+  fi
 }
 
 if [[ $EUID -ne 0 ]]; then
-    exit 1
+  exit 1
 fi
 
 unset TMPDIR
@@ -69,8 +69,8 @@ HOSTNAME="$(cat /etc/hostname)"
 
 mount "UUID=$BTRFS_UUID" "$MNT_DIR"
 if ! [ -d "$MNT_DIR/@nix-subsystem" ]; then
-    echo -e "\n\033[1;33m-->\033[1;34m Creating Garuda Nix Subsystem subvolume\033[0m\n"
-    btrfs subvolume create "$MNT_DIR"/@nix-subsystem
+  echo -e "\n\033[1;33m-->\033[1;34m Creating Garuda Nix Subsystem subvolume\033[0m\n"
+  btrfs subvolume create "$MNT_DIR"/@nix-subsystem
 fi
 umount "$MNT_DIR"
 rmdir "$MNT_DIR"
@@ -86,8 +86,8 @@ echo -e "\n\033[1;33m-->\033[1;34m Configuring Garuda Nix Subsystem\033[0m\n"
 mkdir -p "$MNT_DIR"/etc/nixos
 
 if [ -f "$MNT_DIR/etc/nixos/garuda-managed.json" ]; then
-    echo -e "\033[1;31mError: Garuda Nix Subsystem is already installed on this system. ❌\033[0m";
-    exit 1
+  echo -e "\033[1;31mError: Garuda Nix Subsystem is already installed on this system. ❌\033[0m"
+  exit 1
 fi
 
 createOriginalConfiguration

@@ -14,17 +14,17 @@ fi
 
 refresh_firedragon() {
   local file="$1" variant project_id base v
-  
+
   variant="$(basename "$(dirname "$file")")" # firedragon-bin | firedragon-catppuccin-bin
   project_id="75420733"
   v="$(jq -r '.version' "$file")"
 
-  if [[ "$variant" == "firedragon-catppuccin-bin" ]]; then
+  if [[ $variant == "firedragon-catppuccin-bin" ]]; then
     base="firedragon-catppuccin-v${v}"
   else
     base="firedragon-v${v}"
   fi
-  
+
   declare -A fnames=(
     ["aarch64-linux"]="${base}.linux-arm64.tar.xz"
     ["x86_64-linux"]="${base}.linux-x64.tar.xz"
@@ -37,11 +37,11 @@ refresh_firedragon() {
     json="$(jq --arg a "$arch" --arg u "$url" --arg s "$hash" \
       '.sources[$a] = {"url": $u, "sha256": $s}' <<<"$json")"
   done
-  
+
   tmp="$(mktemp)"
   jq . <<<"$json" >"$tmp"
   mv "$tmp" "$file"
-  
+
   echo "refreshed $file -> $v"
 }
 
@@ -49,9 +49,12 @@ refresh_gitlab_head() {
   local file="$1" group owner repo rev date short hash stamp out
 
   case "$file" in
-    *beautyline-icons*) group="garuda-linux" owner="themes-and-settings/artwork" repo="beautyline" ;;
-    *dr460nized-kde-theme*) group="garuda-linux" owner="themes-and-settings/settings" repo="garuda-dr460nized" ;;
-    *) echo "unknown git package: $file" >&2; return 1 ;;
+  *beautyline-icons*) group="garuda-linux" owner="themes-and-settings/artwork" repo="beautyline" ;;
+  *dr460nized-kde-theme*) group="garuda-linux" owner="themes-and-settings/settings" repo="garuda-dr460nized" ;;
+  *)
+    echo "unknown git package: $file" >&2
+    return 1
+    ;;
   esac
   rev="$(jq -r '.rev' "$file")"
 
@@ -60,19 +63,19 @@ refresh_gitlab_head() {
   date="$(jq -r '.date' <<<"$out")"
   short="${rev:0:7}"
   stamp="$(date -u -d "$date" +%Y%m%d%H%M%S)"
-  
+
   jq --arg v "unstable-${stamp}-${short}" --arg r "$rev" --arg h "$hash" \
     '.version=$v | .rev=$r | .hash=$h' "$file" >"$file.tmp" && mv "$file.tmp" "$file"
-  
+
   echo "refreshed $file -> $rev"
 }
 
 for f in "${FILES[@]}"; do
   # Renovate passes repo-relative paths: normalise to absolute.
-  [[ "$f" = /* ]] || f="$ROOT/$f"
+  [[ $f == /* ]] || f="$ROOT/$f"
   case "$f" in
-    *firedragon-bin/version.json | *firedragon-catppuccin-bin/version.json) refresh_firedragon "$f" ;;
-    *beautyline-icons/version.json | *dr460nized-kde-theme/version.json) refresh_gitlab_head "$f" ;;
-    *) echo "skip: $f" ;;
+  *firedragon-bin/version.json | *firedragon-catppuccin-bin/version.json) refresh_firedragon "$f" ;;
+  *beautyline-icons/version.json | *dr460nized-kde-theme/version.json) refresh_gitlab_head "$f" ;;
+  *) echo "skip: $f" ;;
   esac
 done

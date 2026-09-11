@@ -2,15 +2,12 @@
   description = "Garuda Linux NixOS flake ❄️";
 
   inputs = {
-    #
     # OS internals
-    #
-
     nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst";
 
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
-      inputs.nixpkgs-lib.follows = "nixpkgs";
+    catppuccin = {
+      url = "github:catppuccin/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     home-manager = {
@@ -18,15 +15,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #
-    # Development tooling
-    #
-
-    devshell = {
-      url = "github:numtide/devshell";
+    ksv-cachyos-settings-nixos = {
+      url = "github:vivekanandan-ks/ksv-cachyos-settings-nixos";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
+    # Dev tools
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -34,41 +29,19 @@
 
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
-      inputs.flake-compat.follows = "flake-compat";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    #
-    # Deduplication
-    #
-
-    flake-compat.url = "github:edolstra/flake-compat";
-
-    #
-    # Theming
-    #
-
-    catppuccin = {
-      url = "github:catppuccin/nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    #
-    # Performance
-    #
-
-    ksv-cachyos-settings-nixos = {
-      url = "github:vivekanandan-ks/ksv-cachyos-settings-nixos";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
+
   outputs =
-    {
-      flake-parts,
-      nixpkgs,
-      ...
-    }@inputs:
+    { self, nixpkgs, ... }@inputs:
     let
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+      forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
+
       internal = import ./internal {
         inherit lib;
         overlay = import ./packages/overlay.nix {
@@ -81,82 +54,48 @@
 
       lib = import ./lib { inherit inputs nixpkgs internal; };
 
-      perSystem =
-        {
-          pkgs,
-          system,
-          config,
-          ...
-        }:
-        let
-          packages = import ./packages {
-            inherit
-              system
-              pkgs
-              inputs
-              lib
-              ;
-          };
-        in
-        {
-          treefmt = {
-            projectRootFile = "flake.nix";
-            programs = {
-              deadnix.enable = true;
-              nixfmt.enable = true;
-              prettier.enable = true;
-              statix.enable = true;
-              typos.enable = true;
+      mkPackages =
+        system:
+        import ./packages {
+          inherit system inputs lib;
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
+
+      mkPreCommitCheck =
+        pkgs:
+        inputs.git-hooks.lib.${pkgs.stdenv.hostPlatform.system}.run {
+          src = ./.;
+          package = pkgs.prek;
+          hooks = {
+            commitizen.enable = true;
+            treefmt = {
+              enable = true;
+              package = self.formatter.${pkgs.stdenv.hostPlatform.system};
             };
           };
+        };
 
-          pre-commit.settings = {
-            package = pkgs.prek;
-            hooks = {
-              commitizen.enable = true;
-              check-json.enable = true;
-              check-yaml.enable = true;
-              deadnix.enable = true;
-              flake-checker.enable = true;
-              nil.enable = true;
-              nixfmt.enable = true;
-              prettier.enable = true;
-              statix.enable = true;
-              typos.enable = true;
-            };
-          };
-
-          devshells = import ./devshell {
-            inherit
-              nixpkgs
-              pkgs
-              packages
-              config
-              ;
-          };
-
-          formatter = config.treefmt.build.wrapper;
-
-          packages = packages.external;
+      mkTreefmtEval =
+        pkgs:
+        import ./devshells/formatter.nix {
+          inherit pkgs;
+          inherit (inputs) treefmt-nix;
         };
     in
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [
-        inputs.devshell.flakeModule
-        inputs.git-hooks.flakeModule
-        inputs.treefmt-nix.flakeModule
-      ];
+    {
+      inherit lib internal;
 
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-      ];
+      packages = forAllSystems (pkgs: (mkPackages pkgs.stdenv.hostPlatform.system).external);
 
-      flake = {
-        inherit lib;
-        inherit internal;
+      checks = forAllSystems (pkgs: {
+        pre-commit = mkPreCommitCheck pkgs;
+      });
+
+      devShells = import ./devshells {
+        inherit self forAllSystems mkPackages;
+        inherit (self) checks;
       };
 
-      inherit perSystem;
+      formatter = forAllSystems mkTreefmtEval;
     };
 }
