@@ -52,6 +52,15 @@
       url = "github:catppuccin/nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    #
+    # Performance
+    #
+
+    ksv-cachyos-settings-nixos = {
+      url = "github:vivekanandan-ks/ksv-cachyos-settings-nixos";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs =
     {
@@ -104,8 +113,7 @@
           pre-commit.settings = {
             package = pkgs.prek;
             hooks = {
-              # TODO: currently fails the test
-              # commitizen.enable = true;
+              commitizen.enable = true;
               check-json.enable = true;
               check-yaml.enable = true;
               deadnix.enable = true;

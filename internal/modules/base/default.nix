@@ -13,9 +13,9 @@
     ./hardware.nix
     ./home-manager/home-manager.nix
     ./locales.nix
+    ./managed
     ./mount-garuda.nix
     ./networking.nix
-    (import ./nix.nix { inherit overlay; })
     ./nix-manager.nix
     ./performance.nix
     ./programs.nix
@@ -23,7 +23,8 @@
     ./shells.nix
     ./sound.nix
     ./system_info.nix
-    ./managed
+    (import ./nix.nix { inherit overlay; })
+    inputs."ksv-cachyos-settings-nixos".nixosModules.default
   ];
 
   # Pass inputs via flake-inputs to the modules

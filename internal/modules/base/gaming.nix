@@ -22,29 +22,16 @@ with garuda-lib;
   };
 
   config = lib.mkIf cfg.enable {
-    # Gaming packages
-    environment.systemPackages = with pkgs; [
-      lutris
-      mangohud
-      prismlauncher
-      (retroarch.overrideAttrs {
-        cores = with libretro; [
-          citra
-          flycast
-          ppsspp
-        ];
-      })
-      wine-staging
-      winetricks
-    ];
+      cachyos.settings = {
+        enable = gDefault true;
+        enableGaming = gDefault true;
+      };
 
-    # Enable gamemode
-    programs.gamemode.enable = gDefault true;
+      programs.gamemode.enable = gDefault true;
 
-    # Enable Steam
-    programs.steam = {
-      enable = gDefault true;
-      gamescopeSession.enable = gDefault true;
-    };
+      programs.steam = {
+        enable = gDefault true;
+        gamescopeSession.enable = gDefault true;
+      };
   };
 }
