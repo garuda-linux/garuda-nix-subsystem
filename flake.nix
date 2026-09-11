@@ -13,11 +13,6 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
 
-    nix-index-database = {
-      url = "github:nix-community/nix-index-database";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -49,22 +44,12 @@
 
     flake-compat.url = "github:edolstra/flake-compat";
 
-    gitignore = {
-      url = "github:hercules-ci/gitignore.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     #
     # Theming
     #
 
     catppuccin = {
       url = "github:catppuccin/nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    catppuccin-vsc = {
-      url = "github:catppuccin/vscode";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

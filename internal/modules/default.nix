@@ -22,7 +22,6 @@ let
     {
       imports = [
         inputs.home-manager.nixosModules.home-manager
-        inputs.nix-index-database.nixosModules.nix-index
       ]
       ++ builtins.attrValues modulesPerFile;
     };

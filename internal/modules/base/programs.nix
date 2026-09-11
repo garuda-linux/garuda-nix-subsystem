@@ -77,11 +77,8 @@ with garuda-lib;
         ];
     };
 
-    # Easy launching of apps via "comma", contains command-not-found database
-    programs = {
-      nix-index-database.comma.enable = gDefault config.garuda.system.isGui;
-      command-not-found.enable = gDefault false;
-    };
+    # https://discourse.nixos.org/t/psa-use-nixos-org-tarballs-for-your-flake-inputs/79950
+    programs.command-not-found.enable = gDefault config.garuda.system.isGui;
 
     # Disabled by default, but very useful
     xdg.portal = {

@@ -104,7 +104,7 @@ in
           "gpush" = "git push";
           "reb" = "nh os switch";
           "roll" = "nh os switch -- --rollback";
-          "run" = "comma ";
+          "run" = "nix run nixpkgs#";
           "su" = "sudo su -";
           "tarnow" = "tar acf ";
           "testb" = "nh os test";

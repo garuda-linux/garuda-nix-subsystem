@@ -20,26 +20,6 @@
         "type": "github"
       }
     },
-    "catppuccin-vsc": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1777714413,
-        "narHash": "sha256-HUXRGK10A3YIU6ksTfzOzQvM5J699lJikndlYUgrkRA=",
-        "owner": "catppuccin",
-        "repo": "vscode",
-        "rev": "befc9e6fc41980f4241408f7049755d47c06ff45",
-        "type": "github"
-      },
-      "original": {
-        "owner": "catppuccin",
-        "repo": "vscode",
-        "type": "github"
-      }
-    },
     "devshell": {
       "inputs": {
         "nixpkgs": [
@@ -118,26 +98,6 @@
         "type": "github"
       }
     },
-    "gitignore": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1762808025,
-        "narHash": "sha256-XmjITeZNMTQXGhhww6ed/Wacy2KzD6svioyCX7pkUu4=",
-        "owner": "hercules-ci",
-        "repo": "gitignore.nix",
-        "rev": "cb5e3fdca1de58ccbc3ef53de65bd372b48f567c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hercules-ci",
-        "repo": "gitignore.nix",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -159,26 +119,6 @@
         "type": "github"
       }
     },
-    "nix-index-database": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1788680125,
-        "narHash": "sha256-amGSoDobwmp4CFvCn841ws2iuitus+HUJdD/gKgsrJA=",
-        "owner": "nix-community",
-        "repo": "nix-index-database",
-        "rev": "116ad1c2adb642405ef8916f6a94c8626f971344",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "nix-index-database",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1789006805,
@@ -195,14 +135,11 @@
     "root": {
       "inputs": {
         "catppuccin": "catppuccin",
-        "catppuccin-vsc": "catppuccin-vsc",
         "devshell": "devshell",
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
         "git-hooks": "git-hooks",
-        "gitignore": "gitignore",
         "home-manager": "home-manager",
-        "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs",
         "treefmt-nix": "treefmt-nix"
       }

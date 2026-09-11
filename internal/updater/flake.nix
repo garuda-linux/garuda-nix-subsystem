@@ -3,7 +3,7 @@
   description = "Garuda Linux Nix subsystem updater flake (internal only!) ❄️";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs";
+    nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst";
   };
 
   outputs =
