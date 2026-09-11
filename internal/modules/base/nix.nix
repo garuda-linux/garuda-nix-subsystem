@@ -52,12 +52,22 @@ with garuda-lib;
     # Make legacy nix commands consistent as well
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
-    # Use the Lix package manager
-    package = pkgs.lix;
-
     # Automtaically pin registries based on inputs
     registry = lib.mapAttrs (_: v: { flake = v; }) flake-inputs;
   };
+
+  # Use the Lix package manager and apply our overlay
+  nixpkgs.overlays = [
+    (final: prev: {
+      inherit (prev.lixPackageSets.git)
+        nixpkgs-review
+        nix-eval-jobs
+        nix-fast-build
+        colmena;
+    })
+    overlay
+  ];
+  nix.package = pkgs.lixPackageSets.git.lix;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = gDefault true;
@@ -76,11 +86,6 @@ with garuda-lib;
       )
     fi
   '';
-
-  # Overlays from the overlays folder
-  nixpkgs.overlays = [
-    overlay
-  ];
 
   # Improved nix rebuild UX & cleanup timer
   programs.nh = {
