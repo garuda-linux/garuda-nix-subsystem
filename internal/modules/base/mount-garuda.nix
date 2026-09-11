@@ -50,6 +50,39 @@ in
         The default user of the Garuda / NixOS subsystem
       '';
     };
+    nvidia = mkOption {
+      default = false;
+      type = types.bool;
+      example = true;
+      description = mdDoc ''
+        Bind the NVIDIA device nodes into the container (host has an NVIDIA GPU).
+      '';
+    };
+    pipewire = mkOption {
+      default = true;
+      type = types.bool;
+      example = false;
+      description = mdDoc ''
+        Bind the host PipeWire socket into the container for native audio.
+      '';
+    };
+    wayland = mkOption {
+      default = true;
+      type = types.bool;
+      example = true;
+      description = mdDoc ''
+        Bind the host Wayland socket into the container (xhost/X11 alone
+        does nothing on a Wayland session).
+      '';
+    };
+    waylandSocket = mkOption {
+      default = "wayland-0";
+      type = types.str;
+      example = "wayland-1";
+      description = mdDoc ''
+        Name of the host Wayland socket under /run/user/1000 to bind.
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
@@ -122,6 +155,11 @@ in
       options = [ "noatime" ];
     };
 
+    # One-click access to the Garuda root from GUI file managers
+    systemd.tmpfiles.rules = lib.mkIf (cfg.user != null) [
+      "L+ /home/${cfg.user}/Garuda - - - - ${cfg.root}"
+    ];
+
     # Be able to run the same installation in systemd-nspawn
     systemd.targets.machines.enable = true;
     systemd.nspawn."garuda" = {
@@ -143,11 +181,22 @@ in
           "/dev/tty1"
           "/dev/tty2"
           "/dev/video0"
-          "/home/${cfg.user}/.Xauthority"
           "/run/udev:/run/udev"
-          "/run/user/1000/pulse:/run/user/host/pulse"
           "/sys/class/input"
-          "/tmp/.X11-unix"
+        ]
+        ++ lib.optionals cfg.nvidia [
+          "/dev/nvidia0"
+          "/dev/nvidia-caps"
+          "/dev/nvidiactl"
+          "/dev/nvidia-modeset"
+          "/dev/nvidia-uvm"
+          "/dev/nvidia-uvm-tools"
+        ]
+        ++ lib.optionals cfg.pipewire [
+          "/run/user/1000/pipewire-0"
+        ]
+        ++ lib.optionals cfg.wayland [
+          "/run/user/1000/${cfg.waylandSocket}"
         ];
       };
       networkConfig = {
@@ -157,27 +206,23 @@ in
     systemd.services."systemd-nspawn@garuda" = {
       enable = true;
       environment = {
-        DISPLAY = ":0.0";
-        PULSE_SERVER = "unix:/run/user/hostt/pulse/native";
         SYSTEMD_NSPAWN_UNIFIED_HIERARCHY = "1";
+      }
+      // lib.optionalAttrs cfg.wayland {
+        WAYLAND_DISPLAY = cfg.waylandSocket;
       };
       overrideStrategy = "asDropin";
       wantedBy = [ "machines.target" ];
     };
 
-    # This is needed to share Xorg
-    environment.systemPackages = [ pkgs.xorg.xhost ];
-
     # Easy alias for starting the machine
     # Programs & global config
     programs = {
       bash.shellAliases = {
-        "grun" =
-          "xhost +local:; sudo systemctl start systemd-nspawn@garuda; sudo machinectl login garuda; xhost -";
+        "grun" = "sudo systemctl start systemd-nspawn@garuda; sudo machinectl login garuda";
       };
       fish.shellAbbrs = {
-        "grun" =
-          "xhost +local:; sudo systemctl start systemd-nspawn@garuda; sudo machinectl login garuda; xhost -";
+        "grun" = "sudo systemctl start systemd-nspawn@garuda; sudo machinectl login garuda";
       };
     };
   };
