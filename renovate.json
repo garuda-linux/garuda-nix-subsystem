@@ -30,7 +30,9 @@
     {
       "customType": "regex",
       "description": "Dr460nized KDE theme",
-      "managerFilePatterns": ["/packages/dr460nized-kde-theme/version\\.json$/"],
+      "managerFilePatterns": [
+        "/packages/dr460nized-kde-theme/version\\.json$/"
+      ],
       "matchStrings": ["\"rev\"\\s*:\\s*\"(?<currentDigest>[0-9a-f]{40})\""],
       "datasourceTemplate": "git-refs",
       "depNameTemplate": "dr460nized-kde-theme",

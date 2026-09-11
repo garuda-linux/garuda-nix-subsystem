@@ -58,12 +58,13 @@ with garuda-lib;
 
   # Use the Lix package manager and apply our overlay
   nixpkgs.overlays = [
-    (final: prev: {
+    (prev: {
       inherit (prev.lixPackageSets.git)
         nixpkgs-review
         nix-eval-jobs
         nix-fast-build
-        colmena;
+        colmena
+        ;
     })
     overlay
   ];

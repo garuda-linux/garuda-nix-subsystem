@@ -42,28 +42,30 @@ in
   };
 
   home.file = lib.mkMerge (
-    lib.optional (builtins.elem "btop" pkgnames) (launcher "btop" (
-      pkgs.makeDesktopItem {
-        name = "btop";
-        desktopName = "btop++";
-        genericName = "System Monitor";
-        comment = "Resource monitor that shows usage and stats for processor, memory, disks, network and processes";
-        exec = "${findPkg "btop"}/bin/btop";
-        icon = "org.kde.resourcesMonitor";
-        categories = [
-          "System"
-          "Monitor"
-          "ConsoleOnly"
-        ];
-        keywords = [
-          "system"
-          "process"
-          "task"
-        ];
-        terminal = true;
-        startupNotify = true;
-      }
-    ))
+    lib.optional (builtins.elem "btop" pkgnames) (
+      launcher "btop" (
+        pkgs.makeDesktopItem {
+          name = "btop";
+          desktopName = "btop++";
+          genericName = "System Monitor";
+          comment = "Resource monitor that shows usage and stats for processor, memory, disks, network and processes";
+          exec = "${findPkg "btop"}/bin/btop";
+          icon = "org.kde.resourcesMonitor";
+          categories = [
+            "System"
+            "Monitor"
+            "ConsoleOnly"
+          ];
+          keywords = [
+            "system"
+            "process"
+            "task"
+          ];
+          terminal = true;
+          startupNotify = true;
+        }
+      )
+    )
     ++ lib.optionals terminalEntries [
       (launcher "fish" (
         pkgs.makeDesktopItem {

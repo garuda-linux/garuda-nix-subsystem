@@ -1,7 +1,6 @@
 {
   config,
   garuda-lib,
-  pkgs,
   lib,
   ...
 }:
@@ -22,16 +21,16 @@ with garuda-lib;
   };
 
   config = lib.mkIf cfg.enable {
-      cachyos.settings = {
-        enable = gDefault true;
-        enableGaming = gDefault true;
-      };
+    cachyos.settings = {
+      enable = gDefault true;
+      enableGaming = gDefault true;
+    };
 
-      programs.gamemode.enable = gDefault true;
+    programs.gamemode.enable = gDefault true;
 
-      programs.steam = {
-        enable = gDefault true;
-        gamescopeSession.enable = gDefault true;
-      };
+    programs.steam = {
+      enable = gDefault true;
+      gamescopeSession.enable = gDefault true;
+    };
   };
 }
