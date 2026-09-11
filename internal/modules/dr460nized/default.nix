@@ -101,7 +101,7 @@ in
 
     # Dr460nized-specific home-manager configuration
     garuda.home-manager.modules = gExcludableArray config "home-manager-modules" [
-      (lib.mkBefore ./dotfiles.nix)
+      (lib.mkBefore ./metafiles.nix)
     ];
 
     # These need to be enabled for complete functionality

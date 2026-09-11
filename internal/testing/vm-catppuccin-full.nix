@@ -36,8 +36,8 @@
   # Enhance stability of the VM by forcing the X11 session
   services.displayManager.defaultSession = "plasmax11";
 
-  # Virtualisation settings for running "nix run .#internal.vm"
-  # This makes the VM usable
+  # Virtualisation settings for running the VM via `nix build .#internal.ci-full`
+  # followed by `./result/bin/run-*-vm`
   virtualisation.vmVariant = {
     virtualisation = {
       cores = 4;
