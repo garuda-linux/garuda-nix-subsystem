@@ -1,5 +1,4 @@
 {
-  callPackage,
   lib,
   stdenv,
   fetchurl,
@@ -106,11 +105,10 @@ stdenv.mkDerivation (finalAttrs: {
     libName = "firedragon-catppuccin-bin-${finalAttrs.version}";
     ffmpegSupport = true;
     gssSupport = true;
-    updateScript = callPackage ./update.nix { };
   };
 
   meta = {
-    changelog = "https://gitlab.com/garuda-linux/firedragon/firedragon12/-/blob/main/CHANGELOG.md";
+    changelog = "https://gitlab.com/garuda-linux/firedragon/firedragon13/-/blob/main/CHANGELOG.md";
     description = "Floorp fork with custom branding and opinionated defaults, Catppuccin variant";
     homepage = "https://firedragon.garudalinux.org/";
     license = with lib.licenses; [

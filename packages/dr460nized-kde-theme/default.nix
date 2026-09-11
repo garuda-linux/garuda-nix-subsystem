@@ -1,6 +1,5 @@
 {
   beautyline-icons,
-  callPackage,
   fetchFromGitLab,
   fetchurl,
   lib,
@@ -24,9 +23,9 @@ stdenvNoCC.mkDerivation rec {
 
   src = fetchFromGitLab srcMeta;
 
-  malefor = fetchurl {
-    url = "https://gitlab.com/garuda-linux/themes-and-settings/artwork/garuda-wallpapers/-/raw/master/src/garuda-wallpapers/Malefor.jpg";
-    hash = "sha256-hlt3hyPKqn88JryyqegEglf8Tu8rkPv3iARPIuYYy2Q=";
+  maldrakor = fetchurl {
+    url = "https://gitlab.com/garuda-linux/themes-and-settings/settings/garuda-dr460nized/-/raw/main/usr/share/wallpapers/Maldrakor/contents/3840x1920.jpg";
+    hash = "sha256-H7qwdrKKLuYXQbJg+jTxOAZNKMn3iCTsQtyl1kfFNvc=";
   };
 
   buildInputs = [
@@ -41,7 +40,7 @@ stdenvNoCC.mkDerivation rec {
     cp -r etc/skel $out/
     install -d $out/share
     cp -r usr/share/* $out/share/
-    install -Dm644 $malefor $out/share/wallpapers/garuda-wallpapers/Malefor.jpg
+    install -Dm644 $maldrakor $out/share/wallpapers/Maldrakor/contents/3840x1920.jpg
     runHook postInstall
   '';
   postPatch = ''
@@ -58,14 +57,6 @@ stdenvNoCC.mkDerivation rec {
       --replace "applications:snapper-tools.desktop," "" \
       --replace ",applications:octopi.desktop" ""
   '';
-
-  passthru.updateScript = callPackage ../../shared/git-update.nix {
-    inherit pname;
-    nyxKey = "dr460nized-kde-theme";
-    versionPath = "pkgs/dr460nized-kde-theme/version.json";
-    fetchLatestRev = callPackage ../../shared/gitlab-rev-fetcher.nix { } "main" srcMeta;
-    gitUrl = src.gitRepoUrl;
-  };
 
   meta = with lib; {
     description = "The default Garuda dr460nized theme";

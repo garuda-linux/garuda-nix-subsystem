@@ -43,7 +43,7 @@ in
     };
     environment.etc."plasmalogin.conf.d/dr460nized.conf".text = ''
       [Greeter][Wallpaper][org.kde.image][General]
-      Image=file://${cfg.themePackage}/share/wallpapers/garuda-wallpapers/Malefor.jpg
+      Image=file://${cfg.themePackage}/share/wallpapers/Maldrakor/contents/3840x1920.jpg
     '';
 
     services.xserver = {
