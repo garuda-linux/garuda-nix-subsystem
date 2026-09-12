@@ -71,6 +71,13 @@ in
         prime = {
           amdgpuBusId = gDefault cfg.nvidia.amdgpuBusId;
           nvidiaBusId = gDefault cfg.nvidia.nvidiaBusId;
+          offload = {
+            enable = gDefault true;
+            enableOffloadCmd = gDefault true;
+          };
+        };
+        powerManagement = {
+          finegrained = gDefault true;
         };
       };
       services.xserver.videoDrivers = [

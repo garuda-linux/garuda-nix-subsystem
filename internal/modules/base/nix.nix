@@ -60,21 +60,23 @@ with garuda-lib;
 
   # Apply our overlay
   nixpkgs.overlays = [
-    (_final: prev:
+    (
+      _final: prev:
       let
         lixGit = prev.lixPackageSets.git;
       in
       {
         nixpkgs-review = prev.nixpkgs-review.override { nix = lixGit.lix; };
-        nix-eval-jobs = lixGit.nix-eval-jobs;
+        inherit (lixGit) nix-eval-jobs;
         nix-fast-build = prev.nix-fast-build.override {
-          nix-eval-jobs = lixGit.nix-eval-jobs;
+          inherit (lixGit) nix-eval-jobs;
         };
         colmena = prev.colmena.override {
           nix = lixGit.lix;
-          nix-eval-jobs = lixGit.nix-eval-jobs;
+          inherit (lixGit) nix-eval-jobs;
         };
-      })
+      }
+    )
     overlay
   ];
 
