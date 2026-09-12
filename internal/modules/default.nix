@@ -21,6 +21,7 @@ let
     { ... }:
     {
       imports = [
+        inputs.chaotic-nyx.nixosModules.default
         inputs.home-manager.nixosModules.home-manager
       ]
       ++ builtins.attrValues modulesPerFile;

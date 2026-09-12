@@ -10,6 +10,7 @@ import ../theme/generic-apps.nix
     getCfg = cfg: cfg.garuda.catppuccin;
     themePackages =
       pkgs: with pkgs; [
+        applet-window-title
         (catppuccin.override {
           accent = "mauve";
           variant = "mocha";

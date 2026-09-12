@@ -1,13 +1,25 @@
 {
   description = "Garuda Linux NixOS flake ❄️";
 
+  nixConfig.extra-substituters = [
+    "https://nyx-cache.chaotic.cx/"
+  ];
+  nixConfig.extra-trusted-public-keys = [
+    "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk="
+  ];
+
   inputs = {
     # OS internals
-    nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst";
+    nixpkgs.follows = "chaotic-nyx/nixpkgs";
 
     catppuccin = {
       url = "github:catppuccin/nix";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    chaotic-nyx = {
+      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+      inputs.home-manager.follows = "home-manager";
     };
 
     home-manager = {

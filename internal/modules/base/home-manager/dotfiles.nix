@@ -96,6 +96,9 @@
         "flakes"
       ];
 
+      extra-substituters = [ "https://nyx-cache.chaotic.cx/" ];
+      extra-trusted-public-keys = [ "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk=" ];
+
       # Show more log lines for failed builds
       log-lines = 20;
 

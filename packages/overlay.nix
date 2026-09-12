@@ -7,7 +7,9 @@ let
     pkgs = prev;
   };
 in
-packages.overlay
+{
+  inherit (packages.internal) garuda-nix-manager;
+}
 // {
   kdePackages = prev.kdePackages // {
     applet-window-buttons6 = prev.kdePackages.applet-window-buttons6.overrideAttrs (old: {

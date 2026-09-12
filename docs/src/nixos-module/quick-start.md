@@ -24,6 +24,8 @@ To make use of this flake, you can use it as follows - [we assume flakes to be e
 
 You may notice that we are using `garuda.lib.garudaSystem` to build the derivation. `garudaSystem` provides an opinionated system configuration similar to what Garuda Linux provides out of the box. It also exposes our modules which can then be referenced in our modules like `garuda.*`. Then, build your configuration as usual. GNS defaults are generally lower priority than your settings, therefore it's easy to override most settings if needed.
 
+You may also use any of the [Chaotic Nyx's](https://www.nyx.chaotic.cx/) module or home-manager options. GNS `nixpkgs` input follows Nyx' `nyxpkgs-unstable` (which updates daily and shouldn't be overridden to profit from their binary cache).
+
 An exemplary `configuration.nix` could look as follows:
 
 ```nix

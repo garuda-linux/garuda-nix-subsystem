@@ -17,6 +17,7 @@
     ./mount-garuda.nix
     ./networking.nix
     ./nix-manager.nix
+    ./nyx.nix
     ./performance.nix
     ./programs.nix
     ./services.nix
