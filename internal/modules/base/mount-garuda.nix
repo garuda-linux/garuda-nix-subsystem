@@ -90,7 +90,7 @@ in
       fsType = "btrfs";
       options = [
         "subvol=@"
-        "compress=zstd"
+        "compress=zstd:1"
         "noatime"
       ];
     };
@@ -99,7 +99,7 @@ in
       fsType = "btrfs";
       options = [
         "subvol=@home"
-        "compress=zstd"
+        "compress=zstd:1"
         "noatime"
       ];
     };
@@ -108,7 +108,7 @@ in
       fsType = "btrfs";
       options = [
         "subvol=@root"
-        "compress=zstd"
+        "compress=zstd:1"
         "noatime"
       ];
     };
@@ -117,7 +117,7 @@ in
       fsType = "btrfs";
       options = [
         "subvol=@srv"
-        "compress=zstd"
+        "compress=zstd:1"
         "noatime"
       ];
     };
@@ -126,7 +126,7 @@ in
       fsType = "btrfs";
       options = [
         "subvol=@cache"
-        "compress=zstd"
+        "compress=zstd:1"
         "noatime"
       ];
     };
@@ -135,7 +135,7 @@ in
       fsType = "btrfs";
       options = [
         "subvol=@log"
-        "compress=zstd"
+        "compress=zstd:1"
         "noatime"
       ];
     };
@@ -144,7 +144,7 @@ in
       fsType = "btrfs";
       options = [
         "subvol=@tmp"
-        "compress=zstd"
+        "compress=zstd:1"
         "noatime"
       ];
     };
@@ -171,8 +171,7 @@ in
       };
       filesConfig = {
         Bind = [
-          "/dev/dri/card0"
-          "/dev/dri/renderD128"
+          "/dev/dri"
           "/dev/input"
           "/dev/shm"
           "/dev/tty"
@@ -196,6 +195,13 @@ in
         ]
         ++ lib.optionals cfg.wayland [
           "/run/user/1000/${cfg.waylandSocket}"
+        ]
+        # Container logind mounts a tmpfs over /run/user/$UID at login, hiding the file binds above.
+        ++ lib.optionals cfg.pipewire [
+          "/run/user/1000/pipewire-0:/run/garuda-host/pipewire-0"
+        ]
+        ++ lib.optionals cfg.wayland [
+          "/run/user/1000/${cfg.waylandSocket}:/run/garuda-host/${cfg.waylandSocket}"
         ];
       };
       networkConfig = {
@@ -207,8 +213,14 @@ in
       environment = {
         SYSTEMD_NSPAWN_UNIFIED_HIERARCHY = "1";
       }
+      // lib.optionalAttrs cfg.pipewire {
+        # Container logind shadows /run/user/$UID
+        PIPEWIRE_RUNTIME_DIR = "/run/garuda-host";
+      }
       // lib.optionalAttrs cfg.wayland {
-        WAYLAND_DISPLAY = cfg.waylandSocket;
+        # Absolute path: libwayland treats values containing '/' as direct
+        # socket paths, and this survives logind's /run/user tmpfs
+        WAYLAND_DISPLAY = "/run/garuda-host/${cfg.waylandSocket}";
       };
       overrideStrategy = "asDropin";
       wantedBy = [ "machines.target" ];
