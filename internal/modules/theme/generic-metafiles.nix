@@ -41,6 +41,11 @@ in
     package = pkgs.gitFull;
   };
 
+  programs.vicinae = {
+    enable = lib.mkDefault true;
+    systemd.enable = lib.mkDefault true;
+  };
+
   home.file = lib.mkMerge (
     lib.optional (builtins.elem "btop" pkgnames) (
       launcher "btop" (
