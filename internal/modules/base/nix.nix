@@ -54,21 +54,29 @@ with garuda-lib;
 
     # Automtaically pin registries based on inputs
     registry = lib.mapAttrs (_: v: { flake = v; }) flake-inputs;
+
+    package = pkgs.lixPackageSets.git.lix;
   };
 
-  # Use the Lix package manager and apply our overlay
+  # Apply our overlay
   nixpkgs.overlays = [
-    (_final: prev: {
-      inherit (prev.lixPackageSets.git)
-        nixpkgs-review
-        nix-eval-jobs
-        nix-fast-build
-        colmena
-        ;
-    })
+    (_final: prev:
+      let
+        lixGit = prev.lixPackageSets.git;
+      in
+      {
+        nixpkgs-review = prev.nixpkgs-review.override { nix = lixGit.lix; };
+        nix-eval-jobs = lixGit.nix-eval-jobs;
+        nix-fast-build = prev.nix-fast-build.override {
+          nix-eval-jobs = lixGit.nix-eval-jobs;
+        };
+        colmena = prev.colmena.override {
+          nix = lixGit.lix;
+          nix-eval-jobs = lixGit.nix-eval-jobs;
+        };
+      })
     overlay
   ];
-  nix.package = pkgs.lixPackageSets.git.lix;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = gDefault true;
