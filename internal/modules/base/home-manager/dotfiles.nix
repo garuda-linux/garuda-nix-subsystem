@@ -58,8 +58,8 @@
       enable = true;
       settings = {
         color_theme = lib.mkDefault "TTY";
-        proc_tree = true;
-        theme_background = false;
+        proc_tree = lib.mkDefault true;
+        theme_background = lib.mkDefault false;
       };
     };
 

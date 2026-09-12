@@ -29,6 +29,7 @@ in
     home-manager = {
       # Make home-manager use the same Nixpkgs as the rest of the system
       useGlobalPkgs = true;
+      useUserPackages = gDefault false;
       # Maps each user to a home-manager configuration
       users = builtins.mapAttrs (
         username: user:

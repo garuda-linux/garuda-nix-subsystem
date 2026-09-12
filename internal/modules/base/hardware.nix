@@ -17,14 +17,26 @@ in
         If set to true, reasonable defaults for hardware will be set.
       '';
     };
-    garuda.hardware.nvidia = lib.mkOption {
-      default = false;
-      type = lib.types.bool;
-      example = true;
-      description = ''
-        Enable the proprietary NVIDIA driver (also bind the GPU into the
-        Garuda container via garuda.garuda-chroot.nvidia).
-      '';
+    garuda.hardware.nvidia = {
+      enable = lib.mkEnableOption "proprietary NVIDIA driver";
+      amdgpuBusId = lib.mkOption {
+        default = null;
+        type = lib.types.nullOr lib.types.str;
+        example = "PCI:105:0:0";
+        description = ''
+          PCI bus ID of the AMD iGPU for PRIME offload
+          (hardware.nvidia.prime.amdgpuBusId).
+        '';
+      };
+      nvidiaBusId = lib.mkOption {
+        default = null;
+        type = lib.types.nullOr lib.types.str;
+        example = "PCI:1:0:0";
+        description = ''
+          PCI bus ID of the NVIDIA dGPU for PRIME offload
+          (hardware.nvidia.prime.nvidiaBusId).
+        '';
+      };
     };
   };
 
@@ -42,11 +54,24 @@ in
         };
       };
     })
-    (lib.mkIf cfg.nvidia {
+    (lib.mkIf cfg.nvidia.enable {
       hardware.nvidia = {
         modesetting.enable = gDefault true;
         open = gDefault true;
-        package = gDefault config.boot.kernelPackages.nvidiaPackages.latest;
+        package = gDefault (
+          config.boot.kernelPackages.nvidiaPackages.mkDriver {
+            version = "615.71.09";
+            sha256_64bit = "sha256-zc7tIrvrYSSNGm3qvCWWZz46ZQFpjucayNL9wo87cP4=";
+            sha256_aarch64 = "sha256-IbekQhE7cFfmnPZaLY9NDYcF7CoNZ+2Qb7sRd4EOgWM=";
+            openSha256 = "sha256-3gByMYIwFzRaLdDG+roCEOuKRRJDrljG9AlLnRZTirM=";
+            settingsSha256 = "sha256-LK1LU8mDkM/XVRKPBtuOZh9nIP/lGFLAJnmasEX8jhg=";
+            persistencedSha256 = "sha256-qPRb+3d88+2RcpUkoBTbjIaImnQ+jX+/6p1vXcJ5geE=";
+          }
+        );
+        prime = {
+          amdgpuBusId = gDefault cfg.nvidia.amdgpuBusId;
+          nvidiaBusId = gDefault cfg.nvidia.nvidiaBusId;
+        };
       };
       services.xserver.videoDrivers = [
         "nvidia"

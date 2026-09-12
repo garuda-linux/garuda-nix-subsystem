@@ -48,7 +48,7 @@
       "postUpgradeTasks": {
         "executionMode": "branch",
         "fileFilters": ["packages/*/version.json"],
-        "commands": ["bash packages/update-hashes.sh {{{packageFile}}}"]
+        "commands": ["bash packages/update-hashes.sh"]
       }
     }
   ]
