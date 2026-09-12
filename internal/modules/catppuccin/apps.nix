@@ -30,9 +30,9 @@ import ../theme/generic-apps.nix
           accent = "mauve";
           flavor = "mocha";
         })
+        easyeffects
         ffmpegthumbnailer
         firedragon-bin
-        jamesdsp
         kdePackages.applet-window-buttons6
         kdePackages.kdegraphics-thumbnailers
         kdePackages.kimageformats

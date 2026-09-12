@@ -15,7 +15,7 @@ import ../theme/generic-apps.nix
         dr460nized-kde-theme
         ffmpegthumbnailer
         firedragon-bin
-        jamesdsp
+        easyeffects
         kdePackages.applet-window-buttons6
         kdePackages.kdegraphics-thumbnailers
         kdePackages.kimageformats

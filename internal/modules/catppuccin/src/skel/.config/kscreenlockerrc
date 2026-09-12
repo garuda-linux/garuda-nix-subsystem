@@ -2,3 +2,7 @@
 Autolock=true
 LockGrace=60
 Timeout=20
+
+[Greeter][Wallpaper][org.kde.image][General]
+Image=/run/current-system/sw/share/wallpapers/Tree/contents/images/Tree.jpg
+PreviewImage=/run/current-system/sw/share/wallpapers/Tree/contents/images/Tree.jpg

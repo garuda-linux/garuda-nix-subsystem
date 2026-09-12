@@ -1,8 +1,18 @@
 [General]
 ColorScheme=CatppuccinMochaMauve
+fixed=JetBrainsMonoNL Nerd Font,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+font=Inter,10,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
+menuFont=Inter,10,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
+smallestReadableFont=Inter,8,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
+toolBarFont=Inter,10,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 
 [Icons]
-Theme=breeze
+Theme=Papirus-Dark
 
 [KDE]
-widgetStyle=Breeze
+ShowDeleteCommand=true
+SingleClick=true
+widgetStyle=kvantum-dark
+
+[WM]
+activeFont=Inter,10,-1,5,800,0,0,0,0,0,0,0,0,0,0,1,ExtraBold

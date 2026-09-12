@@ -10,7 +10,7 @@ with garuda-lib;
 let
   catppuccin-settings = pkgs.stdenvNoCC.mkDerivation {
     pname = "catppuccin-settings";
-    version = "0.0.3";
+    version = "0.0.4";
     src = ./src;
     installPhase = ''
       runHook preInstall
@@ -152,10 +152,7 @@ in
       themePackages = [ (pkgs.catppuccin-plymouth.override { variant = "mocha"; }) ];
     };
 
-    catppuccin = {
-      enable = true;
-      tty.enable = true;
-    };
+    catppuccin.enable = true;
 
     xdg.portal.extraPortals = gDefault [ pkgs.xdg-desktop-portal-gtk ];
   };

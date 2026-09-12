@@ -4,18 +4,9 @@ Auto Hide Tabs=false
 Close After Last=false
 Close documents with window=true
 Days Meta Infos=30
-Diff Show Style=0
-Elide Tab Text=false
-Expand Tabs=false
-Icon size for left and right sidebar buttons=32
-Modified Notification=false
-Mouse back button action=0
-Mouse forward button action=0
 Open New Tab To The Right Of Current=false
-Output History Limit=100
-Recent File List Entry Count=10
+PinnedDocuments=
 Restore Window Configuration=true
-SDI Mode=false
 Save Meta Infos=true
 Show Full Path in Title=false
 Show Menu Bar=true
@@ -24,42 +15,60 @@ Show Symbol In Navigation Bar=true
 Show Tab Bar=true
 Show Tabs Close Button=true
 Show Url Nav Bar=true
-Show output view for message type=1
-Show text for left and right sidebar=false
-Show welcome view for new window=true
-Startup Session=manual
-Stash new unsaved files=true
-Stash unsaved file changes=false
-Sync section size with tab positions=false
 Tab Double Click New Document=true
 Tab Middle Click Close Document=true
-Tabbar Tab Limit=0
+
+[KTextEditor Document]
+Allow End of Line Detection=true
+Newline at End of File=true
+On-The-Fly Spellcheck=false
+Show Tabs=true
+Word Wrap=false
+Word Wrap Column=80
 
 [KTextEditor Renderer]
 Animate Bracket Matching=false
-Auto Color Theme Selection=false
+Auto Color Theme Selection=true
 Color Theme=Catppuccin Mocha
-Line Height Multiplier=1
-Show Indentation Lines=false
-Show Whole Bracket Expression=false
-Text Font=JetBrainsMonoNL Nerd Font,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+Font=JetBrainsMono Nerd Font Mono,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1,,0,0
+Show Indentation Lines=true
+Text Font=Jetbrains Mono NF,10,-1,7,400,0,0,0,0,0,0,0,0,0,0,1
 Word Wrap Marker=false
+
+[KTextEditor View]
+Dynamic Word Wrap=true
+Dynamic Word Wrap Align Indent=80
+Dynamic Word Wrap At Static Marker=false
+Dynamic Word Wrap Indicators=1
+Dynamic Wrap not at word boundaries=false
+Enable Tab completion=false
+Line Numbers=true
+Show File Encoding=true
+Show Line Count=true
+Show Scrollbars=0
+Show Statusbar Dictionary=true
+Show Statusbar Highlighting Mode=true
+Show Statusbar Input Mode=true
+Show Statusbar Line Column=true
+Show Statusbar Tab Settings=true
+Show Word Count=false
+Smart Copy Cut=true
+Text Drag And Drop=true
+Word Completion=true
+Word Completion Minimal Word Length=3
+Word Completion Remove Tail=true
 
 [Konsole]
 AutoSyncronize=true
-KonsoleEscKeyBehaviour=true
-KonsoleEscKeyExceptions=vi,vim,nvim,git
 RemoveExtension=false
-RunPrefix=
-SetEditor=false
 
-[MainWindow]
-1920x1080 screen: Height=1015
-1920x1080 screen: Width=952
+[UiSettings]
+ColorScheme=Mokka
 
 [filetree]
 editShade=110,80,65
 listMode=false
+middleClickToClose=false
 shadingEnabled=true
 showCloseButton=false
 showFullPathOnRoots=false
@@ -68,7 +77,7 @@ sortRole=0
 viewShade=98,68,134
 
 [lspclient]
-AllowedServerCommandLines=
+AllowedServerCommandLines=/run/current-system/sw/bin/nil
 AutoHover=true
 AutoImport=true
 BlockedServerCommandLines=
@@ -77,12 +86,14 @@ CompletionParens=true
 Diagnostics=true
 FormatOnSave=false
 HighlightGoto=true
+HighlightSymbol=true
 IncrementalSync=false
 InlayHints=false
 Messages=true
 ReferencesDeclaration=true
 SemanticHighlighting=true
 ServerConfiguration=
+ShowCompletions=true
 SignatureHelp=true
 SymbolDetails=false
 SymbolExpand=true
