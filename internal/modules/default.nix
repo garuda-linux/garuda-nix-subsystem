@@ -15,6 +15,7 @@ let
       flake-lib = lib;
     };
     dr460nized = import ./dr460nized;
+    mokka = import ./mokka;
   };
 
   default =
