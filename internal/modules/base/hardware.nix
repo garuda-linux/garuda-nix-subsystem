@@ -15,11 +15,13 @@ in
       default = true;
       type = lib.types.bool;
       description = ''
-        If set to true, reasonable defaults for hardware will be set.
+        Hardware baseline: CPU microcode updates, redistributable
+        firmware, and the graphics stack (including 32-bit support on
+        GUI systems).
       '';
     };
     garuda.hardware.nvidia = {
-      enable = lib.mkEnableOption "proprietary NVIDIA driver";
+      enable = lib.mkEnableOption "proprietary NVIDIA driver support with the latest drivers";
       amdgpuBusId = lib.mkOption {
         default = null;
         type = lib.types.nullOr lib.types.str;

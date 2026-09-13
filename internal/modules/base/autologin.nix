@@ -14,23 +14,23 @@ in
       default = false;
       type = types.bool;
       example = true;
-      description = mdDoc ''
+      description = ''
         Whether to enable autologin to desktop instead of using the login manager.
       '';
     };
     user = mkOption {
       default = null;
-      type = types.string;
+      type = types.nullOr types.str;
       example = "nixos";
-      description = mdDoc ''
+      description = ''
         The user to automatically login.
       '';
     };
     startupCommand = mkOption {
       default = null;
-      type = types.string;
+      type = types.nullOr types.str;
       example = "startplasma-wayland";
-      description = mdDoc ''
+      description = ''
         The command to be executed after login.
       '';
     };

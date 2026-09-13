@@ -17,7 +17,9 @@ with garuda-lib;
         type = types.bool;
         example = true;
         description = ''
-          If set to true, reasonable defaults for networking will be set.
+          NetworkManager (loopback, docker and libvirt interfaces unmanaged,
+          Wi-Fi powersaving off), legacy DHCP/wireless services disabled,
+          and the wireless regulatory database enabled.
         '';
       };
       iwd = mkOption {
@@ -25,7 +27,7 @@ with garuda-lib;
         type = types.bool;
         example = true;
         description = ''
-          If set to true, iwd will be used as the wireless backend.
+          Use iwd as the NetworkManager Wi-Fi backend.
         '';
       };
       tweakKernel = mkOption {
@@ -33,7 +35,8 @@ with garuda-lib;
         type = types.bool;
         example = true;
         description = ''
-          If set to true, kernel parameters will be set to improve networking performance.
+          Lower-latency networking: TCP BBR congestion control with the
+          cake queueing discipline and a shorter TCP FIN timeout.
         '';
       };
     };

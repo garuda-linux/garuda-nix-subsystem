@@ -16,8 +16,9 @@ in
       default = false;
       type = types.bool;
       example = true;
-      description = mdDoc ''
-        If set to true, this module will enable a few performance tweaks.
+      description = ''
+        If set to true, this module will enable Garuda's powersave tweaks.
+        Conflicts with garuda.powersave-tweaks, only one may be enabled.
       '';
     };
   };

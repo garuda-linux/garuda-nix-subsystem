@@ -14,7 +14,10 @@ in
     enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Enable default Garuda Linux shell configuration";
+      description = ''
+        Sets Fish as interactive shell (auto-launched from bash),
+        micro as default editor, and adds Garuda's shell aliases.
+      '';
     };
   };
 

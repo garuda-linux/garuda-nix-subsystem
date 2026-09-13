@@ -13,7 +13,8 @@ with garuda-lib;
     enable = lib.mkOption {
       default = false;
       description = ''
-        Installs and enables some gaming packages and services.
+        Gaming setup: Steam (with gamescope session), GameMode, and the
+        CachyOS gaming kernel/userspace settings.
       '';
       example = true;
       type = lib.types.bool;

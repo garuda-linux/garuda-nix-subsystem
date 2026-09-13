@@ -90,12 +90,19 @@ rec {
       excludeAll = lib.mkOption {
         type = lib.types.bool;
         default = false;
-        description = "Exclude everything under exclusion variable ${name}";
+        description = ''
+          Drop every entry the Garuda modules would otherwise put into the
+          "${name}" list (system packages, kernel parameters, nix-ld
+          libraries, home-manager modules, …). Useful for minimal installs.
+        '';
       };
       exclude = lib.mkOption {
         type = lib.types.listOf lib.types.anything;
         default = [ ];
-        description = "Exclude packages/strings under exclusion variable ${name}";
+        description = ''
+          Remove individual entries from the "${name}" list, matched by
+          their string representation. Everything else stays as shipped.
+        '';
       };
     };
   };

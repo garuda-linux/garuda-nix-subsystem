@@ -17,17 +17,20 @@ in
         default = false;
         example = true;
         description = ''
-          If enabled, Garuda Linux's Mokka config will be used.
+          Mokka edition: calm dark Plasma 6 desktop in the Catppuccin
+          Mocha palette, with matching login theme, apps and defaults.
+          Mutually exclusive with garuda.dr460nized.
         '';
         type = lib.types.bool;
       };
       themePackage = lib.mkOption {
         default = pkgs.mokka-kde-theme;
         description = ''
-          The theme package to use.
+          Plasma look-and-feel package (global theme, window decorations,
+          login screen) applied to the desktop.
         '';
         type = lib.types.package;
-        example = pkgs.libsForQt5.breeze-qt5;
+        example = pkgs.kdePackages.breeze;
       };
     };
   };

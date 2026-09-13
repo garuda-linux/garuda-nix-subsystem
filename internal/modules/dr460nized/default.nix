@@ -17,17 +17,20 @@ in
         default = false;
         example = true;
         description = ''
-          If enabled, Garuda Linux's dr460nized config will be used.
+          Dr460nized edition: vibrant Sweet-themed Plasma 6 gaming desktop,
+          with matching login theme, apps and defaults. Mutually
+          exclusive with garuda.mokka.
         '';
         type = lib.types.bool;
       };
       themePackage = lib.mkOption {
         default = pkgs.dr460nized-kde-theme;
         description = ''
-          The theme package to use.
+          Plasma look-and-feel package (global theme, window decorations,
+          login screen) applied to the desktop.
         '';
         type = lib.types.package;
-        example = pkgs.libsForQt5.breeze-qt5;
+        example = pkgs.kdePackages.breeze;
       };
     };
   };

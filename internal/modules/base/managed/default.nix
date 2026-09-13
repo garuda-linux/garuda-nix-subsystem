@@ -33,7 +33,11 @@ in
       type = types.nullOr types.path;
       default = null;
       description = ''
-        Path to the managed configuration file.
+        Path to garuda-managed.json, written by garuda-nix-manager.
+        It carries the managed settings — hostname, locale, timezone,
+        keymap, auto-detected virtualisation, and extra packages — merged
+        underneath your explicit configuration via gDefault, so anything
+        you set yourself always overrides the defaults.
       '';
     };
   };

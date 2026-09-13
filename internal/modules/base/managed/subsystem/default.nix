@@ -20,14 +20,30 @@ in
     enable = mkOption {
       type = types.bool;
       default = false;
+      description = ''
+        Run this NixOS install as a subsystem inside Garuda Linux:
+        it derives certain settings from the Garuda installation,
+        imports the host's users, shares their home directories
+        and mounts the Garuda root filesystem for cross-system access.
+      '';
     };
     useGrub = mkOption {
       type = types.bool;
       default = true;
+      description = ''
+        Install GRUB (device "nodev") so the Garuda host bootloader can
+        chainload this system. Disable when the host bootloader already
+        handles booting or another loader is used.
+      '';
     };
     import-networkmanager = mkOption {
       type = types.bool;
       default = true;
+      description = ''
+        Bind-mount the Garuda host's NetworkManager system-connections
+        into this system, so Wi-Fi and VPN profiles are shared instead
+        of configured twice.
+      '';
     };
   };
 

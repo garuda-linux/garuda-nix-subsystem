@@ -17,7 +17,7 @@ in
     enable = lib.mkOption {
       type = lib.types.bool;
       default = config.garuda.system.isGui;
-      description = "Enable garuda-nix-manager";
+      description = "Install garuda-nix-manager, the graphical tool for handling app installations.";
     };
   };
 

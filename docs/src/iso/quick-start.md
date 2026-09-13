@@ -19,6 +19,12 @@ nix develop -c buildiso dr460nized
 
 Replace `dr460nized` with `mokka` to build the other flavour. Use `buildiso all` to build both.
 
+Append `--run` to boot the freshly built ISO in QEMU instead of just copying it:
+
+```sh
+nix develop -c buildiso dr460nized --run
+```
+
 The command copies the ISO to the current working directory.
 
 Alternatively, build the ISO directly with Nix:

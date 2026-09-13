@@ -13,7 +13,7 @@ in
       default = false;
       type = types.bool;
       example = true;
-      description = mdDoc ''
+      description = ''
         Enables mounting of the Garuda Linux root partition.
       '';
     };
@@ -21,7 +21,7 @@ in
       default = "/var/lib/machines/garuda";
       type = types.str;
       example = "/mnt/ssd/garuda";
-      description = mdDoc ''
+      description = ''
         Specifies where the Garuda Linux root partition should be mounted
       '';
     };
@@ -29,7 +29,7 @@ in
       default = null;
       type = types.str;
       example = "f498b189-79c7-40e4-859e-fadc1496ee8e";
-      description = mdDoc ''
+      description = ''
         Provide the UUID of the Garuda root partition
       '';
     };
@@ -37,7 +37,7 @@ in
       default = null;
       type = types.str;
       example = "D9CB-2B11";
-      description = mdDoc ''
+      description = ''
         Provide the UUID of the Garuda boot partition
       '';
     };
@@ -45,7 +45,7 @@ in
       default = null;
       type = types.str;
       example = "garuda";
-      description = mdDoc ''
+      description = ''
         The default user of the Garuda / NixOS subsystem
       '';
     };
@@ -53,7 +53,7 @@ in
       default = false;
       type = types.bool;
       example = true;
-      description = mdDoc ''
+      description = ''
         Bind the NVIDIA device nodes into the container (host has an NVIDIA GPU).
       '';
     };
@@ -61,7 +61,7 @@ in
       default = true;
       type = types.bool;
       example = false;
-      description = mdDoc ''
+      description = ''
         Bind the host PipeWire socket into the container for native audio.
       '';
     };
@@ -69,16 +69,16 @@ in
       default = true;
       type = types.bool;
       example = true;
-      description = mdDoc ''
-        Bind the host Wayland socket into the container (xhost/X11 alone
-        does nothing on a Wayland session).
+      description = ''
+        Bind the host Wayland socket into the container to allow running
+        GUI apps from within the Garuda installation on NixOS.
       '';
     };
     waylandSocket = mkOption {
       default = "wayland-0";
       type = types.str;
       example = "wayland-1";
-      description = mdDoc ''
+      description = ''
         Name of the host Wayland socket under /run/user/1000 to bind.
       '';
     };

@@ -33,6 +33,8 @@
       modules = [ ./testing/ci-full.nix ];
     }).config.system.build.vm;
 
+  options-doc = import ./options-doc { inherit inputs lib; };
+
   iso-dr460nized =
     (lib.garudaSystem {
       system = "x86_64-linux";

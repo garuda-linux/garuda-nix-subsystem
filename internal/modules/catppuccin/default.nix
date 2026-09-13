@@ -42,17 +42,19 @@ in
         default = false;
         example = true;
         description = ''
-          If enabled, Garuda Linux's Catppuccin config will be used.
+          Catppuccin Mocha flavour: consistent pastel theming across the
+          desktop and applications via catppuccin/nix.
         '';
         type = lib.types.bool;
       };
       themePackage = lib.mkOption {
         default = pkgs.catppuccin-kde;
         description = ''
-          The theme package to use.
+          Plasma look-and-feel package (global theme, window decorations,
+          login screen) applied to the desktop.
         '';
         type = lib.types.package;
-        example = pkgs.libsForQt5.breeze-qt5;
+        example = pkgs.kdePackages.breeze;
       };
     };
   };
