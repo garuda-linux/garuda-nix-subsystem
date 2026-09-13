@@ -58,8 +58,8 @@ with garuda-lib;
     package = pkgs.lixPackageSets.git.lix;
   };
 
-  # Apply our overlay
-  nixpkgs.overlays = [
+  # Apply our overlay after chaotic's (cache-friendly overlay)
+  nixpkgs.overlays = lib.mkAfter [
     (
       _final: prev:
       let

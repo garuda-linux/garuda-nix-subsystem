@@ -184,7 +184,6 @@ in
         ]
         ++ lib.optionals cfg.nvidia [
           "/dev/nvidia0"
-          "/dev/nvidia-caps"
           "/dev/nvidiactl"
           "/dev/nvidia-modeset"
           "/dev/nvidia-uvm"

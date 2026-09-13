@@ -1,0 +1,25 @@
+diff --git a/Makefile b/Makefile
+index e2b4252..1a98d27 100644
+--- a/Makefile
++++ b/Makefile
+@@ -2,7 +2,6 @@ VERSION         := 0.5.0
+ TARGET          := $(shell uname -r)
+ DKMS_ROOT_PATH  := /usr/src/zenpower-$(VERSION)
+ 
+-KBUILD_CFLAGS   += -Wimplicit-fallthrough=3
+ 
+ KERNEL_MODULES	:= /lib/modules/$(TARGET)
+ 
+diff --git a/zenpower_core.c b/zenpower_core.c
+index fe8ea44..d581552 100644
+--- a/zenpower_core.c
++++ b/zenpower_core.c
+@@ -423,7 +423,7 @@ static int zenpower_read(struct device *dev, enum hwmon_sensor_types type,
+ 			if (channel == 0)
+ 				return -EOPNOTSUPP;
+ 			channel -= 1;	// hwmon_in have different indexing, see note at zenpower_info
+-							// fall through
++							/* fall through */
+ 		// Power / Current
+ 		case hwmon_curr:
+ 		case hwmon_power:
