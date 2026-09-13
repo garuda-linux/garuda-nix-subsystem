@@ -23,14 +23,42 @@ in
   };
 
   config = {
-    # Automatically tune nice levels
+    assertions = [
+      {
+        assertion = !config.garuda.poversave-tweaks.enable;
+        message = "garuda.performance-tweaks and garuda.powersave-tweaks cannot be enabled at the same time.";
+      }
+    ];
+
     services.ananicy = mkIf cfg.enable {
       enable = gDefault true;
       package = pkgs.ananicy-cpp;
       rulesProvider = pkgs.ananicy-rules-cachyos_git;
     };
 
-    # 90% ZRAM as swap
+    services.irqbalance.enable = mkIf cfg.enable (gDefault true);
+
+    powerManagement.cpuFreqGovernor = mkIf cfg.enable (gDefault "performance");
+
+    boot.extraModprobeConfig = mkIf cfg.enable "options amdgpu ppfeaturemask=0xffffffff";
+
+    systemd.tmpfiles.rules = mkIf cfg.enable [
+      "w /sys/devices/system/cpu/cpufreq/policy*/energy_performance_preference - - - - performance"
+      "w /sys/module/pcie_aspm/parameters/policy - - - - performance"
+      "w /sys/class/drm/card0/device/power_dpm_state - - - - performance"
+    ];
+
+    environment.systemPackages = [ pkgs.hdparm ];
+    services.udev.extraRules = mkIf cfg.enable ''
+      KERNEL=="card0", SUBSYSTEM=="drm", DRIVERS=="amdgpu", ATTR{device/power_dpm_state}="performance"
+      KERNEL=="card0", SUBSYSTEM=="drm", DRIVERS=="radeon", ATTR{device/power_dpm_state}="performance"
+      ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", ATTR{link_power_management_policy}="max_performance"
+      ACTION=="add|change", KERNEL=="nvme[0-9]n[0-9]", ATTR{queue/scheduler}="none"
+      ACTION=="add|change", KERNEL=="sd[a-z]|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="bfq"
+      ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"
+      ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", RUN+="${pkgs.hdparm}/bin/hdparm -B 254 -S 0 /dev/%k"
+    '';
+
     zramSwap = mkIf cfg.enable {
       algorithm = "zstd";
       enable = gDefault true;
@@ -49,10 +77,8 @@ in
       };
     };
 
-    # BPF-based auto-tuning of Linux system parameters
     services.bpftune.enable = gDefault true;
 
-    ## A few other kernel tweaks
     boot.kernel.sysctl = mkIf cfg.enable {
       "kernel.nmi_watchdog" = 0;
       "kernel.sched_cfs_bandwidth_slice_us" = 3000;

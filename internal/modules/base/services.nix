@@ -10,6 +10,36 @@ let
 in
 with garuda-lib;
 {
+  options.garuda.printing = {
+    enable = lib.mkOption {
+      default = false;
+      type = lib.types.bool;
+      description = ''
+        Installs and enables printing support (CUPS + drivers).
+      '';
+    };
+  };
+
+  options.garuda.scanning = {
+    enable = lib.mkOption {
+      default = false;
+      type = lib.types.bool;
+      description = ''
+        Installs and enables scanner support (SANE + AirScan + IPP-USB).
+      '';
+    };
+  };
+
+  options.garuda.samba = {
+    enable = lib.mkOption {
+      default = false;
+      type = lib.types.bool;
+      description = ''
+        Installs and enables Samba file sharing. Shares themselves are user-defined via services.samba.settings.
+      '';
+    };
+  };
+
   options.garuda.btrfs-maintenance = {
     enable = lib.mkOption {
       default = false;
@@ -106,5 +136,25 @@ with garuda-lib;
       enable = config.garuda.system.isGui;
       daemonSettings.EspLocation = config.boot.loader.efi.efiSysMountPoint;
     };
+
+    services.printing = lib.mkIf cfg.printing.enable {
+      enable = gDefault true;
+      drivers = with pkgs; [
+        gutenprint
+        splix
+      ];
+    };
+
+    hardware.sane = lib.mkIf cfg.scanning.enable {
+      enable = true;
+      extraBackends = [ pkgs.sane-airscan ];
+    };
+    services.ipp-usb.enable = lib.mkIf cfg.scanning.enable (gDefault true);
+
+    services.samba = lib.mkIf cfg.samba.enable {
+      enable = gDefault true;
+      openFirewall = gDefault true;
+    };
+    services.samba-wsdd.enable = lib.mkIf cfg.samba.enable (gDefault true);
   };
 }

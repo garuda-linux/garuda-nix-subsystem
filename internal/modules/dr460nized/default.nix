@@ -55,6 +55,7 @@ in
       kdePackages.okular
       kdePackages.oxygen
       kdePackages.plasma-browser-integration
+      kdePackages.discover
     ];
 
     # Fix "the name ca.desrt.dconf was not provided by any .service files"

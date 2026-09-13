@@ -1,6 +1,7 @@
 *.qcow2
 *.iso
 .direnv
+.idea
 .pre-commit-config.yaml
 result
 result/

@@ -19,6 +19,7 @@
     ./nix-manager.nix
     ./nyx.nix
     ./performance.nix
+    ./powersave.nix
     ./programs.nix
     ./services.nix
     ./shells.nix
