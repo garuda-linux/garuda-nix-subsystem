@@ -147,12 +147,10 @@ in
 
     environment.systemPackages = [ catppuccin-settings ];
 
-    boot.plymouth = {
-      theme = "catppuccin-mocha";
-      themePackages = [ (pkgs.catppuccin-plymouth.override { variant = "mocha"; }) ];
+    catppuccin = {
+      autoEnable = gDefault true;
+      enable = gDefault true;
     };
-
-    catppuccin.enable = true;
 
     xdg.portal.extraPortals = gDefault [ pkgs.xdg-desktop-portal-gtk ];
   };

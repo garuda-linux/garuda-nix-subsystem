@@ -154,9 +154,10 @@ in
       options = [ "noatime" ];
     };
 
-    # One-click access to the Garuda root from GUI file managers
     systemd.tmpfiles.rules = lib.mkIf (cfg.user != null) [
       "L+ /home/${cfg.user}/Garuda - - - - ${cfg.root}"
+      "z /var/lib/machines 0755 root root -"
+      "z ${cfg.root} 0755 root root -"
     ];
 
     # Be able to run the same installation in systemd-nspawn
@@ -222,11 +223,16 @@ in
         WAYLAND_DISPLAY = "/run/garuda-host/${cfg.waylandSocket}";
       };
       overrideStrategy = "asDropin";
-      wantedBy = [ "machines.target" ];
+      wantedBy = mkIf (!cfg.pipewire && !cfg.wayland) [ "machines.target" ];
     };
 
-    # Easy alias for starting the machine
-    # Programs & global config
+    systemd.paths."systemd-nspawn@garuda" = mkIf (cfg.pipewire || cfg.wayland) {
+      wantedBy = [ "multi-user.target" ];
+      pathConfig.PathExists =
+        if cfg.wayland then "/run/user/1000/${cfg.waylandSocket}"
+        else "/run/user/1000/pipewire-0";
+    };
+
     programs = {
       bash.shellAliases = {
         "grun" = "sudo systemctl start systemd-nspawn@garuda; sudo machinectl login garuda";

@@ -7,6 +7,7 @@
   ];
 
   catppuccin = {
+    autoEnable = true;
     cursors.enable = true;
     enable = true;
   };
