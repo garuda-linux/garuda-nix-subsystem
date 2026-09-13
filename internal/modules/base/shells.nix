@@ -74,10 +74,12 @@ in
         };
       };
 
-      # Direnv for per-directory environment variables
       direnv = {
         enable = config.garuda.system.isGui;
         nix-direnv.enable = config.garuda.system.isGui;
+        settings = {
+          log_format = "";
+        };
       };
 
       # The fish shell, default for terminals
