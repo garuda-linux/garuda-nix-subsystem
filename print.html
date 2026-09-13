@@ -37,10 +37,10 @@
             const path_to_root = "";
             const default_light_theme = "mocha";
             const default_dark_theme = "mocha";
-            window.path_to_searchindex_js = "searchindex-8f2bec30.js";
+            window.path_to_searchindex_js = "searchindex-ffbed5b9.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-d7829753.js"></script>
+        <script src="toc-ba0f54ae.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -238,6 +238,7 @@ garuda-nix-subsystem install # trigger the installation process
 }
 </code></pre>
 <p>You may notice that we are using <code>garuda.lib.garudaSystem</code> to build the derivation. <code>garudaSystem</code> provides an opinionated system configuration similar to what Garuda Linux provides out of the box. It also exposes our modules which can then be referenced in our modules like <code>garuda.*</code>. Then, build your configuration as usual. GNS defaults are generally lower priority than your settings, therefore it’s easy to override most settings if needed.</p>
+<p>You may also use any of the <a href="https://www.nyx.chaotic.cx/">Chaotic Nyx’s</a> module or home-manager options. GNS <code>nixpkgs</code> input follows Nyx’ <code>nyxpkgs-unstable</code> (which updates daily and shouldn’t be overridden to profit from their binary cache).</p>
 <p>An exemplary <code>configuration.nix</code> could look as follows:</p>
 <pre><code class="language-nix">{ ... }: {
   # Your hardware configuration
@@ -257,6 +258,30 @@ garuda-nix-subsystem install # trigger the installation process
   };
 }
 </code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="installer-iso"><a class="header" href="#installer-iso">Installer ISO</a></h1>
+<p>The flake can build an installer ISO for two flavours:</p>
+<ul>
+<li><code>dr460nized</code></li>
+<li><code>mokka</code></li>
+</ul>
+<p>The ISO boots to the desktop. Calamares starts automatically.</p>
+<p>The installer uses our own calamares-nixos-extensions. They install the Garuda flake instead of a plain NixOS configuration.</p>
+<h2 id="build"><a class="header" href="#build">Build</a></h2>
+<p>Build from the dev shell:</p>
+<pre><code class="language-sh">nix develop -c buildiso dr460nized
+</code></pre>
+<p>Replace <code>dr460nized</code> with <code>mokka</code> to build the other flavour. Use <code>buildiso all</code> to build both.</p>
+<p>The command copies the ISO to the current working directory.</p>
+<p>Alternatively, build the ISO directly with Nix:</p>
+<pre><code class="language-sh">nix build .#internal.iso-dr460nized
+nix build .#internal.iso-mokka
+</code></pre>
+<h2 id="boot"><a class="header" href="#boot">Boot</a></h2>
+<p>Write the ISO to a USB drive:</p>
+<pre><code class="language-sh">sudo dd if=$name.iso of=/dev/$usb bs=4M status=progress oflag=sync
+</code></pre>
+<p>Replace <code>$usb</code> with your USB drive, and <code>$name</code> with the resulting ISO file. This destroys all data on the drive.</p>
 
                     </main>
 
