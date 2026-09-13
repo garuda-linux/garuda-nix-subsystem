@@ -24,10 +24,12 @@ rec {
     launch-terminal = pkgs.callPackage ./garuda-libs {
       inherit pkgs;
     };
+    calamares-nixos-extensions = pkgs.callPackage ./calamares-nixos-extensions { };
   };
 
   # Packages that are available in the flake's packages output
   external = {
+    inherit (internal) calamares-nixos-extensions;
     docs =
       pkgs.runCommand "gns-docs"
         # makes the documentation available at ./result/ by running nix build .#docs
@@ -51,6 +53,7 @@ rec {
       garuda-update
       garuda-nix-manager
       launch-terminal
+      calamares-nixos-extensions
       ;
   };
 }

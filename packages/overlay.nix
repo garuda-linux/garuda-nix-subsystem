@@ -16,7 +16,10 @@ let
     );
 in
 {
-  inherit (packages.internal) garuda-nix-manager;
+  inherit (packages.internal)
+    garuda-nix-manager
+    calamares-nixos-extensions
+    ;
 
   linuxPackagesFor = kernel: withZenpower (prev.linuxPackagesFor kernel);
   linuxPackages_cachyos = withZenpower (

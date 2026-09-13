@@ -229,8 +229,7 @@ in
     systemd.paths."systemd-nspawn@garuda" = mkIf (cfg.pipewire || cfg.wayland) {
       wantedBy = [ "multi-user.target" ];
       pathConfig.PathExists =
-        if cfg.wayland then "/run/user/1000/${cfg.waylandSocket}"
-        else "/run/user/1000/pipewire-0";
+        if cfg.wayland then "/run/user/1000/${cfg.waylandSocket}" else "/run/user/1000/pipewire-0";
     };
 
     programs = {

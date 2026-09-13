@@ -26,6 +26,21 @@ forAllSystems (
     gns-update = pkgs.writeShellScriptBin "gns-update" ''
       exec ${packages.internal."garuda-update"}/bin/gns-update "$@"
     '';
+
+    buildiso = pkgs.writeShellScriptBin "buildiso" ''
+      set -euo pipefail
+      flavour=''${1:?usage: buildiso [dr460nized|mokka|all]}
+      build() {
+        local out
+        out=$(nix build ".#internal.iso-$1" --no-link --print-out-paths)
+        ${pkgs.coreutils}/bin/cp "$out/iso/"*.iso .
+      }
+      case "$flavour" in
+        all) build dr460nized; build mokka ;;
+        dr460nized|mokka) build "$flavour" ;;
+        *) echo "usage: build-iso [dr460nized|mokka|all]" >&2; exit 1 ;;
+      esac
+    '';
   in
   {
     default = pkgs.mkShell {
@@ -41,6 +56,7 @@ forAllSystems (
         preCommitCompat
         gns-install
         gns-update
+        buildiso
       ];
     };
   }

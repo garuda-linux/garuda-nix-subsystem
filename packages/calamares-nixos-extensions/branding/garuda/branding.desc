@@ -1,0 +1,44 @@
+---
+componentName: garuda
+
+welcomeStyleCalamares: false
+welcomeExpandingLogo: true
+
+windowExpanding: normal
+windowSize: 800px,520px
+windowPlacement: center
+
+sidebar: widget
+navigation: widget
+
+strings:
+    productName: "Garuda Linux"
+    shortProductName: Garuda
+    version:
+    shortVersion:
+    versionedName: "Garuda Linux"
+    shortVersionedName: Garuda
+    bootloaderEntryName: Garuda
+    productUrl: https://garudalinux.org/
+    supportUrl: https://forum.garudalinux.org/
+    knownIssuesUrl: https://gitlab.com/garuda-linux/
+    releaseNotesUrl: https://forum.garudalinux.org/tags/c/announcements/16/release/10/
+    donateUrl: https://garudalinux.org/donate/
+
+images:
+    productIcon: "images/garuda.webp"
+    productLogo: "images/garuda.webp"
+    productWallpaper: "images/mokka.webp"
+    productWelcome: "images/garuda.webp"
+
+style:
+    SidebarBackground: "#1e1e2e"
+    SidebarText: "#cdd6f4"
+    SidebarTextCurrent: "#1e1e2e"
+    SidebarBackgroundCurrent: "#7f03b8"
+
+slideshow: "show.qml"
+slideshowAPI: 2
+
+uploadServer:
+    type: "none"
