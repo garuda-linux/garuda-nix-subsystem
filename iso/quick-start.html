@@ -3,12 +3,12 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Installer ISO - Garuda Nix Subsystem ❄️ documentation</title>
+        <title>Installer ISO - Garuda Nix ❄️ documentation</title>
 
 
         <!-- Custom HTML head -->
 
-        <meta name="description" content="Contains the documentation for the Garuda Nix subsystem">
+        <meta name="description" content="Contains the documentation for Garuda Nix">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
@@ -36,10 +36,10 @@
             const path_to_root = "../";
             const default_light_theme = "mocha";
             const default_dark_theme = "mocha";
-            window.path_to_searchindex_js = "../searchindex-ffbed5b9.js";
+            window.path_to_searchindex_js = "../searchindex-5cd317a5.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-ba0f54ae.js"></script>
+        <script src="../toc-4028f8de.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -138,7 +138,7 @@
                         </button>
                     </div>
 
-                    <h1 class="menu-title">Garuda Nix Subsystem ❄️ documentation</h1>
+                    <h1 class="menu-title">Garuda Nix ❄️ documentation</h1>
 
                     <div class="right-buttons">
                         <a href="../print.html" title="Print this book" aria-label="Print this book">
@@ -179,34 +179,49 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="installer-iso"><a class="header" href="#installer-iso">Installer ISO</a></h1>
-<p>The flake can build an installer ISO for two flavours:</p>
+<p>The flake can build an installer ISO for two editions:</p>
 <ul>
-<li><code>dr460nized</code></li>
 <li><code>mokka</code></li>
+<li><code>dr460nized</code></li>
 </ul>
 <p>The ISO boots to the desktop. Calamares starts automatically.</p>
 <p>The installer uses our own calamares-nixos-extensions. They install the Garuda flake instead of a plain NixOS configuration.</p>
 <h2 id="build"><a class="header" href="#build">Build</a></h2>
 <p>Build from the dev shell:</p>
-<pre><code class="language-sh">nix develop -c buildiso dr460nized
+<pre><code class="language-sh">nix develop -c buildiso mokka
 </code></pre>
-<p>Replace <code>dr460nized</code> with <code>mokka</code> to build the other flavour. Use <code>buildiso all</code> to build both.</p>
+<p>Replace <code>mokka</code> with <code>dr460nized</code> to build the other edition. Use <code>buildiso all</code> to build both.</p>
+<p>Append <code>--run</code> to boot the freshly built ISO in QEMU instead of just copying it:</p>
+<pre><code class="language-sh">nix develop -c buildiso mokka --run
+</code></pre>
 <p>The command copies the ISO to the current working directory.</p>
 <p>Alternatively, build the ISO directly with Nix:</p>
-<pre><code class="language-sh">nix build .#internal.iso-dr460nized
-nix build .#internal.iso-mokka
+<pre><code class="language-sh">nix build .#internal.iso-mokka
+nix build .#internal.iso-dr460nized
 </code></pre>
 <h2 id="boot"><a class="header" href="#boot">Boot</a></h2>
 <p>Write the ISO to a USB drive:</p>
 <pre><code class="language-sh">sudo dd if=$name.iso of=/dev/$usb bs=4M status=progress oflag=sync
 </code></pre>
 <p>Replace <code>$usb</code> with your USB drive, and <code>$name</code> with the resulting ISO file. This destroys all data on the drive.</p>
+<h2 id="install-from-an-existing-nixos-system"><a class="header" href="#install-from-an-existing-nixos-system">Install from an existing NixOS system</a></h2>
+<p>No ISO needed: <code>install-garuda</code> generates the same Garuda config the Calamares installer writes, on any NixOS host. Available in the dev shell, or via <code>nix run .#install-garuda</code>:</p>
+<pre><code class="language-sh">sudo install-garuda --flavor mokka --feature gaming --feature printing \
+  --hostname mypc --username nico --install
+</code></pre>
+<p>This mounts nothing itself: partition and mount your target at <code>/mnt</code> first (or pass <code>--root</code>), then the command writes the flake config to <code>&lt;root&gt;/etc/nixos</code>, runs <code>nixos-generate-config</code> hardware + <code>nixos-facter</code> GPU/NVIDIA detection, and with <code>--install</code> runs <code>nixos-install --flake &lt;root&gt;/etc/nixos#&lt;hostname&gt;</code> afterwards.</p>
+<h2 id="install-straight-from-the-flake"><a class="header" href="#install-straight-from-the-flake">Install straight from the flake</a></h2>
+<p>On any NixOS host with internet, run the installer directly from the published flake:</p>
+<pre><code class="language-sh">sudo nix run gitlab:garuda-linux/garuda-nix-subsystem/v2#install-garuda -- \
+  --flavor mokka --hostname mypc --username nico --install
+</code></pre>
+<p><code>--flake-ref</code> defaults to that same <code>v2</code> ref, so the generated config already points at it: future rebuilds are just <code>nixos-rebuild switch --flake /etc/nixos#mypc</code>. Pass <code>--flake-ref gitlab:garuda-linux/garuda-nix-subsystem/v2</code> (or any ref) to track a different branch instead.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../nixos-module/quick-start.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../nixos-module/options.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
@@ -217,7 +232,7 @@ nix build .#internal.iso-mokka
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../nixos-module/quick-start.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../nixos-module/options.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
