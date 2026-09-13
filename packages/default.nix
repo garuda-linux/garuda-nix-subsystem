@@ -29,7 +29,6 @@ rec {
       inherit system;
       inherit (inputs) self;
     };
-    mokka-kde-theme = pkgs.callPackage ./mokka-kde-theme { };
   };
 
   # Packages that are available in the flake's packages output

@@ -19,7 +19,6 @@ in
   inherit (packages.internal)
     calamares-nixos-extensions
     garuda-nix-manager
-    mokka-kde-theme
     ;
 
   calamares-nixos = prev.calamares-nixos.override {

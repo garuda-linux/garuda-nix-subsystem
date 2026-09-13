@@ -129,6 +129,11 @@ in
       style = "kvantum";
     };
 
+    catppuccin = {
+      autoEnable = gDefault false;
+      enable = gDefault false;
+    };
+
     xdg.portal.extraPortals = gDefault [ pkgs.xdg-desktop-portal-gtk ];
 
     garuda.create-home.skel = gDefault "${gGenerateSkel pkgs "${cfg.themePackage}/skel" "mokka"}";
