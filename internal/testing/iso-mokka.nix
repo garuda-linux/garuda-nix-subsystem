@@ -2,7 +2,7 @@
 {
   imports = [ ./iso.nix ];
 
-  garuda.catppuccin.enable = true;
+  garuda.mokka.enable = true;
 
   isoImage.edition = "mokka";
 }

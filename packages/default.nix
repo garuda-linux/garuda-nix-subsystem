@@ -7,10 +7,21 @@
 rec {
   # Packages that are used internally by Garuda Linux only
   internal = {
+    calamares-nixos-extensions = pkgs.callPackage ./calamares-nixos-extensions { };
+    calamares = pkgs.callPackage ./calamares { };
+    garuda-nix-manager = pkgs.qt6Packages.callPackage ./garuda-nix-manager {
+      inherit (internal) launch-terminal;
+    };
+    install-garuda-nix = pkgs.callPackage ./install-garuda-nix {
+      inherit (internal) calamares-nixos-extensions;
+    };
     installer = pkgs.callPackage ./gns-management/installer.nix {
       all-packages = pkgs;
       garuda-lib = lib;
       inherit system;
+    };
+    launch-terminal = pkgs.callPackage ./garuda-libs {
+      inherit pkgs;
     };
     garuda-update = pkgs.callPackage ./gns-management/gns-update.nix {
       all-packages = pkgs;
@@ -18,18 +29,12 @@ rec {
       inherit system;
       inherit (inputs) self;
     };
-    garuda-nix-manager = pkgs.qt6Packages.callPackage ./garuda-nix-manager {
-      inherit (internal) launch-terminal;
-    };
-    launch-terminal = pkgs.callPackage ./garuda-libs {
-      inherit pkgs;
-    };
-    calamares-nixos-extensions = pkgs.callPackage ./calamares-nixos-extensions { };
+    mokka-kde-theme = pkgs.callPackage ./mokka-kde-theme { };
   };
 
   # Packages that are available in the flake's packages output
   external = {
-    inherit (internal) calamares-nixos-extensions;
+    inherit (internal) calamares-nixos-extensions install-garuda-nix;
     docs =
       pkgs.runCommand "gns-docs"
         # makes the documentation available at ./result/ by running nix build .#docs
@@ -54,6 +59,7 @@ rec {
       garuda-nix-manager
       launch-terminal
       calamares-nixos-extensions
+      install-garuda-nix
       ;
   };
 }

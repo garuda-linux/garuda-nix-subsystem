@@ -4,6 +4,14 @@ import calamares.slideshow 1.0;
 Presentation
 {
     id: presentation
+    fontFamily: "Inter, Fira Sans"
+    textColor: "#cdd6f4"
+
+    Rectangle {
+        anchors.fill: parent
+        color: "#1e1e2e"
+        z: -1
+    }
 
     Image {
         anchors.centerIn: parent

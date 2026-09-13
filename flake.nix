@@ -97,6 +97,11 @@
     {
       inherit lib internal;
 
+      templates.default = {
+        path = ./packages/calamares-nixos-extensions/template;
+        description = "Garuda Nix starter configuration";
+      };
+
       packages = forAllSystems (pkgs: (mkPackages pkgs.stdenv.hostPlatform.system).external);
 
       checks = forAllSystems (pkgs: {

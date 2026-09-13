@@ -45,7 +45,7 @@ The UUID of the BTRFS filesystem to deduplicate.
 
 ### `garuda.catppuccin.enable`
 
-Catppuccin Mocha flavour: consistent pastel theming across the
+Catppuccin Mocha edition: consistent pastel theming across the
 desktop and applications via catppuccin/nix.
 
 - **Type**: `boolean`

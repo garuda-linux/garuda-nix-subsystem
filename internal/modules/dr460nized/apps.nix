@@ -21,7 +21,6 @@ import ../theme/generic-apps.nix
         kdePackages.kimageformats
         kdePackages.kio-admin
         kdePackages.qtstyleplugin-kvantum
-        libinput-gestures
         plasma-panel-colorizer
         plasma-plugin-blurredwallpaper
         resvg

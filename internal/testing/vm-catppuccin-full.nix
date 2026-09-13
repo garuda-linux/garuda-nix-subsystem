@@ -13,7 +13,6 @@
     };
   };
 
-  # Catppuccin flavour
   garuda.catppuccin.enable = true;
 
   # Flip all the switches
@@ -33,9 +32,6 @@
   # Timezone
   time.timeZone = "Europe/Berlin";
 
-  # Enhance stability of the VM by forcing the X11 session
-  services.displayManager.defaultSession = "plasmax11";
-
   # Virtualisation settings for running the VM via `nix build .#internal.ci-full`
   # followed by `./result/bin/run-*-vm`
   virtualisation.vmVariant = {
@@ -46,5 +42,5 @@
   };
 
   # Nix stuff
-  system.stateVersion = "26.05";
+  system.stateVersion = "26.11";
 }

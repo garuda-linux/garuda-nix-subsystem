@@ -45,6 +45,10 @@ in
     enable = lib.mkDefault true;
     systemd.enable = lib.mkDefault true;
   };
+  xdg.configFile."kdedefaults/kglobalshortcutsrc".text = ''
+    [services][vicinae.desktop]
+    toggle=Meta+Space
+  '';
 
   home.file = lib.mkMerge (
     [

@@ -1,9 +1,9 @@
 # Installer ISO
 
-The flake can build an installer ISO for two flavours:
+The flake can build an installer ISO for two editions:
 
-- `dr460nized`
 - `mokka`
+- `dr460nized`
 
 The ISO boots to the desktop. Calamares starts automatically.
 
@@ -14,15 +14,15 @@ The installer uses our own calamares-nixos-extensions. They install the Garuda f
 Build from the dev shell:
 
 ```sh
-nix develop -c buildiso dr460nized
+nix develop -c buildiso mokka
 ```
 
-Replace `dr460nized` with `mokka` to build the other flavour. Use `buildiso all` to build both.
+Replace `mokka` with `dr460nized` to build the other edition. Use `buildiso all` to build both.
 
 Append `--run` to boot the freshly built ISO in QEMU instead of just copying it:
 
 ```sh
-nix develop -c buildiso dr460nized --run
+nix develop -c buildiso mokka --run
 ```
 
 The command copies the ISO to the current working directory.
@@ -30,8 +30,8 @@ The command copies the ISO to the current working directory.
 Alternatively, build the ISO directly with Nix:
 
 ```sh
-nix build .#internal.iso-dr460nized
 nix build .#internal.iso-mokka
+nix build .#internal.iso-dr460nized
 ```
 
 ## Boot
@@ -43,3 +43,25 @@ sudo dd if=$name.iso of=/dev/$usb bs=4M status=progress oflag=sync
 ```
 
 Replace `$usb` with your USB drive, and `$name` with the resulting ISO file. This destroys all data on the drive.
+
+## Install from an existing NixOS system
+
+No ISO needed: `install-garuda` generates the same Garuda config the Calamares installer writes, on any NixOS host. Available in the dev shell, or via `nix run .#install-garuda`:
+
+```sh
+sudo install-garuda --flavor mokka --feature gaming --feature printing \
+  --hostname mypc --username nico --install
+```
+
+This mounts nothing itself: partition and mount your target at `/mnt` first (or pass `--root`), then the command writes the flake config to `<root>/etc/nixos`, runs `nixos-generate-config` hardware + `nixos-facter` GPU/NVIDIA detection, and with `--install` runs `nixos-install --flake <root>/etc/nixos#<hostname>` afterwards.
+
+## Install straight from the flake
+
+On any NixOS host with internet, run the installer directly from the published flake:
+
+```sh
+sudo nix run gitlab:garuda-linux/garuda-nix-subsystem/v2#install-garuda -- \
+  --flavor mokka --hostname mypc --username nico --install
+```
+
+`--flake-ref` defaults to that same `v2` ref, so the generated config already points at it: future rebuilds are just `nixos-rebuild switch --flake /etc/nixos#mypc`. Pass `--flake-ref gitlab:garuda-linux/garuda-nix-subsystem/v2` (or any ref) to track a different branch instead.

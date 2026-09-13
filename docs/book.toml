@@ -1,9 +1,9 @@
 [book]
 authors = ["dr460nf1r3", "Garuda Linux Team"]
-description = "Contains the documentation for the Garuda Nix subsystem"
+description = "Contains the documentation for Garuda Nix"
 language = "en"
 src = "src"
-title = "Garuda Nix Subsystem ❄️ documentation"
+title = "Garuda Nix ❄️ documentation"
 
 [output.html]
 additional-css = ["./theme/catppuccin.css"]

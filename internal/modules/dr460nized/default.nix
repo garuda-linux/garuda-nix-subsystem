@@ -49,10 +49,6 @@ in
       Image=file://${cfg.themePackage}/share/wallpapers/Maldrakor/contents/3840x1920.jpg
     '';
 
-    services.xserver = {
-      enable = gDefault true;
-    };
-
     environment.plasma6.excludePackages = with pkgs; [
       # Pulls in 600 mb worth of mbrola (via espeak), which is a bit silly
       kdePackages.okular
@@ -65,7 +61,6 @@ in
     # https://nix-community.github.io/home-manager/index.html
     programs.dconf.enable = true;
 
-    # Define the default fonts Fira Sans & Jetbrains Mono Nerd Fonts
     fonts = {
       enableDefaultPackages = gDefault false;
       packages =
@@ -94,7 +89,6 @@ in
           ];
           emoji = gDefault [ "Noto Fonts Emoji" ];
         };
-        # This fixes emoji stuff
         enable = gDefault true;
       };
       fontDir = {
@@ -103,12 +97,10 @@ in
       };
     };
 
-    # Dr460nized-specific home-manager configuration
     garuda.home-manager.modules = gExcludableArray config "home-manager-modules" [
       (lib.mkBefore ./metafiles.nix)
     ];
 
-    # These need to be enabled for complete functionality
     programs = {
       direnv = {
         enable = gDefault true;
@@ -118,7 +110,6 @@ in
       partition-manager.enable = gDefault true;
     };
 
-    # Enable Kvantum for theming & Pipewire
     environment.variables = {
       ALSOFT_DRIVERS = gDefault "pipewire";
       GTK_THEME = gDefault "Sweet-Dark";
@@ -127,10 +118,14 @@ in
       SDL_AUDIODRIVER = gDefault "pipewire";
     };
 
-    # Add xdg-desktop-portal-gtk for Wayland GTK apps (font issues etc.)
+    qt = {
+      enable = true;
+      platformTheme = "kde";
+      style = "kvantum";
+    };
+
     xdg.portal.extraPortals = gDefault [ pkgs.xdg-desktop-portal-gtk ];
 
-    # Use the Dr460nized theme as default /etc/skel folder
     garuda.create-home.skel = gDefault "${gGenerateSkel pkgs "${cfg.themePackage}/skel" "dr460nized"}";
   };
 }

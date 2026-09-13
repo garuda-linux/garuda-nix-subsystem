@@ -17,9 +17,15 @@ let
 in
 {
   inherit (packages.internal)
-    garuda-nix-manager
     calamares-nixos-extensions
+    garuda-nix-manager
+    mokka-kde-theme
     ;
+
+  calamares-nixos = prev.calamares-nixos.override {
+    calamares = packages.internal.calamares;
+    "calamares-nixos-extensions" = packages.internal.calamares-nixos-extensions;
+  };
 
   linuxPackagesFor = kernel: withZenpower (prev.linuxPackagesFor kernel);
   linuxPackages_cachyos = withZenpower (

@@ -18,7 +18,10 @@ def fmt(value):
 
 
 def main():
-    with open(sys.argv[1]) as f:
+    if len(sys.argv) != 2:
+        print(f"usage: {sys.argv[0]} <nixosOptionsDoc.json>", file=sys.stderr)
+        return 1
+    with open(sys.argv[1], encoding="utf-8") as f:
         options = json.load(f)
 
     garuda = sorted(n for n in options if n == "garuda" or n.startswith("garuda."))
@@ -59,5 +62,8 @@ def main():
             out.extend(details)
             out.append("")
     sys.stdout.write("\n".join(out))
+    return 0
 
-main()
+
+if __name__ == "__main__":
+    sys.exit(main())

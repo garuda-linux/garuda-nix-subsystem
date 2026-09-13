@@ -42,7 +42,7 @@ in
         default = false;
         example = true;
         description = ''
-          Catppuccin Mocha flavour: consistent pastel theming across the
+          Catppuccin Mocha edition: consistent pastel theming across the
           desktop and applications via catppuccin/nix.
         '';
         type = lib.types.bool;

@@ -1,0 +1,242 @@
+From 962bd00cac84578c9423a4cded9236514e4551be Mon Sep 17 00:00:00 2001
+From: Nico <dr460nf1r3@garudalinux.org>
+Date: Fri, 7 Aug 2026 18:41:07 +0200
+Subject: [PATCH 7/8] partition: Make LUKS2 with argon2id the default
+ encryption
+
+Switch the default LUKS generation to luks2 and explicitly request the
+argon2id PBKDF from cryptsetup when formatting encrypted partitions.
+The luksbootkeyfile keyslot is also set to argon2id by default.
+---
+ src/modules/luksbootkeyfile/luksbootkeyfile.conf    |  2 +-
+ src/modules/partition/Config.cpp                    |  4 ++--
+ src/modules/partition/Config.h                      |  2 +-
+ src/modules/partition/core/KPMHelpers.cpp           |  7 +++++++
+ src/modules/partition/core/PartitionActions.h       |  2 +-
+ src/modules/partition/gui/CreatePartitionDialog.cpp |  2 +-
+ src/modules/partition/partition.conf                | 11 +++++------
+ 7 files changed, 18 insertions(+), 12 deletions(-)
+
+diff --git a/src/modules/luksbootkeyfile/luksbootkeyfile.conf b/src/modules/luksbootkeyfile/luksbootkeyfile.conf
+index 477d0e30e..1da9962fa 100644
+--- a/src/modules/luksbootkeyfile/luksbootkeyfile.conf
++++ b/src/modules/luksbootkeyfile/luksbootkeyfile.conf
+@@ -11,4 +11,4 @@
+ # There is one value equivalent to not setting it: default
+ #
+ # When not set (or explicitly set to "default"), the cryptsetup default is used
+-luks2Hash: default
++luks2Hash: argon2id
+diff --git a/src/modules/partition/Config.cpp b/src/modules/partition/Config.cpp
+index b2f88789a..9ce926d9d 100644
+--- a/src/modules/partition/Config.cpp
++++ b/src/modules/partition/Config.cpp
+@@ -401,8 +401,8 @@ Config::fillConfigurationFSTypes( const QVariantMap& configurationMap )
+         = luksGenerationNames().find( Calamares::getString( configurationMap, "luksGeneration" ), nameFound );
+     if ( !nameFound )
+     {
+-        cWarning() << "Partition-module setting *luksGeneration* not found or invalid. Defaulting to luks1.";
+-        luksGeneration = Config::LuksGeneration::Luks1;
++        cWarning() << "Partition-module setting *luksGeneration* not found or invalid. Defaulting to luks2.";
++        luksGeneration = Config::LuksGeneration::Luks2;
+     }
+     m_luksFileSystemType = luksGeneration;
+     gs->insert( "luksFileSystemType", luksGenerationNames().find( luksGeneration ) );
+diff --git a/src/modules/partition/Config.h b/src/modules/partition/Config.h
+index d2dfec64d..630d1ebc7 100644
+--- a/src/modules/partition/Config.h
++++ b/src/modules/partition/Config.h
+@@ -213,7 +213,7 @@ private:
+     SwapChoiceSet m_swapChoices;
+     SwapChoice m_initialSwapChoice = NoSwap;
+     SwapChoice m_swapChoice = NoSwap;
+-    LuksGeneration m_luksFileSystemType = LuksGeneration::Luks1;
++    LuksGeneration m_luksFileSystemType = LuksGeneration::Luks2;
+     InstallChoice m_initialInstallChoice = NoChoice;
+     InstallChoice m_installChoice = NoChoice;
+     qreal m_requiredStorageGiB = 0.0;  // May duplicate setting in the welcome module
+diff --git a/src/modules/partition/core/KPMHelpers.cpp b/src/modules/partition/core/KPMHelpers.cpp
+index 50fd11d67..2b81d145f 100644
+--- a/src/modules/partition/core/KPMHelpers.cpp
++++ b/src/modules/partition/core/KPMHelpers.cpp
+@@ -23,6 +23,7 @@
+ #include <kpmcore/fs/filesystem.h>
+ #include <kpmcore/fs/filesystemfactory.h>
+ #include <kpmcore/fs/luks.h>
++#include <kpmcore/fs/luks2.h>
+ #include <kpmcore/util/externalcommand.h>
+
+ #include <qregularexpression.h>
+@@ -107,6 +108,12 @@ createNewEncryptedPartition( PartitionNode* parent,
+     fs->createInnerFileSystem( fsType );
+     fs->setPassphrase( passphrase );
+     fs->setLabel( fsLabel );
++    if ( luksFsType == Config::LuksGeneration::Luks2 )
++    {
++        // LUKS2 defaults to the argon2id PBKDF in cryptsetup; be explicit
++        // so that changing cryptsetup defaults cannot silently regress it.
++        dynamic_cast< FS::luks2* >( fs )->setPbkdf( QStringLiteral( "argon2id" ) );
++    }
+     Partition* p = new Partition( parent,
+                                   device,
+                                   PartitionRole( newRoles ),
+diff --git a/src/modules/partition/core/PartitionActions.h b/src/modules/partition/core/PartitionActions.h
+index 24969bb43..a389b4cf5 100644
+--- a/src/modules/partition/core/PartitionActions.h
++++ b/src/modules/partition/core/PartitionActions.h
+@@ -31,7 +31,7 @@ struct ReplacePartitionOptions
+ {
+     QString defaultPartitionTableType;  // e.g. "gpt" or "msdos"
+     QString defaultFsType;  // e.g. "ext4" or "btrfs"
+-    Config::LuksGeneration luksFsType = Config::LuksGeneration::Luks1;  // optional ("luks", "luks2")
++    Config::LuksGeneration luksFsType = Config::LuksGeneration::Luks2;  // optional ("luks", "luks2")
+     QString luksPassphrase;  // optional
+
+     ReplacePartitionOptions( const QString& pt,
+diff --git a/src/modules/partition/gui/CreatePartitionDialog.cpp b/src/modules/partition/gui/CreatePartitionDialog.cpp
+index 213f5c793..fb13be894 100644
+--- a/src/modules/partition/gui/CreatePartitionDialog.cpp
++++ b/src/modules/partition/gui/CreatePartitionDialog.cpp
+@@ -261,7 +261,7 @@ CreatePartitionDialog::getNewlyCreatedPartition()
+             fsLabel,
+             first,
+             last,
+-            Config::luksGenerationNames().find( luksFsType, Config::LuksGeneration::Luks1 ),
++            Config::luksGenerationNames().find( luksFsType, Config::LuksGeneration::Luks2 ),
+             luksPassphrase,
+             PartitionTable::Flags() );
+     }
+diff --git a/src/modules/partition/partition.conf b/src/modules/partition/partition.conf
+index e77c5d011..39b290b3a 100644
+--- a/src/modules/partition/partition.conf
++++ b/src/modules/partition/partition.conf
+@@ -90,16 +90,15 @@ userSwapChoices:
+ # This setting specifies the LUKS generation (i.e LUKS1, LUKS2) used internally by
+ # cryptsetup when creating an encrypted partition.
+ #
+-# This option is set to luks1 by default, as grub doesn't support LUKS2 + Argon2id
+-# currently. On the other hand grub does support LUKS2 with PBKDF2 and could therefore be
+-# also set to luks2. Also there are some patches for grub and Argon2.
+-# See: https://aur.archlinux.org/packages/grub-improved-luks2-git
++# The default is luks2, which cryptsetup formats with the argon2id PBKDF.
++# grub only supports LUKS2 with PBKDF2 (or a patched grub with argon2id),
++# see: https://aur.archlinux.org/packages/grub-improved-luks2-git
+ #
+ # Choices: luks1, luks2 (in addition, "luks" means "luks1")
+ #
+-# The default is luks1
++# The default is luks2
+ #
+-luksGeneration: luks1
++luksGeneration: luks2
+
+ # This setting determines if encryption should be allowed when using zfs.  This
+ # setting has no effect unless zfs support is provided.
+-- 
+2.55.0
+
+
+From 67599067ef2071be26c1d1505131c979665ced12 Mon Sep 17 00:00:00 2001
+From: Nico <dr460nf1r3@garudalinux.org>
+Date: Fri, 7 Aug 2026 18:41:08 +0200
+Subject: [PATCH 8/8] partition: Use the drive's optimal sector size when
+ formatting
+
+When creating new partitions (e.g. erase/replace/manual), pick the
+largest sector size the device supports -- the max of the logical and
+physical sector size -- instead of always using the logical sector
+size. Advanced Format drives report a 512-byte logical sector size
+while supporting 4096-byte sectors; formatting with the larger size
+is what the drive natively supports. The LUKS container and its
+inner filesystem inherit the same optimal sector size.
+---
+ src/modules/partition/core/KPMHelpers.cpp | 23 +++++++++++++++++++++--
+ src/modules/partition/core/KPMHelpers.h   | 10 ++++++++++
+ 2 files changed, 31 insertions(+), 2 deletions(-)
+
+diff --git a/src/modules/partition/core/KPMHelpers.cpp b/src/modules/partition/core/KPMHelpers.cpp
+index 2b81d145f..412df7c0d 100644
+--- a/src/modules/partition/core/KPMHelpers.cpp
++++ b/src/modules/partition/core/KPMHelpers.cpp
+@@ -19,6 +19,7 @@
+
+ #include <kpmcore/backend/corebackendmanager.h>
+ #include <kpmcore/core/device.h>
++#include <kpmcore/core/diskdevice.h>
+ #include <kpmcore/core/partition.h>
+ #include <kpmcore/fs/filesystem.h>
+ #include <kpmcore/fs/filesystemfactory.h>
+@@ -28,6 +29,8 @@
+
+ #include <qregularexpression.h>
+
++#include <algorithm>
++
+ using Calamares::Partition::PartitionIterator;
+
+ namespace KPMHelpers
+@@ -49,6 +52,22 @@ findPartitionByMountPoint( const QList< Device* >& devices, const QString& mount
+     return nullptr;
+ }
+
++qint64
++sectorSizeForDevice( const Device& device )
++{
++    qint64 sectorSize = device.logicalSize();
++    const auto* diskDevice = dynamic_cast< const DiskDevice* >( &device );
++    if ( diskDevice )
++    {
++        const qint64 physicalSectorSize = diskDevice->physicalSectorSize();
++        if ( physicalSectorSize > 0 )
++        {
++            sectorSize = std::max( sectorSize, physicalSectorSize );
++        }
++    }
++    return sectorSize;
++}
++
+
+ Partition*
+ createNewPartition( PartitionNode* parent,
+@@ -60,7 +79,7 @@ createNewPartition( PartitionNode* parent,
+                     qint64 lastSector,
+                     PartitionTable::Flags flags )
+ {
+-    FileSystem* fs = FileSystemFactory::create( fsType, firstSector, lastSector, device.logicalSize() );
++    FileSystem* fs = FileSystemFactory::create( fsType, firstSector, lastSector, sectorSizeForDevice( device ) );
+     fs->setLabel( fsLabel );
+     return new Partition( parent,
+                           device,
+@@ -98,7 +117,7 @@ createNewEncryptedPartition( PartitionNode* parent,
+     FileSystem::Type luksType = luksGenerationToFSName( luksFsType );
+
+     FS::luks* fs = dynamic_cast< FS::luks* >(
+-        FileSystemFactory::create( luksType, firstSector, lastSector, device.logicalSize() ) );
++        FileSystemFactory::create( luksType, firstSector, lastSector, sectorSizeForDevice( device ) ) );
+     if ( !fs )
+     {
+         cError() << "cannot create LUKS filesystem. Giving up.";
+diff --git a/src/modules/partition/core/KPMHelpers.h b/src/modules/partition/core/KPMHelpers.h
+index b8e6fca18..0cc2edac8 100644
+--- a/src/modules/partition/core/KPMHelpers.h
++++ b/src/modules/partition/core/KPMHelpers.h
+@@ -64,6 +64,16 @@ enum class SavePassphraseValue
+  */
+ Partition* findPartitionByMountPoint( const QList< Device* >& devices, const QString& mountPoint );
+
++/** @brief The largest (optimal) sector size the device supports
++ *
++ * For physical disks this is the larger of the logical and the physical
++ * sector size reported by the device (e.g. 4096 on Advanced Format
++ * drives that report a 512-byte logical sector size). For other device
++ * types, or when the physical sector size is unknown, the device's
++ * logical sector size is used.
++ */
++qint64 sectorSizeForDevice( const Device& device );
++
+ /**
+  * Helper function to create a new Partition object (does not create anything
+  * on the disk) associated with a FileSystem.
+-- 
+2.55.0
+

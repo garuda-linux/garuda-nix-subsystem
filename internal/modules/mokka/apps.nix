@@ -12,7 +12,20 @@ import ../theme/generic-apps.nix
       pkgs: with pkgs; [
         catppuccin-cursors
         catppuccin-gtk
-        catppuccin-kde
+        (catppuccin.override {
+          accent = "mauve";
+          variant = "mocha";
+          themeList = [
+            "bat"
+            "btop"
+            "kvantum"
+          ];
+        })
+        (catppuccin-kde.override {
+          accents = [ "mauve" ];
+          flavour = [ "mocha" ];
+          winDecStyles = [ "classic" ];
+        })
         ffmpegthumbnailer
         firedragon-catppuccin-bin
         kde-rounded-corners
@@ -21,7 +34,6 @@ import ../theme/generic-apps.nix
         kdePackages.kimageformats
         kdePackages.kio-admin
         kdePackages.qtstyleplugin-kvantum
-        libinput-gestures
         mokka-kde-theme
         plasma-panel-colorizer
         plasma-plugin-blurredwallpaper

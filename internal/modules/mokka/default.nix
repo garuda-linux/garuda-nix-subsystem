@@ -56,10 +56,6 @@ in
       Image=file://${cfg.themePackage}/share/wallpapers/Mokka-tree/contents/images/3840x2160.jpg
     '';
 
-    services.xserver = {
-      enable = gDefault true;
-    };
-
     environment.plasma6.excludePackages = with pkgs; [
       kdePackages.oxygen
       kdePackages.plasma-browser-integration
@@ -125,6 +121,12 @@ in
       MOZ_USE_XINPUT2 = gDefault "1";
       QT_STYLE_OVERRIDE = gDefault "kvantum";
       SDL_AUDIODRIVER = gDefault "pipewire";
+    };
+
+    qt = {
+      enable = true;
+      platformTheme = "kde";
+      style = "kvantum";
     };
 
     xdg.portal.extraPortals = gDefault [ pkgs.xdg-desktop-portal-gtk ];
