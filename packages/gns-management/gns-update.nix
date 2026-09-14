@@ -27,8 +27,6 @@ all-packages.writeShellApplication {
   ];
 
   text =
-    builtins.replaceStrings
-      [ "[[GNS_CURRENT_VERSION]]" "[[GNS_SELF]]" ]
-      [ version (toString self) ]
+    builtins.replaceStrings [ "[[GNS_CURRENT_VERSION]]" "[[GNS_SELF]]" ] [ version (toString self) ]
       executable;
 }

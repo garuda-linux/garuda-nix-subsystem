@@ -27,7 +27,7 @@
     if [ -z "$GIT_RANGE" ]; then
       if [ -z "$PREV_TAG" ]; then
         PREV_TAG="$(git tag --list 'monthly-*' --sort=-v:refname | head -n1 || true)"
-        [ -n "$PREV_TAG" ] || PREV_TAG="v3"
+        [ -n "$PREV_TAG" ] || PREV_TAG="stable"
       fi
       if [ -z "$NEW_TAG" ]; then
         NEW_TAG="monthly-$(date +%Y-%m)"

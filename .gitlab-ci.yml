@@ -4,12 +4,12 @@ stages: [update, test, build, monthly]
 image: alpine:latest
 before_script:
   - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+  - export TAG_NAME="$(nix eval --impure --raw --expr '(builtins.getFlake (toString ./. )).inputs.nixpkgs.lib.version' | cut -d. -f1,2)"
 
 variables:
   GIT_AUTHOR_EMAIL: ci@garudalinux.org
   GIT_AUTHOR_NAME: Gitlab CI
   GIT_STRATEGY: clone
-  TAG_NAME: v3
   GLAB_ENABLE_CI_AUTOLOGIN: "true"
 
 update:
@@ -72,7 +72,9 @@ iso:
       done
     - ls -la tagged-isos
     - git tag -f "$TAG_NAME"
-    - git push --atomic -f $CI_REPOSITORY_URL "$TAG_NAME" HEAD:refs/heads/stable
+    # Remove the v2 tag once garuda-nix-subsystem no longer needs it
+    - git tag -f v2
+    - git push --atomic -f $CI_REPOSITORY_URL "$TAG_NAME" v2 HEAD:refs/heads/stable
     - nix run nixpkgs#glab -- release delete "$TAG_NAME" -y || true
     - nix run nixpkgs#glab -- release create "$TAG_NAME" --ref "$CI_COMMIT_SHA" --name "$TAG_NAME" --notes "Daily build $CI_COMMIT_SHA"
       tagged-isos/*.iso
