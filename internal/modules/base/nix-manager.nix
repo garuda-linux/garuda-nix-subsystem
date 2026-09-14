@@ -16,7 +16,7 @@ in
   options.garuda.garuda-nix-manager = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = config.garuda.system.isGui;
+      default = config.garuda.system.isGui && config.garuda.managed.config != null;
       description = "Install garuda-nix-manager, the graphical tool for handling app installations.";
     };
   };

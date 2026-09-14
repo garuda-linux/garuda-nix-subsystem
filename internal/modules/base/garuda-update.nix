@@ -8,7 +8,9 @@ let
   garuda-update = pkgs.writeShellApplication {
     name = "garuda-update";
     runtimeInputs = with pkgs; [
+      git
       nix
+      nixos-rebuild
       coreutils
     ];
     text = ''
@@ -17,8 +19,16 @@ let
         sudo "$0" "$@"
         exit 1
       fi
-      echo -e "\033[1;33m-->\033[1;34m Downloading the latest version of the updater 🍵\033[0m"
-      nix run --accept-flake-config gitlab:garuda-linux/garuda-nix-subsystem/v2?dir=internal/updater#nix -- develop --refresh --accept-flake-config gitlab:garuda-linux/garuda-nix-subsystem/v2#gns-update -c "gns-update"
+      if [ -f /etc/nixos/garuda-managed.json ]; then
+        echo -e "\033[1;33m-->\033[1;34m Downloading the latest version of the updater 🍵\033[0m"
+        nix run --accept-flake-config gitlab:garuda-linux/garuda-nix-subsystem/stable?dir=internal/updater#nix -- develop --refresh --accept-flake-config gitlab:garuda-linux/garuda-nix-subsystem/stable#gns-update -c "gns-update"
+      else
+        FLAKE="''${GARUDA_FLAKE:-/etc/nixos}"
+        echo -e "\033[1;33m-->\033[1;34m Updating flake inputs 🍵\033[0m"
+        nix flake update --flake "$FLAKE"
+        echo -e "\033[1;33m-->\033[1;34m Rebuilding system 🍵\033[0m"
+        nixos-rebuild switch --flake "$FLAKE"
+      fi
     '';
   };
 in
