@@ -56,11 +56,19 @@ in
       Image=file://${cfg.themePackage}/share/wallpapers/Mokka-tree/contents/images/3840x2160.jpg
     '';
 
-    environment.plasma6.excludePackages = with pkgs; [
-      kdePackages.oxygen
-      kdePackages.plasma-browser-integration
-      kdePackages.discover
+    environment.plasma6.excludePackages = with pkgs.kdePackages; [
+      discover
+      elisa
+      gwenview
+      khelpcenter
+      kwin-x11
+      okular
+      oxygen
+      plasma-browser-integration
+      plasma-keyboard
+      qtvirtualkeyboard
     ];
+    services.orca.enable = gDefault false;
 
     # Fix "the name ca.desrt.dconf was not provided by any .service files"
     # https://nix-community.github.io/home-manager/index.html

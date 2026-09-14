@@ -74,12 +74,19 @@ in
       Image=file://${catppuccin-settings}/share/wallpapers/Tree/contents/images/Tree.jpg
     '';
 
-    environment.plasma6.excludePackages = with pkgs; [
-      # Pulls in 600 mb worth of mbrola (via espeak), which is a bit silly
-      kdePackages.okular
-      kdePackages.oxygen
-      kdePackages.plasma-browser-integration
+    environment.plasma6.excludePackages = with pkgs.kdePackages; [
+      discover
+      elisa
+      gwenview
+      khelpcenter
+      kwin-x11
+      okular
+      oxygen
+      plasma-browser-integration
+      plasma-keyboard
+      qtvirtualkeyboard
     ];
+    services.orca.enable = gDefault false;
 
     # Fix "the name ca.desrt.dconf was not provided by any .service files"
     # https://nix-community.github.io/home-manager/index.html
