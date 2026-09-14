@@ -4,7 +4,7 @@
   overlay,
   ...
 }@fromFlake:
-{
+let
   modules = import ./modules {
     inherit
       inputs
@@ -13,6 +13,9 @@
       overlay
       ;
   };
+in
+{
+  inherit modules;
   inherit
     ((lib.garudaSystem {
       system = "x86_64-linux";
@@ -34,6 +37,12 @@
     }).config.system.build.vm;
 
   options-doc = import ./options-doc { inherit inputs lib; };
+
+  boot-test = import ./testing/boot-test.nix {
+    pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+    inherit (lib) garuda-lib;
+    garuda-modules = modules.default;
+  };
 
   iso-dr460nized =
     (lib.garudaSystem {

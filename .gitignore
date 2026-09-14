@@ -2,7 +2,8 @@
 *.iso
 .direnv
 .idea
+.zed
 .pre-commit-config.yaml
-result
-result/
-__pycache__
+result*
+core*
+__pycache__/

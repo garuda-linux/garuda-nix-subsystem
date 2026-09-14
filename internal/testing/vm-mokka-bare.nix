@@ -1,6 +1,5 @@
 { lib, ... }:
 {
-  # Only testing users
   users = {
     mutableUsers = false;
     users = {
@@ -13,19 +12,13 @@
     };
   };
 
-  garuda.dr460nized.enable = true;
+  garuda.mokka.enable = true;
 
-  # Gets run via QEMU
   services.qemuGuest.enable = lib.mkForce true;
 
-  # Some locale settings
   console.keyMap = "de";
-
-  # Timezone
   time.timeZone = "Europe/Berlin";
 
-  # Virtualisation settings for running the VM via `nix build .#internal.ci-bare`
-  # followed by `./result/bin/run-*-vm`
   virtualisation.vmVariant = {
     virtualisation = {
       cores = 4;
@@ -33,6 +26,5 @@
     };
   };
 
-  # Nix stuff
   system.stateVersion = "26.11";
 }

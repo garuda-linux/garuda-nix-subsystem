@@ -79,6 +79,8 @@ forAllSystems (
       gendocs
       exec ${pkgs.mdbook}/bin/mdbook "$@" -d docs/book docs
     '';
+
+    release = import ./release.nix { inherit pkgs; };
   in
   {
     default = pkgs.mkShell {
@@ -95,6 +97,7 @@ forAllSystems (
         gns-install
         gns-update
         install-garuda-nix
+        release.monthly-release
         pkgs.mdbook
         pkgs.prek
         runvm

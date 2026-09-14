@@ -121,8 +121,9 @@ in
     qt = {
       enable = true;
       platformTheme = "kde";
-      style = "kvantum";
     };
+
+    environment.systemPackages = [ pkgs.qt6Packages.qtstyleplugin-kvantum ];
 
     catppuccin = {
       autoEnable = gDefault false;

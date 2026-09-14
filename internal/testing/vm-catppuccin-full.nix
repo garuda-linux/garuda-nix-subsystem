@@ -24,10 +24,6 @@
 
   # Some locale settings
   console.keyMap = "de";
-  services.xserver = {
-    enable = true;
-    xkb.layout = "de";
-  };
 
   # Timezone
   time.timeZone = "Europe/Berlin";
