@@ -9,7 +9,7 @@ let
       inherit system;
       modules = [ { } ];
     }).config.system.build;
-  version = builtins.toString garuda-lib.garuda-lib.version;
+  version = toString garuda-lib.garuda-lib.version;
   executable = builtins.readFile ./installer.bash;
 in
 all-packages.writeShellApplication {

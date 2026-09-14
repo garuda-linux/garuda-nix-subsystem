@@ -2,8 +2,9 @@
 *.iso
 .direnv
 .idea
-.zed
 .pre-commit-config.yaml
+.ruff_cache
+.zed
 result*
 core*
 __pycache__/

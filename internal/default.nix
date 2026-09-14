@@ -16,48 +16,24 @@ let
 in
 {
   inherit modules;
-  inherit
-    ((lib.garudaSystem {
-      system = "x86_64-linux";
-      modules = [ ./testing/vm-dr460nized-bare.nix ];
-    }).config.system.build
-    )
-    vm
-    ;
+  vm = lib.mkVm "dr460nized" [ ];
 
-  ci-bare =
-    (lib.garudaSystem {
-      system = "x86_64-linux";
-      modules = [ ./testing/ci-bare.nix ];
-    }).config.system.build.vm;
-  ci-full =
-    (lib.garudaSystem {
-      system = "x86_64-linux";
-      modules = [ ./testing/ci-full.nix ];
-    }).config.system.build.vm;
+  ci-bare = lib.mkCiVm "dr460nized" [ ];
+  ci-full = lib.mkCiVm "catppuccin" [
+    {
+      garuda.gaming.enable = true;
+      garuda.performance-tweaks.enable = true;
+    }
+  ];
 
   options-doc = import ./options-doc { inherit inputs lib; };
 
-  boot-test = import ./testing/boot-test.nix {
+  boot-test = lib.mkBootTest {
     pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-    inherit (lib) garuda-lib;
     garuda-modules = modules.default;
   };
 
-  iso-dr460nized =
-    (lib.garudaSystem {
-      system = "x86_64-linux";
-      modules = [ ./testing/iso-dr460nized.nix ];
-      specialArgs = {
-        flake-inputs = inputs;
-      };
-    }).config.system.build.isoImage;
-  iso-mokka =
-    (lib.garudaSystem {
-      system = "x86_64-linux";
-      modules = [ ./testing/iso-mokka.nix ];
-      specialArgs = {
-        flake-inputs = inputs;
-      };
-    }).config.system.build.isoImage;
+  iso-dr460nized = lib.mkISO "dr460nized";
+  iso-mokka = lib.mkISO "mokka";
+  iso-catppuccin = lib.mkISO "catppuccin";
 }

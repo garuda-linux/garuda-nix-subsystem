@@ -78,11 +78,9 @@ in
       };
 
       direnv = {
-        enable = config.garuda.system.isGui;
-        nix-direnv.enable = config.garuda.system.isGui;
-        settings = {
-          log_format = "";
-        };
+        enable = gDefault config.garuda.system.isGui;
+        nix-direnv.enable = gDefault config.garuda.system.isGui;
+        silent = gDefault true;
       };
 
       # The fish shell, default for terminals

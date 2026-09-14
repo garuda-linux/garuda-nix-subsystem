@@ -54,7 +54,7 @@ in
       };
     };
     garuda.subsystem.imported-users.users = builtins.listToAttrs (
-      builtins.map (x: {
+      map (x: {
         inherit (x) name;
         value = {
           passwordHash = x.hashed_password;

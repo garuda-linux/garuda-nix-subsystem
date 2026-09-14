@@ -46,10 +46,10 @@ Replace `$usb` with your USB drive, and `$name` with the resulting ISO file. Thi
 
 ## Install from an existing NixOS system
 
-No ISO needed: `install-garuda` generates the same Garuda config the Calamares installer writes, on any NixOS host. Available in the dev shell, or via `nix run .#install-garuda`:
+No ISO needed: `install-garuda-nix` generates the same Garuda config the Calamares installer writes, on any NixOS host. Available in the dev shell, or via `nix run .#install-garuda`:
 
 ```sh
-sudo install-garuda --flavor mokka --feature gaming --feature printing \
+sudo install-garuda-nix --flavor mokka --feature gaming --feature printing \
   --hostname mypc --username nico --install
 ```
 
@@ -60,7 +60,7 @@ This mounts nothing itself: partition and mount your target at `/mnt` first (or 
 On any NixOS host with internet, run the installer directly from the published flake:
 
 ```sh
-sudo nix run gitlab:garuda-linux/garuda-nix-subsystem/v2#install-garuda -- \
+sudo nix run gitlab:garuda-linux/garuda-nix-subsystem/v3#install-garuda-nix -- \
   --flavor mokka --hostname mypc --username nico --install
 ```
 

@@ -1,9 +1,11 @@
 {
   config,
+  garuda-lib,
   lib,
   ...
 }:
 with lib;
+with garuda-lib;
 let
   cfg = config.garuda.garuda-chroot;
 in
@@ -161,9 +163,9 @@ in
     ];
 
     # Be able to run the same installation in systemd-nspawn
-    systemd.targets.machines.enable = true;
+    systemd.targets.machines.enable = gDefault true;
     systemd.nspawn."garuda" = {
-      enable = true;
+      enable = gDefault true;
       execConfig = {
         Boot = "yes";
         Capability = "all";
@@ -209,7 +211,7 @@ in
       };
     };
     systemd.services."systemd-nspawn@garuda" = {
-      enable = true;
+      enable = gDefault true;
       environment = {
         SYSTEMD_NSPAWN_UNIFIED_HIERARCHY = "1";
       }

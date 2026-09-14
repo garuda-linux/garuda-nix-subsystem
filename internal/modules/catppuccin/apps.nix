@@ -31,19 +31,7 @@ import ../theme/generic-apps.nix
           flavor = "mocha";
         })
         easyeffects
-        ffmpegthumbnailer
         firedragon-bin
-        kdePackages.applet-window-buttons6
-        kdePackages.kdegraphics-thumbnailers
-        kdePackages.kimageformats
-        kdePackages.kio-admin
-        kdePackages.qtstyleplugin-kvantum
-        plasma-panel-colorizer
-        plasma-plugin-blurredwallpaper
-        resvg
-        sshfs
-        vlc
-        xdg-desktop-portal
       ];
   }
   {

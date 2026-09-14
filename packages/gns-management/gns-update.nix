@@ -10,7 +10,7 @@ let
       inherit system;
       modules = [ { } ];
     }).config.system.build;
-  version = builtins.toString garuda-lib.garuda-lib.version;
+  version = toString garuda-lib.garuda-lib.version;
   executable = builtins.readFile ./gns-update.bash;
 in
 all-packages.writeShellApplication {
@@ -29,6 +29,6 @@ all-packages.writeShellApplication {
   text =
     builtins.replaceStrings
       [ "[[GNS_CURRENT_VERSION]]" "[[GNS_SELF]]" ]
-      [ version (builtins.toString self) ]
+      [ version (toString self) ]
       executable;
 }

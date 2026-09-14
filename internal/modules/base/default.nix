@@ -12,6 +12,7 @@
     ./garuda-update.nix
     ./hardware.nix
     ./home-manager/home-manager.nix
+    ./kde.nix
     ./locales.nix
     ./managed
     ./mount-garuda.nix

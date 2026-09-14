@@ -7,7 +7,8 @@ pkgs.testers.runNixOSTest {
   name = "garuda-boot";
   node.pkgsReadOnly = false;
   defaults.imports = [
-    ./vm-mokka-bare.nix
+    ./vm-base.nix
+    { garuda.mokka.enable = true; }
     garuda-modules
   ];
   node.specialArgs = { inherit garuda-lib; };

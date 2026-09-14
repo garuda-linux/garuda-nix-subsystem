@@ -2,8 +2,8 @@
 {
   # Git shall be used a lot on flaky systems
   programs.git = {
-    enable = true;
-    settings = {
+    enable = lib.mkDefault true;
+    settings = lib.mkDefault {
       core = {
         editor = "micro";
       };
@@ -17,15 +17,15 @@
   };
 
   programs.difftastic = {
-    enable = true;
-    git.enable = true;
+    enable = lib.mkDefault true;
+    git.enable = lib.mkDefault true;
   };
 
   # Suggested GPG settings
   # https://github.com/drduh/YubiKey-Guide/tree/master#harden-configuration
   programs.gpg = {
-    enable = true;
-    settings = {
+    enable = lib.mkDefault true;
+    settings = lib.mkDefault {
       cert-digest-algo = "SHA512";
       charset = "utf-8";
       default-preference-list = "SHA512 SHA384 SHA256 AES256 AES192 AES ZLIB BZIP2 ZIP Uncompressed";
@@ -51,11 +51,11 @@
   # Individual terminal app configs
   programs = {
     # The better cat replacement
-    bat.enable = true;
+    bat.enable = lib.mkDefault true;
 
     # Btop to view resource usage
     btop = {
-      enable = true;
+      enable = lib.mkDefault true;
       settings = {
         color_theme = lib.mkDefault "TTY";
         proc_tree = lib.mkDefault true;
@@ -65,8 +65,8 @@
 
     # Micro, the editor
     micro = {
-      enable = true;
-      settings = {
+      enable = lib.mkDefault true;
+      settings = lib.mkDefault {
         "autosu" = true;
         "mkparents" = true;
       };
@@ -74,18 +74,18 @@
 
     # Starship prompt
     starship = {
-      enable = true;
+      enable = lib.mkDefault true;
       settings = lib.mapAttrsRecursive (_: lib.mkDefault) (import ../starship-settings.nix);
     };
   };
 
   nix = {
     # Don't warn about dirty flakes and accept flake configs by default
-    extraOptions = ''
+    extraOptions = lib.mkDefault ''
       accept-flake-config = true
       warn-dirty = false
     '';
-    settings = {
+    settings = lib.mkDefault {
       # Use available binary caches, this is not Gentoo
       # this also allows us to use remote builders to reduce build times and batter usage
       builders-use-substitutes = true;
@@ -108,11 +108,11 @@
   };
 
   # Enable dircolors
-  programs.dircolors.enable = true;
+  programs.dircolors.enable = lib.mkDefault true;
 
   # Enable eza
-  programs.eza.enable = true;
+  programs.eza.enable = lib.mkDefault true;
 
   # Show home-manager news
-  news.display = "notify";
+  news.display = lib.mkDefault "notify";
 }

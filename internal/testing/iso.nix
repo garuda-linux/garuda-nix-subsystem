@@ -17,15 +17,32 @@
 
   environment.defaultPackages = lib.mkForce [
     pkgs.rsync
-    pkgs.vim
-    pkgs.nano
+    pkgs.micro
   ];
 
-  # Hardware probing for the installer
+  garuda.excludes.defaultpackages.exclude = with pkgs; [
+    easyeffects
+    noto-fonts-cjk-sans
+    nvd
+    screen
+    sshfs
+    tldr
+    vlc
+  ];
+
+  environment.plasma6.excludePackages = with pkgs.kdePackages; [
+    gwenview
+    okular
+  ];
+
   environment.systemPackages = [
     pkgs.nixos-facter
   ];
 
+  programs.kdeconnect.enable = false;
+  programs.direnv.enable = false;
+
+  services.locate.enable = false;
   systemd.oomd.enable = lib.mkForce false;
   zramSwap.enable = true;
 
@@ -48,6 +65,8 @@
   };
   users.users.nixos.enable = lib.mkForce false;
 
+  home-manager.users.garuda.programs.vicinae.systemd.enable = false;
+
   services.getty.autologinUser = lib.mkForce "garuda";
   services.getty.helpLine = lib.mkForce ''
     The "garuda" and "root" accounts have empty passwords.
@@ -62,8 +81,6 @@
     "root"
     "garuda"
   ];
-
-  home-manager.users.garuda.programs.vicinae.systemd.enable = lib.mkForce false;
 
   # Upstream launches calamares via pkexec, which strips the user env,
   # while sudo -E preserves it. This makes the desktop theme available to calamares.

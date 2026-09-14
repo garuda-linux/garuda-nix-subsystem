@@ -13,7 +13,7 @@
 stdenv.mkDerivation (final: {
   pname = "garuda-nix-manager";
   version = "1.0.0";
-  src = builtins.fetchGit {
+  src = fetchGit {
     url = "https://gitlab.com/garuda-linux/applications/garuda-nix-manager.git";
     ref = "main";
     rev = "c4073ec78c98b409fac3acaddde44e8a6a3f2ea6";

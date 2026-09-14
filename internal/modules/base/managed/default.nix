@@ -64,8 +64,7 @@ in
     environment.systemPackages = mkIf (settings ? extrapackages) (
       lists.remove null (
         map (
-          pkg:
-          pkgs."${pkg}" or (warn "${builtins.baseNameOf cfg.config}: Package \"${pkg}\" does not exist" null)
+          pkg: pkgs."${pkg}" or (warn "${baseNameOf cfg.config}: Package \"${pkg}\" does not exist" null)
         ) settings.extrapackages
       )
     );

@@ -26,7 +26,7 @@ let
     else if system != null then
       system
     else
-      builtins.throw ("garuda-nix-subsystem: package not found: " + name);
+      throw ("garuda-nix-subsystem: package not found: " + name);
   libreoffice-qt = findPkg "libreoffice";
 
   launcher = name: item: {

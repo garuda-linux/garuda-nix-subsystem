@@ -12,14 +12,14 @@ with garuda-lib;
   # General nix settings
   nix = rec {
     # Channels are dead, long live flakes
-    channel.enable = false;
+    channel.enable = gDefault false;
 
     # Make builds run with low priority so my system stays responsive
-    daemonCPUSchedPolicy = "idle";
-    daemonIOSchedClass = "idle";
+    daemonCPUSchedPolicy = gDefault "idle";
+    daemonIOSchedClass = gDefault "idle";
 
     # Do garbage collections whenever there is less than 3GB free space left
-    extraOptions = ''
+    extraOptions = gDefault ''
       max-free = ${toString (1024 * 1024 * 1024)}
       min-free = ${toString (100 * 1024 * 1024)}
     '';
@@ -30,17 +30,17 @@ with garuda-lib;
 
       # Use available binary caches, this is not Gentoo
       # this also allows us to use remote builders to reduce build times and batter usage
-      builders-use-substitutes = true;
+      builders-use-substitutes = gDefault true;
 
       # We are using flakes, so enable the experimental features
-      experimental-features = [
+      experimental-features = gDefault [
         "nix-command"
         "flakes"
       ];
 
       # Users allowed to use Nix
-      allowed-users = [ "@wheel" ];
-      trusted-users = [ "@wheel" ];
+      allowed-users = gDefault [ "@wheel" ];
+      trusted-users = gDefault [ "@wheel" ];
 
       # Max number of parallel jobs
       max-jobs = gDefault "auto";
@@ -50,12 +50,12 @@ with garuda-lib;
     };
 
     # Make legacy nix commands consistent as well
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
+    nixPath = gDefault (lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry);
 
     # Automtaically pin registries based on inputs
-    registry = lib.mapAttrs (_: v: { flake = v; }) flake-inputs;
+    registry = gDefault (lib.mapAttrs (_: v: { flake = v; }) flake-inputs);
 
-    package = pkgs.lixPackageSets.git.lix;
+    package = gDefault pkgs.lixPackageSets.git.lix;
   };
 
   # Apply our overlay after chaotic's (cache-friendly overlay)
@@ -101,10 +101,10 @@ with garuda-lib;
   # Improved nix rebuild UX & cleanup timer
   programs.nh = {
     clean = {
-      enable = true;
-      extraArgs = "--keep-since 3d --keep 2";
-      dates = "daily";
+      enable = gDefault true;
+      extraArgs = gDefault "--keep-since 3d --keep 2";
+      dates = gDefault "daily";
     };
-    enable = true;
+    enable = gDefault true;
   };
 }

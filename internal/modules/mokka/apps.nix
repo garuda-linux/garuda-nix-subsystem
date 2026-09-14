@@ -26,22 +26,10 @@ import ../theme/generic-apps.nix
           flavour = [ "mocha" ];
           winDecStyles = [ "classic" ];
         })
-        ffmpegthumbnailer
-        firedragon-catppuccin-bin
         kde-rounded-corners
-        kdePackages.applet-window-buttons6
-        kdePackages.kdegraphics-thumbnailers
-        kdePackages.kimageformats
-        kdePackages.kio-admin
-        kdePackages.qtstyleplugin-kvantum
+        firedragon-catppuccin-bin
         mokka-kde-theme
-        plasma-panel-colorizer
-        plasma-plugin-blurredwallpaper
-        resvg
-        sshfs
         tela-circle-icon-theme
-        vlc
-        xdg-desktop-portal
       ];
   }
   {

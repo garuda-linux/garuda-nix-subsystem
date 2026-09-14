@@ -3,7 +3,7 @@
 
 Used by both frontends:
 - the Calamares nixos module (modules/nixos/main.py)
-- the install-garuda CLI (packages/install-garuda)
+- the install-garuda-nix CLI (packages/install-garuda-nix)
 """
 
 import json
