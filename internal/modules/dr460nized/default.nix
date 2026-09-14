@@ -56,6 +56,7 @@ in
       kdePackages.plasma-browser-integration
       kdePackages.discover
     ];
+    services.orca.disable = gDefault false;
 
     # Fix "the name ca.desrt.dconf was not provided by any .service files"
     # https://nix-community.github.io/home-manager/index.html

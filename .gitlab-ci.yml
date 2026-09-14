@@ -1,5 +1,10 @@
 ---
-stages: [update, test, build, tag, monthly]
+stages: [update, test, build, monthly]
+
+image: alpine:latest
+before_script:
+  - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+
 variables:
   GIT_AUTHOR_EMAIL: ci@garudalinux.org
   GIT_AUTHOR_NAME: Gitlab CI
@@ -9,7 +14,7 @@ variables:
 
 update:
   stage: update
-  image: nixpkgs/nix-flakes:latest
+  tags: [nix]
   script:
     - nix flake update
     - nix flake update --flake ./internal/updater --inputs-from . --override-input nixpkgs "nixpkgs"
@@ -36,7 +41,7 @@ update:
 
 test:
   stage: test
-  image: nixpkgs/nix-flakes:latest
+  tags: [nix]
   script:
     - nix flake check
     - nix build .#internal.ci-bare -o result-bare
@@ -50,26 +55,9 @@ test:
       when: on_success
     - when: never
 
-tag:
-  stage: tag
-  image: nixpkgs/nix-flakes:latest
-  needs: [test, iso]
-  script:
-    - git tag -f "$TAG_NAME"
-    - git push --atomic -f $CI_REPOSITORY_URL "$TAG_NAME" HEAD:refs/heads/stable
-    - nix run nixpkgs#glab -- release delete "$TAG_NAME" -y || true
-    - nix run nixpkgs#glab -- release create "$TAG_NAME" --ref "$CI_COMMIT_SHA" --name "$TAG_NAME" --notes "Daily build $CI_COMMIT_SHA"
-      tagged-isos/*.iso
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "merge_request"'
-      when: never
-    - if: '$CI_COMMIT_BRANCH == "main" && $UPDATE != "true"'
-      when: on_success
-    - when: never
-
 iso:
   stage: build
-  image: nixpkgs/nix-flakes:latest
+  tags: [nix]
   needs: [test]
   script:
     - nix build .#internal.iso-dr460nized -o result-dr460nized
@@ -83,10 +71,11 @@ iso:
         done
       done
     - ls -la tagged-isos
-    - rm -f nixos-*.iso
-  artifacts:
-    paths: [tagged-isos/]
-    expire_in: never
+    - git tag -f "$TAG_NAME"
+    - git push --atomic -f $CI_REPOSITORY_URL "$TAG_NAME" HEAD:refs/heads/stable
+    - nix run nixpkgs#glab -- release delete "$TAG_NAME" -y || true
+    - nix run nixpkgs#glab -- release create "$TAG_NAME" --ref "$CI_COMMIT_SHA" --name "$TAG_NAME" --notes "Daily build $CI_COMMIT_SHA"
+      tagged-isos/*.iso
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "merge_request"'
       when: never
@@ -96,9 +85,19 @@ iso:
 
 monthly:
   stage: monthly
-  image: nixpkgs/nix-flakes:latest
-  needs: [iso]
+  tags: [nix]
+  needs: []
   script:
+    - nix build .#internal.iso-dr460nized -o result-dr460nized
+    - nix build .#internal.iso-mokka -o result-mokka
+    - mkdir -p tagged-isos
+    - |
+      for r in result-dr460nized result-mokka; do
+        edition="${r#result-}"
+        for iso in "$r"/iso/*.iso; do
+          cp "$iso" "tagged-isos/garuda-nix-$edition-$TAG_NAME-x86_64-linux.iso"
+        done
+      done
     - git fetch --tags "$CI_REPOSITORY_URL"
     - MONTHLY_TAG="monthly-$(date +%Y-%m)"
     - PREV_TAG="$(git tag --list 'monthly-*' --sort=-v:refname | head -n1 || true)"
@@ -116,8 +115,8 @@ monthly:
       fi
     - nix run nixpkgs#glab -- release create "$MONTHLY_TAG" --ref "$CI_COMMIT_SHA" --name "$MONTHLY_TAG" -F CHANGELOG.md tagged-isos/*-"$MONTHLY_TAG"-*.iso
   artifacts:
-    paths: [tagged-isos/, CHANGELOG.md]
-    expire_in: never
+    paths: [CHANGELOG.md]
+    expire_in: 1 week
   rules:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: on_success
