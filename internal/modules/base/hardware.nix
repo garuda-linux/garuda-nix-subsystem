@@ -10,8 +10,8 @@ let
   cfg = config.garuda.hardware;
 in
 {
-  options = {
-    garuda.hardware.enable = lib.mkOption {
+  options.garuda.hardware = {
+    enable = lib.mkOption {
       default = true;
       type = lib.types.bool;
       description = ''
@@ -20,7 +20,28 @@ in
         GUI systems).
       '';
     };
-    garuda.hardware.nvidia = {
+
+    autoDriver = {
+      enable = lib.mkEnableOption "hardware auto-detection via nixos-facter" // {
+        default = true;
+      };
+      reportPath = lib.mkOption {
+        default = null;
+        type = lib.types.nullOr lib.types.path;
+        example = "./facter.json";
+        description = ''
+          Path to the nixos-facter report (written by the installer).
+          Takes effect only when autoDriver.enable is set and the
+          nixos-facter module is imported. Null disables it.
+        '';
+      };
+    };
+
+    laptop = {
+      enable = lib.mkEnableOption "laptop power/thermal tuning";
+    };
+
+    nvidia = {
       enable = lib.mkEnableOption "proprietary NVIDIA driver support with the latest drivers";
       amdgpuBusId = lib.mkOption {
         default = null;
@@ -44,6 +65,9 @@ in
   };
 
   config = lib.mkMerge [
+    (lib.mkIf (cfg.autoDriver.enable && cfg.autoDriver.reportPath != null) {
+      hardware.facter.reportPath = lib.mkIf (config.hardware ? facter) cfg.autoDriver.reportPath;
+    })
     (lib.mkIf cfg.enable {
       hardware = {
         cpu = {
@@ -56,6 +80,10 @@ in
           enable32Bit = gDefault config.garuda.system.isGui;
         };
       };
+    })
+    (lib.mkIf cfg.laptop.enable {
+      services.thermald.enable = gDefault true;
+      powerManagement.powertop.enable = gDefault true;
     })
     (lib.mkIf cfg.nvidia.enable {
       hardware = {

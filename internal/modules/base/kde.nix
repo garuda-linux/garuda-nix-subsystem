@@ -86,17 +86,20 @@ in
       plasma-login-manager.enable = gDefault true;
     };
 
-    environment.plasma6.excludePackages = with pkgs.kdePackages; [
-      discover
-      elisa
-      khelpcenter
-      kwin-x11
-      oxygen
-      plasma-browser-integration
-      plasma-keyboard
-      qtvirtualkeyboard
-      spectacle
-    ];
+    environment.plasma6.excludePackages = gDefault (
+      lib.optionals (!config.garuda.flatpak.enable) (with pkgs.kdePackages; [ discover ])
+      ++ (with pkgs.kdePackages; [
+        elisa
+        khelpcenter
+        kwin-x11
+        oxygen
+        plasma-browser-integration
+        plasma-keyboard
+        qtvirtualkeyboard
+        spectacle
+      ])
+    );
+
     environment.systemPackages = [
       (pkgs.kdePackages.spectacle.override { tesseractLanguages = cfg.ocrLang; })
     ]

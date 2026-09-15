@@ -3,6 +3,7 @@
   config,
   osConfig,
   pkgs,
+  garuda-lib,
   ...
 }:
 import ../theme/generic-metafiles.nix
@@ -17,5 +18,6 @@ import ../theme/generic-metafiles.nix
       config
       osConfig
       pkgs
+      garuda-lib
       ;
   }

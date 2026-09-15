@@ -8,6 +8,9 @@
     ./autologin.nix
     ./boot.nix
     ./create-home.nix
+    ./presets.nix
+    ./fonts.nix
+    ./flatpak.nix
     ./gaming.nix
     ./garuda-update.nix
     ./hardware.nix

@@ -8,8 +8,10 @@
   config,
   osConfig,
   pkgs,
+  garuda-lib,
   ...
 }:
+with garuda-lib;
 let
   appdir = ".local/share/applications";
   pkgnames =
@@ -42,8 +44,8 @@ in
   };
 
   programs.vicinae = {
-    enable = lib.mkDefault true;
-    systemd.enable = lib.mkDefault true;
+    enable = gDefault true;
+    systemd.enable = gDefault true;
   };
   xdg.configFile."kdedefaults/kglobalshortcutsrc".text = ''
     [services][vicinae.desktop]

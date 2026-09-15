@@ -1,9 +1,9 @@
-{ lib, ... }:
+{ lib, garuda-lib, ... }:
+with garuda-lib;
 {
-  # Git shall be used a lot on flaky systems
   programs.git = {
-    enable = lib.mkDefault true;
-    settings = lib.mkDefault {
+    enable = gDefault true;
+    settings = gDefault {
       core = {
         editor = "micro";
       };
@@ -17,15 +17,15 @@
   };
 
   programs.difftastic = {
-    enable = lib.mkDefault true;
-    git.enable = lib.mkDefault true;
+    enable = gDefault true;
+    git.enable = gDefault true;
   };
 
   # Suggested GPG settings
   # https://github.com/drduh/YubiKey-Guide/tree/master#harden-configuration
   programs.gpg = {
-    enable = lib.mkDefault true;
-    settings = lib.mkDefault {
+    enable = gDefault true;
+    settings = gDefault {
       cert-digest-algo = "SHA512";
       charset = "utf-8";
       default-preference-list = "SHA512 SHA384 SHA256 AES256 AES192 AES ZLIB BZIP2 ZIP Uncompressed";
@@ -48,71 +48,56 @@
     };
   };
 
-  # Individual terminal app configs
   programs = {
-    # The better cat replacement
-    bat.enable = lib.mkDefault true;
+    bat.enable = gDefault true;
 
-    # Btop to view resource usage
     btop = {
-      enable = lib.mkDefault true;
+      enable = gDefault true;
       settings = {
-        color_theme = lib.mkDefault "TTY";
-        proc_tree = lib.mkDefault true;
-        theme_background = lib.mkDefault false;
+        color_theme = gDefault "TTY";
+        proc_tree = gDefault true;
+        theme_background = gDefault false;
       };
     };
 
-    # Micro, the editor
     micro = {
-      enable = lib.mkDefault true;
-      settings = lib.mkDefault {
+      enable = gDefault true;
+      settings = gDefault {
         "autosu" = true;
         "mkparents" = true;
       };
     };
 
-    # Starship prompt
     starship = {
-      enable = lib.mkDefault true;
-      settings = lib.mapAttrsRecursive (_: lib.mkDefault) (import ../starship-settings.nix);
+      enable = gDefault true;
+      settings = lib.mapAttrsRecursive (_: gDefault) (import ../starship-settings.nix);
     };
   };
 
   nix = {
-    # Don't warn about dirty flakes and accept flake configs by default
-    extraOptions = lib.mkDefault ''
-      accept-flake-config = true
+    extraOptions = gDefault ''
       warn-dirty = false
     '';
-    settings = lib.mkDefault {
-      # Use available binary caches, this is not Gentoo
-      # this also allows us to use remote builders to reduce build times and batter usage
-      builders-use-substitutes = true;
+    settings.builders-use-substitutes = gDefault true;
 
-      # We are using flakes, so enable the experimental features
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
+    settings.experimental-features = gDefault [
+      "nix-command"
+      "flakes"
+    ];
 
-      extra-substituters = [ "https://nyx-cache.chaotic.cx/" ];
-      extra-trusted-public-keys = [ "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk=" ];
+    settings.extra-substituters = gDefault [ "https://nyx-cache.chaotic.cx/" ];
+    settings.extra-trusted-public-keys = gDefault [
+      "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk="
+    ];
 
-      # Show more log lines for failed builds
-      log-lines = 20;
+    settings.log-lines = gDefault 20;
 
-      # Max number of parallel jobs
-      max-jobs = "auto";
-    };
+    settings.max-jobs = gDefault "auto";
   };
 
-  # Enable dircolors
-  programs.dircolors.enable = lib.mkDefault true;
+  programs.dircolors.enable = gDefault true;
 
-  # Enable eza
-  programs.eza.enable = lib.mkDefault true;
+  programs.eza.enable = gDefault true;
 
-  # Show home-manager news
-  news.display = lib.mkDefault "notify";
+  news.display = gDefault "notify";
 }

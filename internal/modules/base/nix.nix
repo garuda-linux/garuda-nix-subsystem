@@ -38,6 +38,8 @@ with garuda-lib;
         "flakes"
       ];
 
+      accept-flake-config = gDefault true;
+
       # Users allowed to use Nix
       allowed-users = gDefault [ "@wheel" ];
       trusted-users = gDefault [ "@wheel" ];

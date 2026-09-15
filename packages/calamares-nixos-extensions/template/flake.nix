@@ -2,6 +2,12 @@
 # Rebuild with `nixos-rebuild switch --flake /etc/nixos#@HOSTNAME@`.
 {
   description = "Garuda NixOS configuration";
+  nixConfig = {
+    extra-substituters = [ "https://nyx-cache.chaotic.cx/" ];
+    extra-trusted-public-keys = [
+      "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk="
+    ];
+  };
 
   inputs = {
     # This input brings Nixpkgs, home-manager, Chaotic-Nyx via garuda.lib.garudaSystem.
