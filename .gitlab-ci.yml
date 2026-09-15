@@ -75,9 +75,7 @@ iso:
     # Remove the v2 tag once garuda-nix-subsystem no longer needs it
     - git tag -f v2
     - git push --atomic -f $CI_REPOSITORY_URL "$TAG_NAME" v2 HEAD:refs/heads/stable
-    - nix run nixpkgs#glab -- release delete "$TAG_NAME" -y || true
-    - nix run nixpkgs#glab -- release create "$TAG_NAME" --ref "$CI_COMMIT_SHA" --name "$TAG_NAME" --notes "Daily build $CI_COMMIT_SHA"
-      tagged-isos/*.iso
+    - chmod 600 "$DEPLOY_KEY" && nix shell nixpkgs#openssh -c scp -B -P "$DEPLOY_PORT" -i "$DEPLOY_KEY" -o StrictHostKeyChecking=no -o IdentitiesOnly=yes tagged-isos/*.iso "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "merge_request"'
       when: never
@@ -111,11 +109,7 @@ monthly:
       for iso in tagged-isos/*-"$TAG_NAME"-*.iso; do
         cp "$iso" "tagged-isos/$(basename "$iso" | sed "s/-$TAG_NAME-/-$MONTHLY_TAG-/")"
       done
-    - |
-      if [ -n "$PREV_TAG" ]; then
-        nix run nixpkgs#glab -- release delete "$PREV_TAG" --with-tag -y || echo "No previous release $PREV_TAG to wipe"
-      fi
-    - nix run nixpkgs#glab -- release create "$MONTHLY_TAG" --ref "$CI_COMMIT_SHA" --name "$MONTHLY_TAG" -F CHANGELOG.md tagged-isos/*-"$MONTHLY_TAG"-*.iso
+    - chmod 600 "$DEPLOY_KEY" && nix shell nixpkgs#openssh -c scp -B -P "$DEPLOY_PORT" -i "$DEPLOY_KEY" -o StrictHostKeyChecking=no -o IdentitiesOnly=yes tagged-isos/*-"$MONTHLY_TAG"-*.iso CHANGELOG.md "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
   artifacts:
     paths: [CHANGELOG.md]
     expire_in: 1 week

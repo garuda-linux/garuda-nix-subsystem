@@ -3,8 +3,8 @@
   nixConfig = {
     extra-substituters = [ "https://nyx-cache.chaotic.cx/" ];
     extra-trusted-public-keys = [
-    "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk="
-  ];
+      "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk="
+    ];
   };
 
   inputs = {
