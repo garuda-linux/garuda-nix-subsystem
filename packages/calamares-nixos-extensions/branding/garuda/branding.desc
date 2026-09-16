@@ -5,7 +5,7 @@ welcomeStyleCalamares: false
 welcomeExpandingLogo: true
 
 windowExpanding: normal
-windowSize: 800px,520px
+windowSize: 1024px,720px
 windowPlacement: center
 
 sidebar: widget
@@ -26,9 +26,9 @@ strings:
     donateUrl: https://garudalinux.org/donate/
 
 images:
-    productIcon: "images/garuda.webp"
-    productLogo: "images/garuda.webp"
-    productWelcome: "images/garuda.webp"
+    productIcon: "images/garuda.svg"
+    productLogo: "images/garuda.svg"
+    productWelcome: "images/garuda.svg"
 
 style:
     SidebarBackground: "#1e1e2e"

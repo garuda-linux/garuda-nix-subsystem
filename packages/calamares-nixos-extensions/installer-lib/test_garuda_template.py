@@ -181,5 +181,23 @@ class TestInstallOpts(unittest.TestCase):
                          ("mokka", "garuda-nix", "garuda", True))
 
 
+class TestPresetExcludes(unittest.TestCase):
+    def test_ok(self):
+        gt.check_preset_features("desktop", ["gaming"])
+        gt.check_preset_features("laptop", ["powersave"])
+        gt.check_preset_features("server", ["powersave"])
+        gt.check_preset_features(None, ["powersave"])
+
+    def test_clashes(self):
+        for preset, feature in [("desktop", "powersave"),
+                                ("handheld", "powersave"),
+                                ("laptop", "performance")]:
+            with self.subTest(preset=preset, feature=feature):
+                with self.assertRaises(ValueError):
+                    gt.check_preset_features(preset, [feature])
+                with self.assertRaises(ValueError):
+                    gt.InstallOpts(preset=preset, features=[feature])
+
+
 if __name__ == "__main__":
     unittest.main()

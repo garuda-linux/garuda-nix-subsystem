@@ -13,21 +13,53 @@ Presentation
         z: -1
     }
 
-    Image {
-        anchors.centerIn: parent
-        width: 240; height: 240
-        source: "images/garuda.webp"
-        fillMode: Image.PreserveAspectFit
-        opacity: 0.9
+    Slide {
+        Image {
+            anchors.centerIn: parent
+            width: 240; height: 240
+            source: "images/garuda.svg"
+            fillMode: Image.PreserveAspectFit
+            opacity: 0.9
+        }
+
+        Text {
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 64
+            color: "#CBA6F7"
+            font.pixelSize: 28
+            text: "Welcome to Garuda Nix!"
+        }
     }
 
-    Text {
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 20
-        color: "#CBA6F7"
-        font.pixelSize: 28
-        text: "Garuda Linux — The Nix Side"
+    Slide {
+        Text {
+            anchors.centerIn: parent
+            color: "#CBA6F7"
+            font.pixelSize: 32
+            horizontalAlignment: Text.AlignHCenter
+            text: "Declarative. Reproducible.\nYour system, versioned in a flake."
+        }
+    }
+
+    Slide {
+        Text {
+            anchors.centerIn: parent
+            color: "#CBA6F7"
+            font.pixelSize: 32
+            horizontalAlignment: Text.AlignHCenter
+            text: "Check out further options at the documentation\nat nix.garudalinux.org."
+        }
+    }
+
+    Slide {
+        Text {
+            anchors.centerIn: parent
+            color: "#CBA6F7"
+            font.pixelSize: 32
+            horizontalAlignment: Text.AlignHCenter
+            text: "Sit back while your system\nis being installed!"
+        }
     }
 
     function onActivate() {

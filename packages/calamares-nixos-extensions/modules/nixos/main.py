@@ -429,9 +429,9 @@ def run():
     else:
         bootloader, grub_device = "none", None
 
-    picked_flavor = gs.value("packagechooser_packagechooser")
+    picked_edition = gs.value("packagechooser_packagechooser")
     opts = gt.InstallOpts(
-        flavor=picked_flavor if picked_flavor in ("mokka", "dr460nized", "catppuccin") else "dr460nized",
+        edition=picked_edition if picked_edition in ("mokka", "dr460nized", "catppuccin") else "dr460nized",
         preset=preset,
         features=features,
         root=root_mount_point,

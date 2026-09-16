@@ -30,6 +30,19 @@ GARUDA_FEATURES = {
 
 GARUDA_PRESETS = ("desktop", "laptop", "server", "handheld")
 
+PRESET_EXCLUDES = {"desktop": "powersave", "handheld": "powersave",
+                   "laptop": "performance"}
+
+
+def check_preset_features(preset, features):
+    """Raise ValueError when a feature clashes with the preset."""
+    if (preset in PRESET_EXCLUDES
+            and PRESET_EXCLUDES[preset] in (features or [])):
+        raise ValueError(
+            f"preset {preset!r} conflicts with the "
+            f"{PRESET_EXCLUDES[preset]} feature"
+        )
+
 DEFAULT_FLAKE_REF = "gitlab:garuda-linux/garuda-nix-subsystem/stable"
 
 MARKERS = ("@@GARUDA@@", "@@FACTER@@", "@@BOOTLOADER@@", "@@SYSTEM@@", "@@USER@@")
@@ -46,23 +59,28 @@ class InstallOpts:
     edition: str = "mokka"
     preset: str | None = None
     features: list = field(default_factory=list)
+
     # Target
     root: str = "/mnt"
+
     # Placeholders
     hostname: str = "garuda-nix"
     username: str = "garuda"
     state_version: str = "26.11"
     flake_ref: str = DEFAULT_FLAKE_REF
     allow_unfree: bool = True
+
     # Bootloader: "systemd-boot", "grub" or "none"
     bootloader: str = "systemd-boot"
     grub_device: str | None = None
+
     # cachyos (default, from chaotic-nyx) or lts (nixpkgs default)
     kernel: str = "cachyos"
     root_is_btrfs: bool = False
     tmpfs_root: bool = False
     cryptodisk: bool = False
     encrypted_swap: list = field(default_factory=list)
+
     # System section
     timezone: str | None = None
     locale: str | None = None
@@ -70,9 +88,11 @@ class InstallOpts:
     xkb_layout: str | None = None
     xkb_variant: str | None = None
     vconsole: str | None = None
+
     # User section
     fullname: str | None = None
     autologin: bool = True
+
     # Calamares partition list for the btrfs subvol fix, None to skip
     partitions: list | None = None
 
@@ -80,12 +100,14 @@ class InstallOpts:
         self.features = list(self.features or [])
         self.encrypted_swap = list(self.encrypted_swap or [])
         if self.preset not in GARUDA_PRESETS:
-            self.preset = None
+            self.preset = None        
         self.extra_locale = dict(self.extra_locale or {})
         self.hostname = self.hostname or "garuda-nix"
         self.username = self.username or "garuda"
         self.state_version = self.state_version or "26.11"
         self.flake_ref = self.flake_ref or DEFAULT_FLAKE_REF
+
+        check_preset_features(self.preset, self.features)
 
 
 class Hooks:
@@ -116,6 +138,7 @@ def facter_pci_id(card):
     )
     if not m:
         return None
+
     bus, device, function = m.groups()
     return f"PCI:{int(bus, 16)}:{int(device, 16)}:{function}"
 
@@ -126,6 +149,7 @@ def detect_gpus(report):
     Matches on PCI vendor id with the loaded kernel driver as fallback."""
     has_nvidia = False
     nvidia_id = amd_id = None
+
     for card in (report.get("hardware") or {}).get("graphics_card") or []:
         vendor = ((card.get("vendor") or {}).get("hex") or "").lower()
         drivers = " ".join(
@@ -149,7 +173,6 @@ def detect_gpus(report):
 
 def fix_btrfs_subvolumes(hardware_config, partitions, log=None):
     """Rewrite bogus subvol=<mountpoint> values to @-style names."""
-    # Map of mount points to their Garuda (@-style) subvolume names.
     subvol_map = {
         "/": "@",
         "/home": "@home",
@@ -193,20 +216,25 @@ def build_garuda_section(opts, warn=None):
         lines.append("  garuda.catppuccin.enable = true;")
     else:
         lines.append("  garuda.dr460nized.enable = true;")
+
     if opts.preset is not None:
         lines.append(f'  garuda.preset = "{opts.preset}";')
+
     selected = [f for f in opts.features if f in GARUDA_FEATURES]
     if "performance" in selected and "powersave" in selected:
         # The modules are mutually exclusive; prefer performance.
         if warn is not None:
             warn("Both performance and powersave tweaks selected, keeping performance.")
         selected.remove("powersave")
+
     for item in selected:
         lines.append(f"  {GARUDA_FEATURES[item]}.enable = true;")
+
     if "impermanence" in selected:
         lines.append(
             f'  garuda.impermanence.persistentUsers = [ "{nix_escape(opts.username)}" ];'
         )
+
     if "impermanence" in selected and opts.tmpfs_root:
         lines.append("  garuda.impermanence.tmpfsRoot = true;")
     lines.append("")
@@ -304,11 +332,13 @@ def build_user_section(opts):
     )
     lines.append(f'  users.users."{nix_escape(opts.username)}" = {{')
     lines.append("    isNormalUser = true;")
+
     if opts.fullname:
         lines.append(f'    description = "{nix_escape(opts.fullname)}";')
     lines.append('    extraGroups = [ "networkmanager" "wheel" ];')
     lines.append("  };")
     lines.append("")
+    
     if opts.autologin:
         lines.append("  # Enable automatic login for the user.")
         lines.append("  services.displayManager.autoLogin.enable = true;")

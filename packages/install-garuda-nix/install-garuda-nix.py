@@ -223,6 +223,12 @@ def main(argv=None):
             file=sys.stderr,
         )
         return 1
+        
+    try:
+        gt.check_preset_features(args.preset, args.feature)
+    except ValueError as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 2
 
     if args.bootloader == "grub" and not args.grub_device:
         print("error: --bootloader grub needs --grub-device", file=sys.stderr)
@@ -261,7 +267,8 @@ def main(argv=None):
         if not efi and args.bootloader == "auto" and not args.grub_device:
             args.grub_device = disk
 
-    opts = gt.InstallOpts(
+    try:
+        opts = gt.InstallOpts(
         edition=args.edition,
         preset=args.preset,
         features=args.feature,
@@ -283,6 +290,9 @@ def main(argv=None):
         autologin=not args.no_autologin,
         tmpfs_root=gp.is_tmpfs_root(schema),
     )
+    except ValueError as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 2
 
     hooks = gt.Hooks()
     nixos_dir = os.path.join(args.root, "etc/nixos")

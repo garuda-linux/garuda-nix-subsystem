@@ -2,6 +2,7 @@
   config,
   garuda-lib,
   lib,
+  pkgs,
   ...
 }:
 with lib;
@@ -171,6 +172,10 @@ in
         Capability = "all";
         PrivateUsers = 0;
         ResolvConf = "copy-host";
+        Environment = lib.mkIf cfg.wayland [
+          "XDG_RUNTIME_DIR=/run/garuda-host"
+          "WAYLAND_DISPLAY=${cfg.waylandSocket}"
+        ];
       };
       filesConfig = {
         Bind = [
@@ -212,18 +217,6 @@ in
     };
     systemd.services."systemd-nspawn@garuda" = {
       enable = gDefault true;
-      environment = {
-        SYSTEMD_NSPAWN_UNIFIED_HIERARCHY = "1";
-      }
-      // lib.optionalAttrs cfg.pipewire {
-        # Container logind shadows /run/user/$UID
-        PIPEWIRE_RUNTIME_DIR = "/run/garuda-host";
-      }
-      // lib.optionalAttrs cfg.wayland {
-        # Absolute path: libwayland treats values containing '/' as direct
-        # socket paths, and this survives logind's /run/user tmpfs
-        WAYLAND_DISPLAY = "/run/garuda-host/${cfg.waylandSocket}";
-      };
       overrideStrategy = "asDropin";
       wantedBy = mkIf (!cfg.pipewire && !cfg.wayland) [ "machines.target" ];
     };
@@ -234,12 +227,26 @@ in
         if cfg.wayland then "/run/user/1000/${cfg.waylandSocket}" else "/run/user/1000/pipewire-0";
     };
 
+    environment.systemPackages = [
+      (pkgs.writeShellScriptBin "grun" ''
+        sudo systemctl start systemd-nspawn@garuda
+        if [ $# -eq 0 ]; then
+          exec sudo machinectl login garuda
+        else
+          if [ "$PWD" != "/" ]; then
+            sudo machinectl bind --mkdir garuda "$PWD" "$PWD" 2>/dev/null || true
+          fi
+          exec sudo machinectl shell "$USER@garuda" /bin/bash -lc "cd '$PWD'; exec $*"
+        fi
+      '')
+    ];
+
     programs = {
       bash.shellAliases = {
-        "grun" = "sudo systemctl start systemd-nspawn@garuda; sudo machinectl login garuda";
+        "grun-login" = "sudo systemctl start systemd-nspawn@garuda; sudo machinectl login garuda";
       };
       fish.shellAbbrs = {
-        "grun" = "sudo systemctl start systemd-nspawn@garuda; sudo machinectl login garuda";
+        "grun-login" = "sudo systemctl start systemd-nspawn@garuda; sudo machinectl login garuda";
       };
     };
   };
