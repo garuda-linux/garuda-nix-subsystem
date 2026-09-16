@@ -110,6 +110,11 @@ def build_parser():
         action="store_true",
         help="run nixos-install --flake <root>/etc/nixos#<hostname> afterwards",
     )
+    p.add_argument(
+        "--no-bootloader",
+        action="store_true",
+        help="pass --no-bootloader to nixos-install (test VMs without EFI vars)",
+    )
     return p
 
 
@@ -182,20 +187,25 @@ def main(argv=None):
 
     if args.install:
         flake = os.path.join(args.root, "etc/nixos") + "#" + args.hostname
-        print(f"Running nixos-install --flake {flake} ...")
         subprocess.check_call(
-            [
-                "nixos-install",
-                "--flake",
-                flake,
-                "--root",
-                args.root,
-                "--no-root-passwd",
-                "--option",
-                "max-jobs",
-                "2",
-            ]
+            ["nix", "flake", "lock"],
+            cwd=os.path.join(args.root, "etc/nixos"),
         )
+        print(f"Running nixos-install --flake {flake} ...")
+        cmd = [
+            "nixos-install",
+            "--flake",
+            flake,
+            "--root",
+            args.root,
+            "--no-root-passwd",
+            "--option",
+            "max-jobs",
+            "2",
+        ]
+        if args.no_bootloader:
+            cmd.append("--no-bootloader")
+        subprocess.check_call(cmd)
     else:
         print(
             f"Set a password with `nixos-enter --root {args.root} -c 'passwd {args.username}'`,"

@@ -13,6 +13,14 @@ let
       overlay
       ;
   };
+
+  mkBootTestFor =
+    edition:
+    lib.mkBootTest {
+      pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+      garuda-modules = modules.default;
+      inherit edition;
+    };
 in
 {
   inherit modules;
@@ -28,9 +36,22 @@ in
 
   options-doc = import ./options-doc { inherit inputs lib; };
 
-  boot-test = lib.mkBootTest {
+  boot-test-mokka = mkBootTestFor "mokka";
+  boot-test-dr460nized = mkBootTestFor "dr460nized";
+  boot-test-catppuccin = mkBootTestFor "catppuccin";
+
+  installer-test = import ./testing/installer-test.nix {
     pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-    garuda-modules = modules.default;
+  };
+
+  installer-eval-test = import ./testing/installer-eval-test.nix {
+    pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+    inherit inputs;
+  };
+
+  installer-install-test = import ./testing/installer-install-test.nix {
+    pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+    inherit inputs;
   };
 
   iso-dr460nized = lib.mkISO "dr460nized";

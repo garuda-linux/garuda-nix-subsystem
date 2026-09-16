@@ -26,7 +26,7 @@ in
   config = {
     assertions = [
       {
-        assertion = !config.garuda.powersave-tweaks.enable;
+        assertion = !cfg.enable || !config.garuda.powersave-tweaks.enable;
         message = "garuda.performance-tweaks and garuda.powersave-tweaks cannot be enabled at the same time.";
       }
     ];

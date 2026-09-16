@@ -63,8 +63,17 @@ rec {
     );
 
   mkBootTest =
-    { pkgs, garuda-modules }:
+    {
+      pkgs,
+      garuda-modules,
+      edition,
+    }:
     import ../internal/testing/boot-test.nix {
-      inherit pkgs garuda-modules garuda-lib;
+      inherit
+        pkgs
+        garuda-modules
+        garuda-lib
+        edition
+        ;
     };
 }

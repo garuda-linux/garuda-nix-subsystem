@@ -23,10 +23,6 @@ forAllSystems (
       exec ${packages.internal."garuda-update"}/bin/gns-update "$@"
     '';
 
-    install-garuda-nix = pkgs.writeShellScriptBin "install-garuda-nix" ''
-      exec ${packages.internal.install-garuda-nix}/bin/install-garuda-nix "$@"
-    '';
-
     buildiso = pkgs.writeShellScriptBin "buildiso" ''
       set -euo pipefail
       edition=''${1:?usage: buildiso [dr460nized|mokka|all] [--run]}
@@ -81,6 +77,7 @@ forAllSystems (
     '';
 
     release = import ./release.nix { inherit pkgs; };
+    ci-shell = import ./ci.nix { inherit pkgs; };
   in
   {
     default = pkgs.mkShell {
@@ -96,12 +93,12 @@ forAllSystems (
         gendocs
         gns-install
         gns-update
-        install-garuda-nix
-        release.monthly-release
         pkgs.mdbook
-        pkgs.prek
         runvm
       ];
     };
+
+    release = release.shell;
+    ci = ci-shell.shell;
   }
 )

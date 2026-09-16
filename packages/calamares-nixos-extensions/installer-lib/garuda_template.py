@@ -11,6 +11,7 @@ import os
 import re
 import shutil
 import subprocess
+from dataclasses import dataclass, field
 
 # Garuda Nix options selectable in the installer.
 # The Calamares edition picker writes "mokka"/"dr460nized", the features
@@ -33,42 +34,51 @@ MARKERS = ("@@GARUDA@@", "@@FACTER@@", "@@BOOTLOADER@@", "@@SYSTEM@@", "@@USER@@
 TEMPLATE_FILES = ("flake.nix", "nixos/configuration.nix", "home-manager/home.nix")
 
 
+@dataclass
 class InstallOpts:
     """Everything needed to fill the template. Frontends translate
     their own inputs (Calamares GlobalStorage, CLI flags) into this."""
 
-    def __init__(self, **kw):
-        # Garuda edition and features
-        self.flavor = kw.get("flavor", "mokka")
-        self.features = list(kw.get("features") or [])
-        # Target
-        self.root = kw.get("root", "/mnt")
-        # Placeholders
-        self.hostname = kw.get("hostname") or "garuda-nix"
-        self.username = kw.get("username") or "garuda"
-        self.state_version = kw.get("state_version") or "26.11"
-        self.flake_ref = kw.get("flake_ref") or DEFAULT_FLAKE_REF
-        self.allow_unfree = kw.get("allow_unfree", True)
-        # Bootloader: "systemd-boot", "grub" or "none"
-        self.bootloader = kw.get("bootloader", "systemd-boot")
-        self.grub_device = kw.get("grub_device")
-        # cachyos (default, from chaotic-nyx) or lts (nixpkgs default)
-        self.kernel = kw.get("kernel", "cachyos")
-        self.root_is_btrfs = bool(kw.get("root_is_btrfs", False))
-        self.cryptodisk = bool(kw.get("cryptodisk", False))
-        self.encrypted_swap = list(kw.get("encrypted_swap") or [])
-        # System section
-        self.timezone = kw.get("timezone")
-        self.locale = kw.get("locale")
-        self.extra_locale = dict(kw.get("extra_locale") or {})
-        self.xkb_layout = kw.get("xkb_layout")
-        self.xkb_variant = kw.get("xkb_variant")
-        self.vconsole = kw.get("vconsole")
-        # User section
-        self.fullname = kw.get("fullname")
-        self.autologin = kw.get("autologin", True)
-        # Calamares partition list for the btrfs subvol fix, None to skip
-        self.partitions = kw.get("partitions")
+    # Garuda edition and features
+    flavor: str = "mokka"
+    features: list = field(default_factory=list)
+    # Target
+    root: str = "/mnt"
+    # Placeholders
+    hostname: str = "garuda-nix"
+    username: str = "garuda"
+    state_version: str = "26.11"
+    flake_ref: str = DEFAULT_FLAKE_REF
+    allow_unfree: bool = True
+    # Bootloader: "systemd-boot", "grub" or "none"
+    bootloader: str = "systemd-boot"
+    grub_device: str | None = None
+    # cachyos (default, from chaotic-nyx) or lts (nixpkgs default)
+    kernel: str = "cachyos"
+    root_is_btrfs: bool = False
+    cryptodisk: bool = False
+    encrypted_swap: list = field(default_factory=list)
+    # System section
+    timezone: str | None = None
+    locale: str | None = None
+    extra_locale: dict = field(default_factory=dict)
+    xkb_layout: str | None = None
+    xkb_variant: str | None = None
+    vconsole: str | None = None
+    # User section
+    fullname: str | None = None
+    autologin: bool = True
+    # Calamares partition list for the btrfs subvol fix, None to skip
+    partitions: list | None = None
+
+    def __post_init__(self):
+        self.features = list(self.features or [])
+        self.encrypted_swap = list(self.encrypted_swap or [])
+        self.extra_locale = dict(self.extra_locale or {})
+        self.hostname = self.hostname or "garuda-nix"
+        self.username = self.username or "garuda"
+        self.state_version = self.state_version or "26.11"
+        self.flake_ref = self.flake_ref or DEFAULT_FLAKE_REF
 
 
 class Hooks:
@@ -172,6 +182,8 @@ def build_garuda_section(opts, warn=None):
     lines = []
     if opts.flavor == "mokka":
         lines.append("  garuda.mokka.enable = true;")
+    elif opts.flavor == "catppuccin":
+        lines.append("  garuda.catppuccin.enable = true;")
     else:
         lines.append("  garuda.dr460nized.enable = true;")
     selected = [f for f in opts.features if f in GARUDA_FEATURES]
@@ -295,7 +307,7 @@ def build_user_section(opts):
 def build_facter_section(report):
     lines = [
         "  # Hardware probed during installation, see ./facter.json.",
-        "  hardware.facter.reportPath = ./facter.json;",
+        "  garuda.hardware.autoDriver.reportPath = ./facter.json;",
     ]
     nvidia, nvidia_id, amd_id = detect_gpus(report)
     if nvidia:

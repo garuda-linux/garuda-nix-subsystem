@@ -2,13 +2,14 @@
   pkgs,
   garuda-lib,
   garuda-modules,
+  edition,
 }:
 pkgs.testers.runNixOSTest {
-  name = "garuda-boot";
+  name = "garuda-boot-${edition}";
   node.pkgsReadOnly = false;
   defaults.imports = [
     ./vm-base.nix
-    { garuda.mokka.enable = true; }
+    { garuda.${edition}.enable = true; }
     garuda-modules
   ];
   node.specialArgs = { inherit garuda-lib; };
@@ -16,7 +17,8 @@ pkgs.testers.runNixOSTest {
   testScript = ''
     start_all()
     machine.wait_for_unit("multi-user.target")
+    machine.wait_for_unit("graphical.target")
+    machine.succeed("systemctl is-active display-manager")
     machine.succeed("id garuda")
-    machine.succeed("test -e /run/current-system")
   '';
 }
