@@ -3,6 +3,11 @@
   makeWrapper,
   python3,
   calamares-nixos-extensions,
+  parted,
+  dosfstools,
+  e2fsprogs,
+  btrfs-progs,
+  cryptsetup,
 }:
 
 python3.pkgs.buildPythonApplication {
@@ -21,7 +26,16 @@ python3.pkgs.buildPythonApplication {
     chmod +x $out/bin/install-garuda-nix
     wrapProgram $out/bin/install-garuda-nix \
       --set GNS_INSTALLER_LIB ${calamares-nixos-extensions}/lib/calamares/installer-lib \
-      --set GNS_TEMPLATE_DIR ${calamares-nixos-extensions}/lib/calamares/template
+      --set GNS_TEMPLATE_DIR ${calamares-nixos-extensions}/lib/calamares/template \
+      --prefix PATH : ${
+        lib.makeBinPath [
+          parted
+          dosfstools
+          e2fsprogs
+          btrfs-progs
+          cryptsetup
+        ]
+      }
     runHook postInstall
   '';
 

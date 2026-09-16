@@ -41,6 +41,7 @@ def repo_path(name):
 
 
 sys.path.insert(0, repo_path("installer-lib"))
+import garuda_partition as gp
 import garuda_template as gt
 
 
@@ -70,6 +71,16 @@ def build_parser():
         help=f"repeatable, one of: {', '.join(sorted(gt.GARUDA_FEATURES))}",
     )
     p.add_argument("--root", default="/mnt", help="target mount point (default: /mnt)")
+    p.add_argument("--disk", default=None,
+                   help="wipe and partition this disk before installing "
+                        "(e.g. /dev/sda). If not specified, <root> must already "
+                        "be mounted and ready")
+    p.add_argument("--schema", choices=gp.SCHEMAS, default=gp.DEFAULT_SCHEMA,
+                   help=f"partitioning schema for --disk (default: {gp.DEFAULT_SCHEMA})")
+    p.add_argument("--luks-pass-file", default=None,
+                   help="file with the LUKS passphrase (else prompted)")
+    p.add_argument("--yes", action="store_true",
+                   help="skip the disk-wipe confirmation (dangerous)")
     p.add_argument("--hostname", default="garuda-nix")
     p.add_argument("--username", default="garuda")
     p.add_argument("--fullname", default=None)
@@ -153,6 +164,20 @@ def main(argv=None):
             state_version = ".".join(out)[:5] or "26.11"
         except (subprocess.CalledProcessError, OSError):
             state_version = "26.11"
+
+    disk = args.disk
+    if disk is None and not os.path.ismount(args.root):
+        try:
+            disk = input(f"{args.root} is not mounted. Disk to partition "
+                         "(empty to use it as-is): ").strip() or None
+        except EOFError:
+            disk = None
+    if disk is not None:
+        efi = gp.partition_disk(disk, args.schema, args.root,
+                                luks_pass_file=args.luks_pass_file,
+                                assume_yes=args.yes)
+        if not efi and args.bootloader == "auto" and not args.grub_device:
+            args.grub_device = disk
 
     opts = gt.InstallOpts(
         flavor=args.flavor,
