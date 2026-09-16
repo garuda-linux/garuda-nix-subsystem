@@ -32,7 +32,9 @@ heavy:
   stage: test
   tags: [nix]
   variables:
-    NIX_CONFIG: "sandbox = false"
+    NIX_CONFIG: |
+      sandbox = false
+      experimental-features = nix-command flakes
   script:
     - nix develop .#ci -c ci heavy
   rules:
