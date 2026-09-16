@@ -10,6 +10,7 @@ import ../theme/generic-apps.nix
     getCfg = cfg: cfg.garuda.mokka;
     themePackages =
       pkgs: with pkgs; [
+        applet-window-title
         catppuccin-cursors
         catppuccin-gtk
         (catppuccin.override {
