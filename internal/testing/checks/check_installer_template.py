@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Render every installer edition bootloader combo and sanity-check output.
 
-1. Renders the template for each (flavor, features, bootloader) combo.
+1. Renders the template for each (edition, features, bootloader) combo.
 2. Asserts no @@MARKERS@@ survived and the edition line is present.
 3. Asserts both generated files still parse as Nix.
 4. Checks the nixos-facter helper emits the NVIDIA section.
@@ -43,24 +43,24 @@ def main():
         if not cond:
             failures.append(name + " :: " + detail[-500:])
 
-    for flavor, features, bootloader in COMBOS:
-        out_dir = Path(f"/tmp/out-{flavor}-{bootloader}")
+    for edition, features, bootloader in COMBOS:
+        out_dir = Path(f"/tmp/out-{edition}-{bootloader}")
         shutil.rmtree(out_dir, ignore_errors=True)
         out_dir.mkdir(parents=True, exist_ok=True)
         (out_dir / "hardware-configuration.nix").write_text("{ }")
 
-        opts = gt.InstallOpts(flavor=flavor, features=features, bootloader=bootloader)
+        opts = gt.InstallOpts(edition=edition, features=features, bootloader=bootloader)
         gt.write_config(TEMPLATE_DIR, str(out_dir), opts, SkipFacterScan())
 
         text = (out_dir / "nixos/configuration.nix").read_text()
         flake = (out_dir / "flake.nix").read_text()
-        label = f"{flavor}/{bootloader}"
+        label = f"{edition}/{bootloader}"
 
         check(label + " no-markers",
               all(m not in text and m not in flake for m in gt.MARKERS), text[-800:])
 
         check(label + " edition",
-              f"garuda.{flavor}.enable = true" in text, text[-800:])
+              f"garuda.{edition}.enable = true" in text, text[-800:])
               
         for fname in ("nixos/configuration.nix", "flake.nix"):
             r = subprocess.run(["nix-instantiate", "--parse", str(out_dir / fname)],

@@ -75,27 +75,66 @@ def section_lines(func, *args):
 class TestBuildGarudaSection(unittest.TestCase):
     def test_mokka_gaming(self):
         lines = section_lines(gt.build_garuda_section,
-                              gt.InstallOpts(flavor="mokka", features=["gaming"]))
+                              gt.InstallOpts(edition="mokka", features=["gaming"]))
         self.assertIn("garuda.mokka.enable = true", lines)
         self.assertIn("garuda.gaming.enable = true", lines)
 
+    def test_impermanence(self):
+        lines = section_lines(gt.build_garuda_section,
+                              gt.InstallOpts(edition="mokka", features=["impermanence"]))
+        self.assertIn("garuda.impermanence.enable = true", lines)
+
+    def test_impermanence_tmpfs_root(self):
+        opts = gt.InstallOpts(edition="mokka", features=["impermanence"],
+                              tmpfs_root=True, username="nico")
+        rendered = section_lines(gt.build_garuda_section, opts)
+        self.assertIn("garuda.impermanence.tmpfsRoot = true", rendered)
+        self.assertIn('garuda.impermanence.persistentUsers = [ "nico" ]',
+                      rendered)
+        plain = section_lines(gt.build_garuda_section,
+                              gt.InstallOpts(features=["impermanence"]))
+        self.assertNotIn("garuda.impermanence.tmpfsRoot = true", plain)
+        self.assertIn('garuda.impermanence.persistentUsers = [ "garuda" ]',
+                      plain)
+
+
+class TestFixTmpfsRoot(unittest.TestCase):
+    def test_replaces_wrong_root(self):
+        hw = '  fileSystems."/" =\n    { device = "/dev/disk/by-uuid/x";\n      fsType = "ext4";\n    };\n'
+        fixed = gt.fix_tmpfs_root(hw)
+        self.assertIn('fsType = "tmpfs"', fixed)
+        self.assertNotIn("by-uuid", fixed)
+
+    def test_inserts_missing_root(self):
+        hw = '{ fileSystems."/nix" = {};\n}\n'
+        fixed = gt.fix_tmpfs_root(hw)
+        self.assertIn('fileSystems."/"', fixed)
+        self.assertIn('fsType = "tmpfs"', fixed)
+        self.assertTrue(fixed.rstrip().endswith("}"))
+
+    def test_impermanence_needed_for_boot(self):
+        hw = ('  fileSystems."/" =\n    { device = "/dev/vdb2";\n    };\n'
+              '  fileSystems."/persist" =\n    { device = "/dev/vdb2";\n    };\n')
+        fixed = gt.fix_impermanence_needed_for_boot(hw)
+        self.assertEqual(fixed.count("neededForBoot = true;"), 2)
+
     def test_performance_wins_over_powersave(self):
         warned = []
-        opts = gt.InstallOpts(flavor="dr460nized", features=["performance", "powersave"])
+        opts = gt.InstallOpts(edition="dr460nized", features=["performance", "powersave"])
         lines = section_lines(gt.build_garuda_section, opts, warned.append)
         self.assertIn("garuda.performance-tweaks.enable = true", lines)
         self.assertNotIn("powersave", lines)
         self.assertTrue(warned)
 
-    def test_unknown_flavor_and_features(self):
+    def test_unknown_edition_and_features(self):
         lines = section_lines(gt.build_garuda_section,
-                              gt.InstallOpts(flavor="nope", features=["bogus"]))
+                              gt.InstallOpts(edition="nope", features=["bogus"]))
         self.assertIn("garuda.dr460nized.enable = true", lines)
         self.assertNotIn("bogus", lines)
 
     def test_preset(self):
         lines = section_lines(gt.build_garuda_section,
-                              gt.InstallOpts(flavor="mokka", preset="laptop"))
+                              gt.InstallOpts(edition="mokka", preset="laptop"))
         self.assertIn('garuda.preset = "laptop"', lines)
 
     def test_no_preset_by_default(self):
@@ -138,7 +177,7 @@ class TestBuildFacterSection(unittest.TestCase):
 class TestInstallOpts(unittest.TestCase):
     def test_defaults(self):
         opts = gt.InstallOpts()
-        self.assertEqual((opts.flavor, opts.hostname, opts.username, opts.allow_unfree),
+        self.assertEqual((opts.edition, opts.hostname, opts.username, opts.allow_unfree),
                          ("mokka", "garuda-nix", "garuda", True))
 
 

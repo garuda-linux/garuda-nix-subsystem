@@ -54,7 +54,7 @@ pkgs.testers.runNixOSTest {
     # execute() instead of succeed(): returns status without throwing, so the
     # diagnostics below always run instead of the log dying with the step.
     status, out = machine.execute(
-      "GNS_FLAKE_REF=path:/tmp/repo install-garuda-nix --flavor mokka --feature gaming "
+      "GNS_FLAKE_REF=path:/tmp/repo install-garuda-nix --edition mokka --feature gaming "
       "--root /mnt --disk /dev/vdb --yes --bootloader systemd-boot --install --no-bootloader "
       "> /tmp/install.log 2>&1; echo INSTALL_RC=$?",
       timeout=3600,

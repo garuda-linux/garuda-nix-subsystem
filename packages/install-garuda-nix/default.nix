@@ -19,6 +19,8 @@ python3.pkgs.buildPythonApplication {
 
   nativeBuildInputs = [ makeWrapper ];
 
+  propagatedBuildInputs = [ python3.pkgs.questionary ];
+
   installPhase = ''
     runHook preInstall
     mkdir -p $out/bin

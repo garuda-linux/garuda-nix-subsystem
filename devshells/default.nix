@@ -25,7 +25,7 @@ forAllSystems (
 
     buildiso = pkgs.writeShellScriptBin "buildiso" ''
       set -euo pipefail
-      edition=''${1:?usage: buildiso [dr460nized|mokka|all] [--run]}
+      edition=''${1:?usage: buildiso [dr460nized|mokka|catppuccin|all] [--run]}
       run_iso=false
       if [[ ''${2:-} == --run ]]; then run_iso=true; fi
 
@@ -36,9 +36,9 @@ forAllSystems (
       }
 
       case "$edition" in
-        all) build dr460nized; build mokka ;;
-        dr460nized|mokka) build "$edition" ;;
-        *) echo "usage: buildiso [dr460nized|mokka|all] [--run]" >&2; exit 1 ;;
+        all) build dr460nized; build mokka; build catppuccin ;;
+        dr460nized|mokka|catppuccin) build "$edition" ;;
+        *) echo "usage: buildiso [dr460nized|mokka|catppuccin|all] [--run]" >&2; exit 1 ;;
       esac
 
       if $run_iso; then

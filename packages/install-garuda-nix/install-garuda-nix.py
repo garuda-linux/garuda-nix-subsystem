@@ -1,19 +1,13 @@
 #!/usr/bin/env python3
-"""install-garuda-nix: generate a Garuda NixOS system config from the CLI.
+"""install-garuda-nix: partition, configure and install Garuda NixOS.
 
-Same template-filling core as the Calamares installer, for manual
-installs: partition and mount the target yourself, then run (as root):
+Re-runs itself with sudo when not root. With --disk it wipes and
+partitions (picking disk and schema interactively when not given),
+then generates the system config from the shared installer template
+and runs nixos-install, setting the user password at the end:
 
-  install-garuda-nix --flavor mokka --feature gaming --feature printing \\
-      --hostname myhost --username alice --root /mnt
-
-This runs nixos-generate-config, probes the hardware with nixos-facter
-(auto-enables the NVIDIA driver on detection), and writes the filled
-flake to <root>/etc/nixos. Afterwards install with e.g.:
-
-  nixos-install --flake /mnt/etc/nixos#myhost --root /mnt --no-root-passwd
-
-or pass --install to run that directly.
+  install-garuda-nix --edition mokka --feature gaming \\
+      --hostname myhost --username alice --disk /dev/sda
 """
 
 import argparse
@@ -42,7 +36,23 @@ def repo_path(name):
 
 sys.path.insert(0, repo_path("installer-lib"))
 import garuda_partition as gp
+import garuda_progress as gprog
 import garuda_template as gt
+
+try:
+    import questionary
+except ImportError:
+    questionary = None
+
+
+def ensure_root():
+    if os.geteuid() != 0:
+        print("need root, re-running with sudo ...")
+        carry = [f"{k}={os.environ[k]}" for k in
+                 ("GNS_INSTALLER_LIB", "GNS_TEMPLATE_DIR", "PATH")
+                 if k in os.environ]
+        os.execvp("sudo", ["sudo", "env"] + carry +
+                  [sys.argv[0]] + sys.argv[1:])
 
 
 def host_timezone():
@@ -61,7 +71,8 @@ def build_parser():
         prog="install-garuda-nix",
         description="Generate a Garuda NixOS config from the shared installer template.",
     )
-    p.add_argument("--flavor", choices=("mokka", "dr460nized", "catppuccin"), required=True)
+    p.add_argument("--edition", choices=("mokka", "dr460nized", "catppuccin"), default=None,
+                   help="asked interactively when missing")
     p.add_argument("--preset", choices=gt.GARUDA_PRESETS, default=None)
     p.add_argument(
         "--feature",
@@ -73,10 +84,11 @@ def build_parser():
     p.add_argument("--root", default="/mnt", help="target mount point (default: /mnt)")
     p.add_argument("--disk", default=None,
                    help="wipe and partition this disk before installing "
-                        "(e.g. /dev/sda). If not specified, <root> must already "
-                        "be mounted and ready")
-    p.add_argument("--schema", choices=gp.SCHEMAS, default=gp.DEFAULT_SCHEMA,
-                   help=f"partitioning schema for --disk (default: {gp.DEFAULT_SCHEMA})")
+                        "(e.g. /dev/sda). If not specified and <root> is not "
+                        "mounted, pick from a list")
+    p.add_argument("--schema", choices=gp.SCHEMAS, default=None,
+                   help="partitioning schema for --disk "
+                        f"(asked when missing, default: {gp.DEFAULT_SCHEMA})")
     p.add_argument("--luks-pass-file", default=None,
                    help="file with the LUKS passphrase (else prompted)")
     p.add_argument("--yes", action="store_true",
@@ -119,19 +131,90 @@ def build_parser():
     )
     p.add_argument(
         "--install",
-        action="store_true",
-        help="run nixos-install --flake <root>/etc/nixos#<hostname> afterwards",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="run nixos-install --flake <root>/etc/nixos#<hostname> "
+             "afterwards (default: True, --no-install to skip)",
     )
     p.add_argument(
         "--no-bootloader",
         action="store_true",
         help="pass --no-bootloader to nixos-install (test VMs without EFI vars)",
     )
+    p.add_argument(
+        "--tui", action="store_true",
+        help="force the interactive wizard even when all flags are given",
+    )
+    p.add_argument(
+        "--password-file", default=None,
+        help="read the user password from this file (non-interactive)",
+    )
     return p
+
+
+def pick_disk(root):
+    disks = gp.list_disks()
+    if not disks:
+        print(f"error: {root} is not mounted and no disks found",
+              file=sys.stderr)
+        raise SystemExit(1)
+    if len(disks) == 1:
+        return disks[0][0]
+    print(f"error: {root} is not mounted, pick one: " +
+          ", ".join(d for d, _ in disks), file=sys.stderr)
+    raise SystemExit(1)
+
+
+def pick_schema():
+    return gp.DEFAULT_SCHEMA
+
+
+def read_password(username):
+    import getpass
+    first = getpass.getpass(f"Password for {username}: ")
+    second = getpass.getpass("Repeat password: ")
+    if not first or first != second:
+        print("error: passwords do not match or are empty", file=sys.stderr)
+        return None
+    return first
+
+
+def set_password(root, username, password):
+    subprocess.run(
+        ["nixos-enter", "--root", root, "-c", "chpasswd"],
+        input=f"{username}:{password}\n".encode(), check=True,
+    )
 
 
 def main(argv=None):
     args = build_parser().parse_args(argv)
+    ensure_root()
+
+    if args.password_file:
+        with open(args.password_file) as f:
+            args.password = f.read().splitlines()[0]
+    else:
+        args.password = None
+    args.root_mounted = os.path.ismount(args.root)
+
+    wizard_confirmed = False
+    needs = (args.edition is None or args.disk is None or
+             args.schema is None or args.password is None)
+    if args.tui or (needs and sys.stdin.isatty()):
+        if questionary is None:
+            print("error: questionary is not installed, pass all flags "
+                  "explicitly", file=sys.stderr)
+            return 1
+        import garuda_tui as gtui
+        try:
+            gtui.run_wizard(questionary, args,
+                            ("mokka", "dr460nized", "catppuccin"),
+                            gt.GARUDA_FEATURES, gt.GARUDA_PRESETS,
+                            gp.list_disks(), gp.SCHEMAS)
+        except gtui.Aborted as e:
+            print(f"error: {e}", file=sys.stderr)
+            return 1
+        wizard_confirmed = args.disk is not None
 
     unknown = [f for f in args.feature if f not in gt.GARUDA_FEATURES]
     if unknown:
@@ -167,20 +250,19 @@ def main(argv=None):
 
     disk = args.disk
     if disk is None and not os.path.ismount(args.root):
-        try:
-            disk = input(f"{args.root} is not mounted. Disk to partition "
-                         "(empty to use it as-is): ").strip() or None
-        except EOFError:
-            disk = None
+        disk = pick_disk(args.root)
+    schema = args.schema
+    if disk is not None and schema is None:
+        schema = pick_schema()
     if disk is not None:
-        efi = gp.partition_disk(disk, args.schema, args.root,
+        efi = gp.partition_disk(disk, schema, args.root,
                                 luks_pass_file=args.luks_pass_file,
-                                assume_yes=args.yes)
+                                assume_yes=args.yes or wizard_confirmed)
         if not efi and args.bootloader == "auto" and not args.grub_device:
             args.grub_device = disk
 
     opts = gt.InstallOpts(
-        flavor=args.flavor,
+        edition=args.edition,
         preset=args.preset,
         features=args.feature,
         root=args.root,
@@ -199,6 +281,7 @@ def main(argv=None):
         vconsole=args.vconsole,
         fullname=args.fullname,
         autologin=not args.no_autologin,
+        tmpfs_root=gp.is_tmpfs_root(schema),
     )
 
     hooks = gt.Hooks()
@@ -229,10 +312,28 @@ def main(argv=None):
             "--option",
             "max-jobs",
             "2",
+            "--log-format",
+            "internal-json",
         ]
         if args.no_bootloader:
             cmd.append("--no-bootloader")
-        subprocess.check_call(cmd)
+        rc = gprog.run(cmd)
+        if rc != 0:
+            return rc
+        password = args.password
+        if password is None and sys.stdin.isatty():
+            password = read_password(args.username)
+            if password is None:
+                return 1
+        if password is not None:
+            set_password(args.root, args.username, password)
+            print(f"Password set for {args.username}")
+        else:
+            print(
+                f"Set a password with `nixos-enter --root {args.root} -c "
+                f"'passwd {args.username}'`"
+            )
+        return 0
     else:
         print(
             f"Set a password with `nixos-enter --root {args.root} -c 'passwd {args.username}'`,"

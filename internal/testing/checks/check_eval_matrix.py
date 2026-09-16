@@ -36,13 +36,13 @@ class SkipFacterScan(gt.Hooks):
 def main():
     Path("/tmp/fake-hw.nix").write_text(
         '{ fileSystems."/" = { device = "/dev/vda1"; fsType = "ext4"; }; }')
-    for flavor, features in COMBOS:
-        out_dir = Path(f"/tmp/out-{flavor}-{len(features)}")
+    for edition, features in COMBOS:
+        out_dir = Path(f"/tmp/out-{edition}-{len(features)}")
         shutil.rmtree(out_dir, ignore_errors=True)
         out_dir.mkdir(parents=True, exist_ok=True)
         shutil.copy("/tmp/fake-hw.nix", out_dir / "hardware-configuration.nix")
 
-        opts = gt.InstallOpts(flavor=flavor, features=features,
+        opts = gt.InstallOpts(edition=edition, features=features,
                               flake_ref=f"path:{REPO_DIR}")
         gt.write_config(TEMPLATE_DIR, str(out_dir), opts, SkipFacterScan())
 
@@ -52,7 +52,7 @@ def main():
              f"{out_dir}#nixosConfigurations.garuda-nix.config.system.build.toplevel.outPath",
              "--show-trace"],
             capture_output=True, text=True, check=False)
-        print(("PASS " if r.returncode == 0 else "FAIL ") + f"{flavor}/{features}")
+        print(("PASS " if r.returncode == 0 else "FAIL ") + f"{edition}/{features}")
         assert r.returncode == 0, r.stderr[-2000:]
     print("eval-matrix OK")
 

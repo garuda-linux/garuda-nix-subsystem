@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
-"""Disk partitioning for install-garuda-nix.
-
-Manual parted/mkfs/cryptsetup with four schemas:
-- ext4, btrfs (default), luks-ext4, luks-btrfs.
-"""
-
 import getpass
 import os
 import shutil
 import subprocess
 
-SCHEMAS = ("ext4", "btrfs", "luks-ext4", "luks-btrfs")
+SCHEMAS = ("ext4", "btrfs", "luks-ext4", "luks-btrfs",
+           "btrfs-impermanence", "luks-btrfs-impermanence",
+           "ext4-impermanence", "luks-ext4-impermanence")
 DEFAULT_SCHEMA = "btrfs"
 
 ESP_SIZE = "512MiB"
@@ -19,6 +15,9 @@ LUKS_MAPPER_NAME = "garuda-root"
 
 class PartitionError(Exception):
     pass
+
+
+CMD_PREFIX = []
 
 
 def is_efi(path="/sys/firmware/efi"):
@@ -36,20 +35,92 @@ def require_tools():
         )
 
 
+def is_tmpfs_root(schema):
+    return schema is not None and "impermanence" in schema and "ext4" in schema
+
+
 def plan_partitions(schema, efi=True):
-    """Pure layout plan: [(number, label, fs, mountpoint)]. Number 0 is
-    the boot stub (ESP on EFI, bios-boot on BIOS)."""
     if schema not in SCHEMAS:
         raise PartitionError(
             f"unknown schema {schema!r}, choose from: {', '.join(SCHEMAS)}"
         )
     fs = "ext4" if "ext4" in schema else "btrfs"
+    mountpoint = "/nix" if "impermanence" in schema else "/"
     boot = ("esp", "vfat", "/boot") if efi else ("bios-boot", None, None)
-    return [boot, ("root", fs, "/")]
+    return [boot, ("root", fs, mountpoint)]
+
+
+IMPERMANENCE_SUBVOLS = ("root", "home", "nix", "persist", "log")
+IMPERMANENCE_MOUNTS = (
+    ("root", ""),
+    ("home", "home"),
+    ("nix", "nix"),
+    ("persist", "persist"),
+    ("log", "var/log"),
+)
+
+GARUDA_SUBVOLS = (
+    ("@", ""),
+    ("@home", "home"),
+    ("@root", "root"),
+    ("@srv", "srv"),
+    ("@nix", "nix"),
+    ("@cache", "var/cache"),
+    ("@log", "var/log"),
+    ("@tmp", "var/tmp"),
+)
+
+
+def _parse_lsblk(data):
+    import json
+    disks = []
+    for dev in json.loads(data).get("blockdevices", []):
+        if dev.get("type") != "disk":
+            continue
+        name = dev["name"]
+        size = dev.get("size") or "?"
+        model = (dev.get("model") or "").strip()
+        label = f"{name}  {size}  {model}".rstrip()
+        disks.append((f"/dev/{name}", label))
+    return disks
+
+
+def list_disks():
+    out = subprocess.check_output(
+        ["lsblk", "-J", "-o", "NAME,SIZE,MODEL,TYPE", "-d", "-e", "7,11"],
+        text=True,
+    )
+    return _parse_lsblk(out)
 
 
 def _run(cmd, **kwargs):
-    subprocess.check_call(cmd, **kwargs)
+    subprocess.check_call(CMD_PREFIX + cmd, **kwargs)
+
+
+def _mount_ext4_impermanence(root_dev, root):
+    nix_dir = os.path.join(root, "nix")
+    persist_dir = os.path.join(root, "persist")
+    os.makedirs(nix_dir, exist_ok=True)
+    _run(["mount", root_dev, nix_dir])
+    os.makedirs(os.path.join(nix_dir, "persist"), exist_ok=True)
+    os.makedirs(persist_dir, exist_ok=True)
+    _run(["mount", "--bind", os.path.join(nix_dir, "persist"),
+          persist_dir])
+
+
+def _mount_btrfs_impermanence(root_dev, root):
+    _run(["mount", root_dev, root])
+    for subvol in IMPERMANENCE_SUBVOLS:
+        _run(["btrfs", "subvolume", "create",
+              os.path.join(root, subvol)])
+    _run(["btrfs", "subvolume", "snapshot", "-r",
+          os.path.join(root, "root"), os.path.join(root, "root-blank")])
+    _run(["umount", root])
+    for subvol, rel in IMPERMANENCE_MOUNTS:
+        target = os.path.join(root, rel)
+        os.makedirs(target, exist_ok=True)
+        _run(["mount", "-o", f"subvol={subvol},compress=zstd,noatime",
+              root_dev, target])
 
 
 def _read_luks_passphrase(pass_file=None):
@@ -69,9 +140,26 @@ def _disk_part(disk, number):
     return f"{disk}{sep}{number}"
 
 
+def parent_disk(device):
+    import re
+    return re.sub(r"p?\d+$", "", device)
+
+
+def mounted_layout(schema):
+    if "impermanence" in schema:
+        if "ext4" in schema:
+            return [("/nix", "ext4")]
+        mounts = IMPERMANENCE_MOUNTS
+    elif "ext4" in schema:
+        return [("/", "ext4")]
+    else:
+        mounts = GARUDA_SUBVOLS
+    fs = "ext4" if "ext4" in schema else "btrfs"
+    return [("/" + rel if rel else "/", fs) for _, rel in mounts]
+
+
 def partition_disk(disk, schema, root, efi=None, luks_pass_file=None,
                    hooks=None, assume_yes=False):
-    """Wipe, partition, format and mount disk at root."""
     if efi is None:
         efi = is_efi()
     if not efi:
@@ -126,7 +214,15 @@ def partition_disk(disk, schema, root, efi=None, luks_pass_file=None,
     if efi:
         _run(["mkfs.fat", "-F32", "-n", "ESP", boot_part])
 
-    if "ext4" in schema:
+    if "impermanence" in schema:
+        os.makedirs(root, exist_ok=True)
+        if "ext4" in schema:
+            _run(["mkfs.ext4", "-L", "nixos", root_dev])
+            _mount_ext4_impermanence(root_dev, root)
+        else:
+            _run(["mkfs.btrfs", "-L", "nixos", "-f", root_dev])
+            _mount_btrfs_impermanence(root_dev, root)
+    elif "ext4" in schema:
         _run(["mkfs.ext4", "-L", "nixos", root_dev])
         os.makedirs(root, exist_ok=True)
         _run(["mount", root_dev, root])
@@ -134,15 +230,15 @@ def partition_disk(disk, schema, root, efi=None, luks_pass_file=None,
         _run(["mkfs.btrfs", "-L", "nixos", "-f", root_dev])
         os.makedirs(root, exist_ok=True)
         _run(["mount", root_dev, root])
-        for subvol in ("@", "@home"):
+        for subvol, _rel in GARUDA_SUBVOLS:
             _run(["btrfs", "subvolume", "create",
                   os.path.join(root, subvol)])
         _run(["umount", root])
-        _run(["mount", "-o", "subvol=@,compress=zstd,noatime",
-              root_dev, root])
-        os.makedirs(os.path.join(root, "home"), exist_ok=True)
-        _run(["mount", "-o", "subvol=@home,compress=zstd,noatime",
-              root_dev, os.path.join(root, "home")])
+        for subvol, rel in GARUDA_SUBVOLS:
+            target = os.path.join(root, rel)
+            os.makedirs(target, exist_ok=True)
+            _run(["mount", "-o", f"subvol={subvol},compress=zstd,noatime",
+                  root_dev, target])
 
     if efi:
         os.makedirs(os.path.join(root, "boot"), exist_ok=True)

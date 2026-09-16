@@ -15,6 +15,7 @@ rec {
     install-garuda-nix = pkgs.callPackage ./install-garuda-nix {
       inherit (internal) calamares-nixos-extensions;
     };
+    garuda-fs-diff = pkgs.callPackage ./garuda-fs-diff { };
     installer = pkgs.callPackage ./gns-management/installer.nix {
       all-packages = pkgs;
       garuda-lib = lib;
@@ -33,7 +34,7 @@ rec {
 
   # Packages that are available in the flake's packages output
   external = {
-    inherit (internal) calamares-nixos-extensions install-garuda-nix;
+    inherit (internal) calamares-nixos-extensions install-garuda-nix garuda-fs-diff;
     docs =
       pkgs.runCommand "gns-docs"
         # makes the documentation available at ./result/ by running nix build .#docs

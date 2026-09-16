@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 
 # Garuda Nix options selectable in the installer.
 # The Calamares edition picker writes "mokka"/"dr460nized", the features
-# picker appends garuda-feature-* marker names; the CLI takes --flavor
+# picker appends garuda-feature-* marker names; the CLI takes --edition
 # and repeatable --feature flags using the keys below.
 GARUDA_FEATURES = {
     "gaming": "garuda.gaming",
@@ -25,6 +25,7 @@ GARUDA_FEATURES = {
     "scanning": "garuda.scanning",
     "samba": "garuda.samba",
     "btrfs-maintenance": "garuda.btrfs-maintenance",
+    "impermanence": "garuda.impermanence",
 }
 
 GARUDA_PRESETS = ("desktop", "laptop", "server", "handheld")
@@ -42,7 +43,7 @@ class InstallOpts:
     their own inputs (Calamares GlobalStorage, CLI flags) into this."""
 
     # Garuda edition, preset and features
-    flavor: str = "mokka"
+    edition: str = "mokka"
     preset: str | None = None
     features: list = field(default_factory=list)
     # Target
@@ -59,6 +60,7 @@ class InstallOpts:
     # cachyos (default, from chaotic-nyx) or lts (nixpkgs default)
     kernel: str = "cachyos"
     root_is_btrfs: bool = False
+    tmpfs_root: bool = False
     cryptodisk: bool = False
     encrypted_swap: list = field(default_factory=list)
     # System section
@@ -185,9 +187,9 @@ def fix_btrfs_subvolumes(hardware_config, partitions, log=None):
 
 def build_garuda_section(opts, warn=None):
     lines = []
-    if opts.flavor == "mokka":
+    if opts.edition == "mokka":
         lines.append("  garuda.mokka.enable = true;")
-    elif opts.flavor == "catppuccin":
+    elif opts.edition == "catppuccin":
         lines.append("  garuda.catppuccin.enable = true;")
     else:
         lines.append("  garuda.dr460nized.enable = true;")
@@ -201,6 +203,12 @@ def build_garuda_section(opts, warn=None):
         selected.remove("powersave")
     for item in selected:
         lines.append(f"  {GARUDA_FEATURES[item]}.enable = true;")
+    if "impermanence" in selected:
+        lines.append(
+            f'  garuda.impermanence.persistentUsers = [ "{nix_escape(opts.username)}" ];'
+        )
+    if "impermanence" in selected and opts.tmpfs_root:
+        lines.append("  garuda.impermanence.tmpfsRoot = true;")
     lines.append("")
     return lines
 
@@ -339,12 +347,42 @@ def run_facter_scan(facter_path, hooks):
         return None
 
 
+def fix_tmpfs_root(hardware_config):
+    tmpfs = (
+        '  fileSystems."/" =\n'
+        '    { device = "none";\n'
+        '      fsType = "tmpfs";\n'
+        '      options = [ "defaults" "size=25%" "mode=755" ];\n'
+        '    };\n'
+    )
+    replaced, count = re.subn(
+        r'  fileSystems\."/"\s*=\s*\{[^}]*\};\n', tmpfs, hardware_config
+    )
+    if count:
+        return replaced
+    return hardware_config.rstrip()[: -1].rstrip() + "\n\n" + tmpfs + "}\n"
+
+
+def fix_impermanence_needed_for_boot(hardware_config):
+    return re.sub(
+        r'(  fileSystems\."[^"]+"\s*=\s*\n\s*\{)',
+        r"\1      neededForBoot = true;\n",
+        hardware_config,
+    )
+
+
 def fix_hardware_config(hw_config, opts, hooks):
     """Apply the btrfs subvol fix and strip unfree kernel modules unless allowed."""
     with open(hw_config, "r") as f:
         htxt = f.read()
 
     modified = False
+    if opts.tmpfs_root:
+        htxt = fix_tmpfs_root(htxt)
+        modified = True
+    if "impermanence" in opts.features:
+        htxt = fix_impermanence_needed_for_boot(htxt)
+        modified = True
     fixed = fix_btrfs_subvolumes(htxt, opts.partitions)
     if fixed != htxt:
         htxt = fixed
