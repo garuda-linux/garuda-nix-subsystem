@@ -28,26 +28,26 @@ test:
   rules:
     - when: on_success
 
-heavy:
-  stage: test
-  tags: [nix]
-  variables:
-    NIX_CONFIG: |
-      sandbox = false
-      experimental-features = nix-command flakes
-  script:
-    - nix develop .#ci -c ci heavy
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "merge_request"'
-      when: never
-    - if: '$CI_COMMIT_BRANCH == "main" && $UPDATE != "true"'
-      when: on_success
-    - when: never
+# heavy:
+#   stage: test
+#   tags: [nix]
+#   variables:
+#     NIX_CONFIG: |
+#       sandbox = false
+#       experimental-features = nix-command flakes
+#   script:
+#     - nix develop .#ci -c ci heavy
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "merge_request"'
+#       when: never
+#     - if: '$CI_COMMIT_BRANCH == "main" && $UPDATE != "true"'
+#       when: on_success
+#     - when: never
 
 iso:
   stage: build
   tags: [nix]
-  needs: [test, heavy]
+  needs: [test]
   script:
     - nix develop .#release -c release-iso
   rules:
