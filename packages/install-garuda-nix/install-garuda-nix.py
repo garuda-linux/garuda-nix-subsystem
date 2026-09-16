@@ -60,7 +60,8 @@ def build_parser():
         prog="install-garuda-nix",
         description="Generate a Garuda NixOS config from the shared installer template.",
     )
-    p.add_argument("--flavor", choices=("mokka", "dr460nized"), required=True)
+    p.add_argument("--flavor", choices=("mokka", "dr460nized", "catppuccin"), required=True)
+    p.add_argument("--preset", choices=gt.GARUDA_PRESETS, default=None)
     p.add_argument(
         "--feature",
         action="append",
@@ -155,6 +156,7 @@ def main(argv=None):
 
     opts = gt.InstallOpts(
         flavor=args.flavor,
+        preset=args.preset,
         features=args.feature,
         root=args.root,
         hostname=args.hostname,

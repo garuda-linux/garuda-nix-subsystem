@@ -251,6 +251,7 @@ def run():
     # (packagechooser.conf) writes GlobalStorage key
     # "packagechooser_packagechooser".
     features = []
+    preset = None
     for op in gs.value("packageOperations") or []:
         if "netinstall" not in op.get("source", ""):
             continue
@@ -261,10 +262,16 @@ def run():
                     if isinstance(pkg, dict)
                     else pkg
                 )
-                if isinstance(name, str) and name.startswith("garuda-feature-"):
+                if not isinstance(name, str):
+                    continue
+                if name.startswith("garuda-feature-"):
                     feature = name.removeprefix("garuda-feature-")
                     if feature in gt.GARUDA_FEATURES and feature not in features:
                         features.append(feature)
+                elif name.startswith("garuda-preset-"):
+                    candidate = name.removeprefix("garuda-preset-")
+                    if candidate in gt.GARUDA_PRESETS and preset is None:
+                        preset = candidate
 
     # Setup encrypted swap devices. nixos-generate-config doesn't seem to notice them.
     encrypted_swap = []
@@ -422,10 +429,10 @@ def run():
     else:
         bootloader, grub_device = "none", None
 
+    picked_flavor = gs.value("packagechooser_packagechooser")
     opts = gt.InstallOpts(
-        flavor="mokka"
-        if gs.value("packagechooser_packagechooser") == "mokka"
-        else "dr460nized",
+        flavor=picked_flavor if picked_flavor in ("mokka", "dr460nized", "catppuccin") else "dr460nized",
+        preset=preset,
         features=features,
         root=root_mount_point,
         hostname=hostname,

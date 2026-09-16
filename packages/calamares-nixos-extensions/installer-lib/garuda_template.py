@@ -27,6 +27,8 @@ GARUDA_FEATURES = {
     "btrfs-maintenance": "garuda.btrfs-maintenance",
 }
 
+GARUDA_PRESETS = ("desktop", "laptop", "server", "handheld")
+
 DEFAULT_FLAKE_REF = "gitlab:garuda-linux/garuda-nix-subsystem/stable"
 
 MARKERS = ("@@GARUDA@@", "@@FACTER@@", "@@BOOTLOADER@@", "@@SYSTEM@@", "@@USER@@")
@@ -39,8 +41,9 @@ class InstallOpts:
     """Everything needed to fill the template. Frontends translate
     their own inputs (Calamares GlobalStorage, CLI flags) into this."""
 
-    # Garuda edition and features
+    # Garuda edition, preset and features
     flavor: str = "mokka"
+    preset: str | None = None
     features: list = field(default_factory=list)
     # Target
     root: str = "/mnt"
@@ -74,6 +77,8 @@ class InstallOpts:
     def __post_init__(self):
         self.features = list(self.features or [])
         self.encrypted_swap = list(self.encrypted_swap or [])
+        if self.preset not in GARUDA_PRESETS:
+            self.preset = None
         self.extra_locale = dict(self.extra_locale or {})
         self.hostname = self.hostname or "garuda-nix"
         self.username = self.username or "garuda"
@@ -186,6 +191,8 @@ def build_garuda_section(opts, warn=None):
         lines.append("  garuda.catppuccin.enable = true;")
     else:
         lines.append("  garuda.dr460nized.enable = true;")
+    if opts.preset is not None:
+        lines.append(f'  garuda.preset = "{opts.preset}";')
     selected = [f for f in opts.features if f in GARUDA_FEATURES]
     if "performance" in selected and "powersave" in selected:
         # The modules are mutually exclusive; prefer performance.

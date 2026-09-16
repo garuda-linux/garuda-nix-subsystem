@@ -93,6 +93,18 @@ class TestBuildGarudaSection(unittest.TestCase):
         self.assertIn("garuda.dr460nized.enable = true", lines)
         self.assertNotIn("bogus", lines)
 
+    def test_preset(self):
+        lines = section_lines(gt.build_garuda_section,
+                              gt.InstallOpts(flavor="mokka", preset="laptop"))
+        self.assertIn('garuda.preset = "laptop"', lines)
+
+    def test_no_preset_by_default(self):
+        lines = section_lines(gt.build_garuda_section, gt.InstallOpts())
+        self.assertNotIn("garuda.preset", lines)
+
+    def test_bogus_preset_dropped(self):
+        self.assertIsNone(gt.InstallOpts(preset="bogus").preset)
+
 
 class TestBuildBootloaderSection(unittest.TestCase):
     def test_cases(self):
