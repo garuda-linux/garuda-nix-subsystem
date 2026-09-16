@@ -8,8 +8,12 @@
 
 - [Using as subsystem of Garuda](./subsystem/quick-start.md)
 - [Using as NixOS module](./nixos-module/quick-start.md)
-- [Module options reference](./nixos-module/options.md)
 
 # ISO
 
-- [Installer ISO](./iso/quick-start.md)
+- [Getting the ISO](./iso/getting.md)
+- [Installing](./iso/install.md)
+
+# Options reference
+
+- [Module options reference](./nixos-module/options.md)

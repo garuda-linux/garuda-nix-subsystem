@@ -5,21 +5,25 @@
 
 ## General information
 
-Garuda Nix is a Nix flake, which allows easy dual boot with Garuda Linux. But it also provides a framework for pure NixOS, which provides opinionated defaults and a system which can be fully set up by toggling a few module options.
+Garuda Nix is a Nix flake, which allows easy dual boot with Garuda Linux. But it also provides a framework for pure NixOS, which provides opinionated defaults and a system which can be fully set up by toggling a few module options or installed using our [installer ISO](./iso/quick-start.md).
+
+Prefer a graphical install? The flake also builds an [installer ISO](./iso/build.md) with a Calamares GUI for beginners and an [`install-garuda-nix` CLI](./iso/install.md) with presets, automatic partition layouts, and impermanence support.
 
 ## Quick links
 
-- [Using as subsystem to Garuda](https://nix.garudalinux.org/subsystem/quick-start)
-- [Using as module for NixOS](https://nix.garudalinux.org/nixos-module/quick-start)
-- ... coming soon™️
+- [Using as subsystem to Garuda](./subsystem/quick-start.md)
+- [Using as module for NixOS](./nixos-module/quick-start.md)
+- [Installing Garuda Nix via ISO](./iso/install.md)
 
 ## Devshell and how to enter it
 
-This NixOS flake provides a [devshell](https://github.com/numtide/devshell) which contains all deployment tools as well as handy aliases for common tasks.
+This NixOS flake provides a devshell which contains all deployment tools as well as handy aliases for common tasks.
 The only requirement for using it is having the Nix package manager available. It can be installed on various distributions via the package manager or the following script ([click me for more information](https://zero-to-nix.com/start/install)):
 
 ```sh
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix -o nix-install.sh # Check its content afterwards
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix -o nix-install.sh
+
+# Check script content before running
 sh ./nix-install.sh install --diagnostic-endpoint=""
 ```
 
@@ -27,7 +31,7 @@ This installs the Nix packages with flakes already pre-enabled. After that, the 
 
 ```sh
 nix develop # The intended way to use the devshell
-nix-shell # Legacy, non-flakes way if flakes are not available for some reason
+nix-shell   # Legacy, non-flakes way if flakes are not available for some reason
 ```
 
 This also sets up pre-commit-hooks and shows the currently implemented tasks, which can be executed by running the command shown in the welcome message.

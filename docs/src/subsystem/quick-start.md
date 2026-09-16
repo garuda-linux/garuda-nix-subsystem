@@ -12,11 +12,11 @@ Our repo contains `garuda-nix-subsystem`, which is the needed part to get going:
 
 ```sh
 sudo pacman -S garuda-nix-subsystem # get the package
-garuda-nix-subsystem install # trigger the installation process
+garuda-nix-subsystem install        # trigger the installation process
 ```
 
 The script will first install Nix, the package manager, and proceed by setting up the required subvolumes. After the process is finished, the subsystem may now be entered by rebooting and selecting the new `Garuda Nix Subsystem` entry in GRUB.
 
 ## Updating
 
-The system may be updated by running `sudo garuda-nix-subsystem update` from either Garuda or by running `garuda-update` on Garuda Nix Subsystem. This sources the latest tagged commit from our [Garuda Nix Subsystem repo](https://gitlab.com/garuda-linux/garuda-nix-subsystem), which also updates the flake's inputs and therefore all package versions.
+The system may be updated by running `sudo garuda-nix-subsystem update` from either Garuda or by running `garuda-update` on Garuda Nix Subsystem. This sources the latest tagged commit from our [Garuda Nix repo](https://gitlab.com/garuda-linux/garuda-nix-subsystem), which also updates the flake's inputs and therefore all package versions.
