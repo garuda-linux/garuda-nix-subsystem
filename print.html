@@ -37,10 +37,10 @@
             const path_to_root = "";
             const default_light_theme = "mocha";
             const default_dark_theme = "mocha";
-            window.path_to_searchindex_js = "searchindex-38997615.js";
+            window.path_to_searchindex_js = "searchindex-5343f7c5.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-4028f8de.js"></script>
+        <script src="toc-6e1911d0.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -183,22 +183,25 @@
 <p><a href="https://builtwithnix.org"><img src="https://img.shields.io/static/v1?logo=nixos&amp;logoColor=white&amp;label=&amp;message=Built%20with%20Nix&amp;color=41439a" alt="built with nix"></a>
 <a href="https://gitlab.com/garuda-linux/garuda-nix-subsystem/-/commits/main"><img src="https://gitlab.com/garuda-linux/garuda-nix-subsystem/badges/main/pipeline.svg" alt="pipeline status"></a></p>
 <h2 id="general-information"><a class="header" href="#general-information">General information</a></h2>
-<p>Garuda Nix is a Nix flake, which allows easy dual boot with Garuda Linux. But it also provides a framework for pure NixOS, which provides opinionated defaults and a system which can be fully set up by toggling a few module options.</p>
+<p>Garuda Nix is a Nix flake, which allows easy dual boot with Garuda Linux. But it also provides a framework for pure NixOS, which provides opinionated defaults and a system which can be fully set up by toggling a few module options or installed using our <a href="iso/quick-start.html">installer ISO</a>.</p>
+<p>Prefer a graphical install? The flake also builds an <a href="iso/build.html">installer ISO</a> with a Calamares GUI for beginners and an <a href="#installing"><code>install-garuda-nix</code> CLI</a> with presets, automatic partition layouts, and impermanence support.</p>
 <h2 id="quick-links"><a class="header" href="#quick-links">Quick links</a></h2>
 <ul>
-<li><a href="https://nix.garudalinux.org/subsystem/quick-start">Using as subsystem to Garuda</a></li>
-<li><a href="https://nix.garudalinux.org/nixos-module/quick-start">Using as module for NixOS</a></li>
-<li>… coming soon™️</li>
+<li><a href="#quick-start">Using as subsystem to Garuda</a></li>
+<li><a href="#using-as-nixos-module">Using as module for NixOS</a></li>
+<li><a href="#installing">Installing Garuda Nix via ISO</a></li>
 </ul>
 <h2 id="devshell-and-how-to-enter-it"><a class="header" href="#devshell-and-how-to-enter-it">Devshell and how to enter it</a></h2>
-<p>This NixOS flake provides a <a href="https://github.com/numtide/devshell">devshell</a> which contains all deployment tools as well as handy aliases for common tasks.
+<p>This NixOS flake provides a devshell which contains all deployment tools as well as handy aliases for common tasks.
 The only requirement for using it is having the Nix package manager available. It can be installed on various distributions via the package manager or the following script (<a href="https://zero-to-nix.com/start/install">click me for more information</a>):</p>
-<pre><code class="language-sh">curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix -o nix-install.sh # Check its content afterwards
+<pre><code class="language-sh">curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix -o nix-install.sh
+
+# Check script content before running
 sh ./nix-install.sh install --diagnostic-endpoint=""
 </code></pre>
 <p>This installs the Nix packages with flakes already pre-enabled. After that, the shell can be invoked as follows:</p>
 <pre><code class="language-sh">nix develop # The intended way to use the devshell
-nix-shell # Legacy, non-flakes way if flakes are not available for some reason
+nix-shell   # Legacy, non-flakes way if flakes are not available for some reason
 </code></pre>
 <p>This also sets up pre-commit-hooks and shows the currently implemented tasks, which can be executed by running the command shown in the welcome message.</p>
 <div style="break-before: page; page-break-before: always;"></div>
@@ -209,11 +212,11 @@ nix-shell # Legacy, non-flakes way if flakes are not available for some reason
 <h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
 <p>Our repo contains <code>garuda-nix-subsystem</code>, which is the needed part to get going:</p>
 <pre><code class="language-sh">sudo pacman -S garuda-nix-subsystem # get the package
-garuda-nix-subsystem install # trigger the installation process
+garuda-nix-subsystem install        # trigger the installation process
 </code></pre>
 <p>The script will first install Nix, the package manager, and proceed by setting up the required subvolumes. After the process is finished, the subsystem may now be entered by rebooting and selecting the new <code>Garuda Nix Subsystem</code> entry in GRUB.</p>
 <h2 id="updating"><a class="header" href="#updating">Updating</a></h2>
-<p>The system may be updated by running <code>sudo garuda-nix-subsystem update</code> from either Garuda or by running <code>garuda-update</code> on Garuda Nix Subsystem. This sources the latest tagged commit from our <a href="https://gitlab.com/garuda-linux/garuda-nix-subsystem">Garuda Nix Subsystem repo</a>, which also updates the flake’s inputs and therefore all package versions.</p>
+<p>The system may be updated by running <code>sudo garuda-nix-subsystem update</code> from either Garuda or by running <code>garuda-update</code> on Garuda Nix Subsystem. This sources the latest tagged commit from our <a href="https://gitlab.com/garuda-linux/garuda-nix-subsystem">Garuda Nix repo</a>, which also updates the flake’s inputs and therefore all package versions.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="using-as-nixos-module"><a href="#using-as-nixos-module" class="header">Using as NixOS module</a></h1>
 <p>To make use of this flake, you can use it as follows - <a href="https://nixos.wiki/wiki/Flakes#Enable_flakes">we assume flakes to be enabled</a>:</p>
@@ -238,7 +241,7 @@ garuda-nix-subsystem install # trigger the installation process
 }
 </code></pre>
 <p>You may notice that we are using <code>garuda.lib.garudaSystem</code> to build the derivation. <code>garudaSystem</code> provides an opinionated system configuration similar to what Garuda Linux provides out of the box. It also exposes our modules which can then be referenced in our modules like <code>garuda.*</code>. Then, build your configuration as usual. GNS defaults are generally lower priority than your settings, therefore it’s easy to override most settings if needed.</p>
-<p>You may also use any of the <a href="https://www.nyx.chaotic.cx/">Chaotic Nyx’s</a> module or home-manager options. GNS <code>nixpkgs</code> input follows Nyx’ <code>nyxpkgs-unstable</code> (which updates daily and shouldn’t be overridden to profit from their binary cache).</p>
+<p>You may also use any of the <a href="https://www.nyx.chaotic.cx/">Chaotic Nyx’s</a> module or home-manager options. Garuda Nix’ <code>nixpkgs</code> input follows Nyx’ <code>nyxpkgs-unstable</code> (which updates daily and shouldn’t be overridden to profit from their binary cache).</p>
 <p>An exemplary <code>configuration.nix</code> could look as follows:</p>
 <pre><code class="language-nix">{ ... }: {
   # Your hardware configuration
@@ -259,9 +262,140 @@ garuda-nix-subsystem install # trigger the installation process
 }
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="getting-the-iso"><a class="header" href="#getting-the-iso">Getting the ISO</a></h1>
+<h2 id="download"><a class="header" href="#download">Download</a></h2>
+<p>The ISO can be downloaded from our <a href="https://builds.garudalinux.org/garuda-nix/">builds page page</a>.
+Available build types:</p>
+<ul>
+<li><code>garuda-nix-dr460nized-26.11-x86_64-linux.iso</code>: these are built daily and point to our latest stable tag, which is only tagged if evaluation and a few other checks pass</li>
+</ul>
+<h2 id="flash--boot"><a class="header" href="#flash--boot">Flash &amp; Boot</a></h2>
+<p>Write the ISO to a USB drive:</p>
+<pre><code class="language-sh">sudo dd if=$name.iso of=/dev/$usb bs=4M status=progress oflag=sync
+</code></pre>
+<p>Replace <code>$usb</code> with your USB drive, and <code>$name</code> with the resulting ISO file. This destroys all data on the drive.</p>
+<p>Once booted, continue with <a href="#installing">installing</a>.</p>
+<h2 id="build"><a class="header" href="#build">Build</a></h2>
+<p>The flake can build an installer ISO for three editions:</p>
+<ul>
+<li><code>mokka</code></li>
+<li><code>dr460nized</code></li>
+<li><code>catppuccin</code></li>
+</ul>
+<p>Build from the dev shell:</p>
+<pre><code class="language-sh">nix develop -c buildiso mokka
+</code></pre>
+<p>Replace <code>mokka</code> with <code>dr460nized</code> or <code>catppuccin</code> to build another edition. Use <code>buildiso all</code> to build all three.</p>
+<p>Append <code>--run</code> to boot the freshly built ISO in QEMU instead of just copying it:</p>
+<pre><code class="language-sh">nix develop -c buildiso mokka --run
+</code></pre>
+<p>The command copies the ISO to the current working directory.</p>
+<p>Alternatively, build the ISO directly with Nix:</p>
+<pre><code class="language-sh">nix build .#internal.iso-mokka
+nix build .#internal.iso-dr460nized
+nix build .#internal.iso-catppuccin
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="installing"><a class="header" href="#installing">Installing</a></h1>
+<p>Two frontends install the same Garuda flake. Pick one:</p>
+<h2 id="calamares-gui"><a class="header" href="#calamares-gui">Calamares (GUI)</a></h2>
+<p>The graphical installer keeps it simple on purpose: pick an edition
+(<code>mokka</code>, <code>dr460nized</code>, <code>catppuccin</code>) and pick optional features
+(<code>gaming</code>, <code>printing</code>, …). Further customization can be done after the
+installation is complete.</p>
+<h2 id="install-garuda-nix-cli"><a class="header" href="#install-garuda-nix-cli">install-garuda-nix (CLI)</a></h2>
+<p>The command-line installer covers everything the GUI does, plus:</p>
+<ul>
+<li><strong>Presets</strong>
+<ul>
+<li>Choose from <code>desktop</code>, <code>laptop</code>, <code>server</code>, or <code>handheld</code></li>
+</ul>
+</li>
+<li><strong>Partition layouts</strong>
+<ul>
+<li>Choose from <code>ext4</code>, <code>btrfs</code>, <code>luks-ext4</code>, <code>luks-btrfs</code>, <code>btrfs-impermanence</code>, <code>luks-btrfs-impermanence</code>, <code>ext4-impermanence</code>, <code>luks-ext4-impermanence</code></li>
+<li>Choosing <a href="https://github.com/nix-community/impermanence">impermanence</a> automatically sets up either btrfs rollback or root on tmpfs</li>
+</ul>
+</li>
+</ul>
+<p>This can either be done interactively or non-interactively.</p>
+<p>Example:</p>
+<pre><code class="language-sh">sudo install-garuda-nix --edition mokka --preset desktop \
+  --feature gaming --feature printing \
+  --hostname mypc --username nico \
+  --disk /dev/sda --schema btrfs --install
+</code></pre>
+<h2 id="all-options"><a class="header" href="#all-options">All options</a></h2>
+<pre><code class="language-sh">usage: install-garuda-nix [-h] [--edition {mokka,dr460nized,catppuccin}] [--preset {desktop,laptop,server,handheld}]
+                          [--feature FEATURE] [--root ROOT] [--disk DISK]
+                          [--schema {ext4,btrfs,luks-ext4,luks-btrfs,btrfs-impermanence,luks-btrfs-impermanence,ext4-impermanence,luks-ext4-impermanence}]
+                          [--luks-pass-file LUKS_PASS_FILE] [--yes] [--hostname HOSTNAME] [--username USERNAME]
+                          [--fullname FULLNAME] [--no-autologin] [--timezone TIMEZONE] [--locale LOCALE]
+                          [--xkb-layout XKB_LAYOUT] [--xkb-variant XKB_VARIANT] [--vconsole VCONSOLE]
+                          [--bootloader {auto,systemd-boot,grub,none}] [--grub-device GRUB_DEVICE]
+                          [--kernel {cachyos,lts,latest}] [--flake-ref FLAKE_REF] [--state-version STATE_VERSION]
+                          [--allow-unfree | --no-allow-unfree] [--install | --no-install] [--no-bootloader] [--tui]
+                          [--password-file PASSWORD_FILE]
+
+Generate a Garuda NixOS config from the shared installer template.
+
+options:
+  -h, --help            show this help message and exit
+  --edition {mokka,dr460nized,catppuccin}
+                        asked interactively when missing
+  --preset {desktop,laptop,server,handheld}
+  --feature FEATURE     repeatable, one of: btrfs-maintenance, gaming, impermanence, performance, powersave, printing,
+                        samba, scanning
+  --root ROOT           target mount point (default: /mnt)
+  --disk DISK           wipe and partition this disk before installing (e.g. /dev/sda). If not specified and &lt;root&gt; is
+                        not mounted, pick from a list
+  --schema {ext4,btrfs,luks-ext4,luks-btrfs,btrfs-impermanence,luks-btrfs-impermanence,ext4-impermanence,luks-ext4-impermanence}
+                        partitioning schema for --disk (asked when missing, default: btrfs)
+  --luks-pass-file LUKS_PASS_FILE
+                        file with the LUKS passphrase (else prompted)
+  --yes                 skip the disk-wipe confirmation (dangerous)
+  --hostname HOSTNAME
+  --username USERNAME
+  --fullname FULLNAME
+  --no-autologin        disable display-manager autologin
+  --timezone TIMEZONE   default: host's /etc/localtime zone
+  --locale LOCALE
+  --xkb-layout XKB_LAYOUT
+  --xkb-variant XKB_VARIANT
+  --vconsole VCONSOLE
+  --bootloader {auto,systemd-boot,grub,none}
+                        auto: systemd-boot on UEFI, otherwise grub needs --grub-device
+  --grub-device GRUB_DEVICE
+                        e.g. /dev/sda for BIOS installs
+  --kernel {cachyos,lts,latest}
+  --flake-ref FLAKE_REF
+  --state-version STATE_VERSION
+  --allow-unfree, --no-allow-unfree
+                        keep unfree packages (default: True, --no-allow-unfree to flip)
+  --install, --no-install
+                        run nixos-install --flake &lt;root&gt;/etc/nixos#&lt;hostname&gt; afterwards (default: True, --no-install to
+                        skip)
+  --no-bootloader       pass --no-bootloader to nixos-install (test VMs without EFI vars)
+  --tui                 force the interactive wizard even when all flags are given
+  --password-file PASSWORD_FILE
+                        read the user password from this file (non-interactive)
+</code></pre>
+<h2 id="install-from-the-flake"><a class="header" href="#install-from-the-flake">Install from the flake</a></h2>
+<p>On any NixOS host with internet, run the installer directly from the published flake:</p>
+<pre><code class="language-sh">sudo nix run gitlab:garuda-linux/garuda-nix-subsystem/stable#install-garuda-nix -- \
+  --edition mokka --hostname mypc --username nico --install
+</code></pre>
+<p><code>--flake-ref</code> defaults to that same <code>stable</code> ref, so the generated config already points at it: future rebuilds are just <code>nixos-rebuild switch --flake /etc/nixos#mypc</code>. Pass <code>--flake-ref gitlab:garuda-linux/garuda-nix-subsystem/stable</code> (or any ref) to track a different branch instead.</p>
+<h2 id="module-options"><a class="header" href="#module-options">Module options</a></h2>
+<p>Both installers write a flake config built from the same template; what
+lands in <code>configuration.nix</code> is controlled by the
+<a href="#garuda-module-options">module options reference</a>
+(<code>garuda.gaming.enable</code>, <code>garuda.impermanence.*</code>, …). Presets and
+features are just shortcuts that flip those options on.</p>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="garuda-module-options"><a class="header" href="#garuda-module-options">Garuda module options</a></h1>
 <!-- GENERATED by `gendocs`. Do not edit by hand. -->
-<p><em>60 options under <code>garuda.*</code>.</em></p>
+<p><em>71 options under <code>garuda.*</code>.</em></p>
 <h2 id="garudaaudio"><a class="header" href="#garudaaudio"><code>garuda.audio</code></a></h2>
 <h3 id="garudaaudiopipewireenable"><a class="header" href="#garudaaudiopipewireenable"><code>garuda.audio.pipewire.enable</code></a></h3>
 <p>If set to true, a default configuration for Pipewire will be used.</p>
@@ -389,6 +523,23 @@ libraries, home-manager modules, …). Useful for minimal installs.</p>
 <li><strong>Default</strong>: <code>false</code></li>
 <li><strong>Declared in</strong>: <code>internal/modules/base/programs.nix</code></li>
 </ul>
+<h2 id="garudaflatpak"><a class="header" href="#garudaflatpak"><code>garuda.flatpak</code></a></h2>
+<h3 id="garudaflatpakenable"><a class="header" href="#garudaflatpakenable"><code>garuda.flatpak.enable</code></a></h3>
+<p>Whether to enable Flatpak with the Flathub remote pre-added.</p>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Default</strong>: <code>false</code></li>
+<li><strong>Example</strong>: <code>true</code></li>
+<li><strong>Declared in</strong>: <code>internal/modules/base/flatpak.nix</code></li>
+</ul>
+<h2 id="garudafonts"><a class="header" href="#garudafonts"><code>garuda.fonts</code></a></h2>
+<h3 id="garudafontsenable"><a class="header" href="#garudafontsenable"><code>garuda.fonts.enable</code></a></h3>
+<p>Reasonable fontconfig defaults.</p>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Default</strong>: <code>false</code></li>
+<li><strong>Declared in</strong>: <code>internal/modules/base/fonts.nix</code></li>
+</ul>
 <h2 id="garudagaming"><a class="header" href="#garudagaming"><code>garuda.gaming</code></a></h2>
 <h3 id="garudagamingenable"><a class="header" href="#garudagamingenable"><code>garuda.gaming.enable</code></a></h3>
 <p>Gaming setup: Steam (with gamescope session), GameMode, and the
@@ -482,6 +633,24 @@ GUI apps from within the Garuda installation on NixOS.</p>
 <li><strong>Declared in</strong>: <code>internal/modules/base/nix-manager.nix</code></li>
 </ul>
 <h2 id="garudahardware"><a class="header" href="#garudahardware"><code>garuda.hardware</code></a></h2>
+<h3 id="garudahardwareautodriverenable"><a class="header" href="#garudahardwareautodriverenable"><code>garuda.hardware.autoDriver.enable</code></a></h3>
+<p>Whether to enable hardware auto-detection via nixos-facter.</p>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Default</strong>: <code>true</code></li>
+<li><strong>Example</strong>: <code>true</code></li>
+<li><strong>Declared in</strong>: <code>internal/modules/base/hardware.nix</code></li>
+</ul>
+<h3 id="garudahardwareautodriverreportpath"><a class="header" href="#garudahardwareautodriverreportpath"><code>garuda.hardware.autoDriver.reportPath</code></a></h3>
+<p>Path to the nixos-facter report (written by the installer).
+Takes effect only when autoDriver.enable is set and the
+nixos-facter module is imported. Null disables it.</p>
+<ul>
+<li><strong>Type</strong>: <code>null or absolute path</code></li>
+<li><strong>Default</strong>: <code>null</code></li>
+<li><strong>Example</strong>: <code>"./facter.json"</code></li>
+<li><strong>Declared in</strong>: <code>internal/modules/base/hardware.nix</code></li>
+</ul>
 <h3 id="garudahardwareenable"><a class="header" href="#garudahardwareenable"><code>garuda.hardware.enable</code></a></h3>
 <p>Hardware baseline: CPU microcode updates, redistributable
 firmware, and the graphics stack (including 32-bit support on
@@ -489,6 +658,14 @@ GUI systems).</p>
 <ul>
 <li><strong>Type</strong>: <code>boolean</code></li>
 <li><strong>Default</strong>: <code>true</code></li>
+<li><strong>Declared in</strong>: <code>internal/modules/base/hardware.nix</code></li>
+</ul>
+<h3 id="garudahardwarelaptopenable"><a class="header" href="#garudahardwarelaptopenable"><code>garuda.hardware.laptop.enable</code></a></h3>
+<p>Whether to enable laptop power/thermal tuning.</p>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Default</strong>: <code>false</code></li>
+<li><strong>Example</strong>: <code>true</code></li>
 <li><strong>Declared in</strong>: <code>internal/modules/base/hardware.nix</code></li>
 </ul>
 <h3 id="garudahardwarenvidiaamdgpubusid"><a class="header" href="#garudahardwarenvidiaamdgpubusid"><code>garuda.hardware.nvidia.amdgpuBusId</code></a></h3>
@@ -516,6 +693,43 @@ GUI systems).</p>
 <li><strong>Default</strong>: <code>null</code></li>
 <li><strong>Example</strong>: <code>"PCI:1:0:0"</code></li>
 <li><strong>Declared in</strong>: <code>internal/modules/base/hardware.nix</code></li>
+</ul>
+<h2 id="garudaimpermanence"><a class="header" href="#garudaimpermanence"><code>garuda.impermanence</code></a></h2>
+<h3 id="garudaimpermanenceapps"><a class="header" href="#garudaimpermanenceapps"><code>garuda.impermanence.apps</code></a></h3>
+<p>Known apps whose state persists. Service apps enable automatically.</p>
+<ul>
+<li><strong>Type</strong>: <code>list of (one of "accountsservice", "bluetooth", "docker", "firefox", "flatpak", "fprintd", "fwupd", "geoclue", "iwd", "libvirt", "modemmanager", "networkmanager", "nspawn", "plasmalogin", "podman", "printing", "rust", "samba", "steam", "thunderbird", "upower")</code></li>
+<li><strong>Default</strong>: <code>[ ]</code></li>
+<li><strong>Declared in</strong>: <code>internal/modules/base/impermanence/apps.nix</code></li>
+</ul>
+<h3 id="garudaimpermanencedevice"><a class="header" href="#garudaimpermanencedevice"><code>garuda.impermanence.device</code></a></h3>
+<p>Btrfs device holding the root/root-blank subvolumes.</p>
+<ul>
+<li><strong>Type</strong>: <code>string</code></li>
+<li><strong>Default</strong>: <code>"/dev/disk/by-label/nixos"</code></li>
+<li><strong>Declared in</strong>: <code>internal/modules/base/impermanence</code></li>
+</ul>
+<h3 id="garudaimpermanenceenable"><a class="header" href="#garudaimpermanenceenable"><code>garuda.impermanence.enable</code></a></h3>
+<p>Whether to enable impermanence.</p>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Default</strong>: <code>false</code></li>
+<li><strong>Example</strong>: <code>true</code></li>
+<li><strong>Declared in</strong>: <code>internal/modules/base/impermanence</code></li>
+</ul>
+<h3 id="garudaimpermanencepersistentusers"><a class="header" href="#garudaimpermanencepersistentusers"><code>garuda.impermanence.persistentUsers</code></a></h3>
+<p>Users whose .config/.local/share persist.</p>
+<ul>
+<li><strong>Type</strong>: <code>list of string</code></li>
+<li><strong>Default</strong>: <code>[ ]</code></li>
+<li><strong>Declared in</strong>: <code>internal/modules/base/impermanence</code></li>
+</ul>
+<h3 id="garudaimpermanencetmpfsroot"><a class="header" href="#garudaimpermanencetmpfsroot"><code>garuda.impermanence.tmpfsRoot</code></a></h3>
+<p>Use tmpfs for / instead of rolling back a btrfs subvolume.</p>
+<ul>
+<li><strong>Type</strong>: <code>boolean</code></li>
+<li><strong>Default</strong>: <code>false</code></li>
+<li><strong>Declared in</strong>: <code>internal/modules/base/impermanence</code></li>
 </ul>
 <h2 id="garudakde"><a class="header" href="#garudakde"><code>garuda.kde</code></a></h2>
 <h3 id="garudakdefontname"><a class="header" href="#garudakdefontname"><code>garuda.kde.fontName</code></a></h3>
@@ -654,6 +868,14 @@ Conflicts with garuda.performance-tweaks, only one may be enabled.</p>
 <li><strong>Example</strong>: <code>true</code></li>
 <li><strong>Declared in</strong>: <code>internal/modules/base/powersave.nix</code></li>
 </ul>
+<h2 id="garudapreset"><a class="header" href="#garudapreset"><code>garuda.preset</code></a></h2>
+<h3 id="garudapreset-1"><a class="header" href="#garudapreset-1"><code>garuda.preset</code></a></h3>
+<p>Preset mapping to performance/powersave, ssh, firewall.</p>
+<ul>
+<li><strong>Type</strong>: <code>null or one of "desktop", "laptop", "server", "handheld"</code></li>
+<li><strong>Default</strong>: <code>null</code></li>
+<li><strong>Declared in</strong>: <code>internal/modules/base/presets.nix</code></li>
+</ul>
 <h2 id="garudaprinting"><a class="header" href="#garudaprinting"><code>garuda.printing</code></a></h2>
 <h3 id="garudaprintingenable"><a class="header" href="#garudaprintingenable"><code>garuda.printing.enable</code></a></h3>
 <p>Installs and enables printing support (CUPS + drivers).</p>
@@ -774,45 +996,6 @@ handles booting or another loader is used.</p>
 <li><strong>Default</strong>: <code>true</code></li>
 <li><strong>Declared in</strong>: <code>internal/modules/base/managed</code></li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="installer-iso"><a class="header" href="#installer-iso">Installer ISO</a></h1>
-<p>The flake can build an installer ISO for two editions:</p>
-<ul>
-<li><code>mokka</code></li>
-<li><code>dr460nized</code></li>
-</ul>
-<p>The ISO boots to the desktop. Calamares starts automatically.</p>
-<p>The installer uses our own calamares-nixos-extensions. They install the Garuda flake instead of a plain NixOS configuration.</p>
-<h2 id="build"><a class="header" href="#build">Build</a></h2>
-<p>Build from the dev shell:</p>
-<pre><code class="language-sh">nix develop -c buildiso mokka
-</code></pre>
-<p>Replace <code>mokka</code> with <code>dr460nized</code> to build the other edition. Use <code>buildiso all</code> to build both.</p>
-<p>Append <code>--run</code> to boot the freshly built ISO in QEMU instead of just copying it:</p>
-<pre><code class="language-sh">nix develop -c buildiso mokka --run
-</code></pre>
-<p>The command copies the ISO to the current working directory.</p>
-<p>Alternatively, build the ISO directly with Nix:</p>
-<pre><code class="language-sh">nix build .#internal.iso-mokka
-nix build .#internal.iso-dr460nized
-</code></pre>
-<h2 id="boot"><a class="header" href="#boot">Boot</a></h2>
-<p>Write the ISO to a USB drive:</p>
-<pre><code class="language-sh">sudo dd if=$name.iso of=/dev/$usb bs=4M status=progress oflag=sync
-</code></pre>
-<p>Replace <code>$usb</code> with your USB drive, and <code>$name</code> with the resulting ISO file. This destroys all data on the drive.</p>
-<h2 id="install-from-an-existing-nixos-system"><a class="header" href="#install-from-an-existing-nixos-system">Install from an existing NixOS system</a></h2>
-<p>No ISO needed: <code>install-garuda-nix</code> generates the same Garuda config the Calamares installer writes, on any NixOS host. Available in the dev shell, or via <code>nix run .#install-garuda</code>:</p>
-<pre><code class="language-sh">sudo install-garuda-nix --flavor mokka --feature gaming --feature printing \
-  --hostname mypc --username nico --install
-</code></pre>
-<p>This mounts nothing itself: partition and mount your target at <code>/mnt</code> first (or pass <code>--root</code>), then the command writes the flake config to <code>&lt;root&gt;/etc/nixos</code>, runs <code>nixos-generate-config</code> hardware + <code>nixos-facter</code> GPU/NVIDIA detection, and with <code>--install</code> runs <code>nixos-install --flake &lt;root&gt;/etc/nixos#&lt;hostname&gt;</code> afterwards.</p>
-<h2 id="install-straight-from-the-flake"><a class="header" href="#install-straight-from-the-flake">Install straight from the flake</a></h2>
-<p>On any NixOS host with internet, run the installer directly from the published flake:</p>
-<pre><code class="language-sh">sudo nix run gitlab:garuda-linux/garuda-nix-subsystem/stable#install-garuda-nix -- \
-  --flavor mokka --hostname mypc --username nico --install
-</code></pre>
-<p><code>--flake-ref</code> defaults to that same <code>stable</code> ref, so the generated config already points at it: future rebuilds are just <code>nixos-rebuild switch --flake /etc/nixos#mypc</code>. Pass <code>--flake-ref gitlab:garuda-linux/garuda-nix-subsystem/stable</code> (or any ref) to track a different branch instead.</p>
 
                     </main>
 

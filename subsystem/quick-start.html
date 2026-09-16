@@ -36,10 +36,10 @@
             const path_to_root = "../";
             const default_light_theme = "mocha";
             const default_dark_theme = "mocha";
-            window.path_to_searchindex_js = "../searchindex-38997615.js";
+            window.path_to_searchindex_js = "../searchindex-5343f7c5.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-4028f8de.js"></script>
+        <script src="../toc-6e1911d0.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -185,11 +185,11 @@
 <h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
 <p>Our repo contains <code>garuda-nix-subsystem</code>, which is the needed part to get going:</p>
 <pre><code class="language-sh">sudo pacman -S garuda-nix-subsystem # get the package
-garuda-nix-subsystem install # trigger the installation process
+garuda-nix-subsystem install        # trigger the installation process
 </code></pre>
 <p>The script will first install Nix, the package manager, and proceed by setting up the required subvolumes. After the process is finished, the subsystem may now be entered by rebooting and selecting the new <code>Garuda Nix Subsystem</code> entry in GRUB.</p>
 <h2 id="updating"><a class="header" href="#updating">Updating</a></h2>
-<p>The system may be updated by running <code>sudo garuda-nix-subsystem update</code> from either Garuda or by running <code>garuda-update</code> on Garuda Nix Subsystem. This sources the latest tagged commit from our <a href="https://gitlab.com/garuda-linux/garuda-nix-subsystem">Garuda Nix Subsystem repo</a>, which also updates the flake’s inputs and therefore all package versions.</p>
+<p>The system may be updated by running <code>sudo garuda-nix-subsystem update</code> from either Garuda or by running <code>garuda-update</code> on Garuda Nix Subsystem. This sources the latest tagged commit from our <a href="https://gitlab.com/garuda-linux/garuda-nix-subsystem">Garuda Nix repo</a>, which also updates the flake’s inputs and therefore all package versions.</p>
 
                     </main>
 

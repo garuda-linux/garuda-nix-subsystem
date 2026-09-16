@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Installer ISO - Garuda Nix ❄️ documentation</title>
+        <title>Installing - Garuda Nix ❄️ documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -36,10 +36,10 @@
             const path_to_root = "../";
             const default_light_theme = "mocha";
             const default_dark_theme = "mocha";
-            window.path_to_searchindex_js = "../searchindex-38997615.js";
+            window.path_to_searchindex_js = "../searchindex-5343f7c5.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-4028f8de.js"></script>
+        <script src="../toc-6e1911d0.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -178,53 +178,114 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="installer-iso"><a class="header" href="#installer-iso">Installer ISO</a></h1>
-<p>The flake can build an installer ISO for two editions:</p>
+                        <h1 id="installing"><a class="header" href="#installing">Installing</a></h1>
+<p>Two frontends install the same Garuda flake. Pick one:</p>
+<h2 id="calamares-gui"><a class="header" href="#calamares-gui">Calamares (GUI)</a></h2>
+<p>The graphical installer keeps it simple on purpose: pick an edition
+(<code>mokka</code>, <code>dr460nized</code>, <code>catppuccin</code>) and pick optional features
+(<code>gaming</code>, <code>printing</code>, …). Further customization can be done after the
+installation is complete.</p>
+<h2 id="install-garuda-nix-cli"><a class="header" href="#install-garuda-nix-cli">install-garuda-nix (CLI)</a></h2>
+<p>The command-line installer covers everything the GUI does, plus:</p>
 <ul>
-<li><code>mokka</code></li>
-<li><code>dr460nized</code></li>
+<li><strong>Presets</strong>
+<ul>
+<li>Choose from <code>desktop</code>, <code>laptop</code>, <code>server</code>, or <code>handheld</code></li>
 </ul>
-<p>The ISO boots to the desktop. Calamares starts automatically.</p>
-<p>The installer uses our own calamares-nixos-extensions. They install the Garuda flake instead of a plain NixOS configuration.</p>
-<h2 id="build"><a class="header" href="#build">Build</a></h2>
-<p>Build from the dev shell:</p>
-<pre><code class="language-sh">nix develop -c buildiso mokka
+</li>
+<li><strong>Partition layouts</strong>
+<ul>
+<li>Choose from <code>ext4</code>, <code>btrfs</code>, <code>luks-ext4</code>, <code>luks-btrfs</code>, <code>btrfs-impermanence</code>, <code>luks-btrfs-impermanence</code>, <code>ext4-impermanence</code>, <code>luks-ext4-impermanence</code></li>
+<li>Choosing <a href="https://github.com/nix-community/impermanence">impermanence</a> automatically sets up either btrfs rollback or root on tmpfs</li>
+</ul>
+</li>
+</ul>
+<p>This can either be done interactively or non-interactively.</p>
+<p>Example:</p>
+<pre><code class="language-sh">sudo install-garuda-nix --edition mokka --preset desktop \
+  --feature gaming --feature printing \
+  --hostname mypc --username nico \
+  --disk /dev/sda --schema btrfs --install
 </code></pre>
-<p>Replace <code>mokka</code> with <code>dr460nized</code> to build the other edition. Use <code>buildiso all</code> to build both.</p>
-<p>Append <code>--run</code> to boot the freshly built ISO in QEMU instead of just copying it:</p>
-<pre><code class="language-sh">nix develop -c buildiso mokka --run
+<h2 id="all-options"><a class="header" href="#all-options">All options</a></h2>
+<pre><code class="language-sh">usage: install-garuda-nix [-h] [--edition {mokka,dr460nized,catppuccin}] [--preset {desktop,laptop,server,handheld}]
+                          [--feature FEATURE] [--root ROOT] [--disk DISK]
+                          [--schema {ext4,btrfs,luks-ext4,luks-btrfs,btrfs-impermanence,luks-btrfs-impermanence,ext4-impermanence,luks-ext4-impermanence}]
+                          [--luks-pass-file LUKS_PASS_FILE] [--yes] [--hostname HOSTNAME] [--username USERNAME]
+                          [--fullname FULLNAME] [--no-autologin] [--timezone TIMEZONE] [--locale LOCALE]
+                          [--xkb-layout XKB_LAYOUT] [--xkb-variant XKB_VARIANT] [--vconsole VCONSOLE]
+                          [--bootloader {auto,systemd-boot,grub,none}] [--grub-device GRUB_DEVICE]
+                          [--kernel {cachyos,lts,latest}] [--flake-ref FLAKE_REF] [--state-version STATE_VERSION]
+                          [--allow-unfree | --no-allow-unfree] [--install | --no-install] [--no-bootloader] [--tui]
+                          [--password-file PASSWORD_FILE]
+
+Generate a Garuda NixOS config from the shared installer template.
+
+options:
+  -h, --help            show this help message and exit
+  --edition {mokka,dr460nized,catppuccin}
+                        asked interactively when missing
+  --preset {desktop,laptop,server,handheld}
+  --feature FEATURE     repeatable, one of: btrfs-maintenance, gaming, impermanence, performance, powersave, printing,
+                        samba, scanning
+  --root ROOT           target mount point (default: /mnt)
+  --disk DISK           wipe and partition this disk before installing (e.g. /dev/sda). If not specified and &lt;root&gt; is
+                        not mounted, pick from a list
+  --schema {ext4,btrfs,luks-ext4,luks-btrfs,btrfs-impermanence,luks-btrfs-impermanence,ext4-impermanence,luks-ext4-impermanence}
+                        partitioning schema for --disk (asked when missing, default: btrfs)
+  --luks-pass-file LUKS_PASS_FILE
+                        file with the LUKS passphrase (else prompted)
+  --yes                 skip the disk-wipe confirmation (dangerous)
+  --hostname HOSTNAME
+  --username USERNAME
+  --fullname FULLNAME
+  --no-autologin        disable display-manager autologin
+  --timezone TIMEZONE   default: host's /etc/localtime zone
+  --locale LOCALE
+  --xkb-layout XKB_LAYOUT
+  --xkb-variant XKB_VARIANT
+  --vconsole VCONSOLE
+  --bootloader {auto,systemd-boot,grub,none}
+                        auto: systemd-boot on UEFI, otherwise grub needs --grub-device
+  --grub-device GRUB_DEVICE
+                        e.g. /dev/sda for BIOS installs
+  --kernel {cachyos,lts,latest}
+  --flake-ref FLAKE_REF
+  --state-version STATE_VERSION
+  --allow-unfree, --no-allow-unfree
+                        keep unfree packages (default: True, --no-allow-unfree to flip)
+  --install, --no-install
+                        run nixos-install --flake &lt;root&gt;/etc/nixos#&lt;hostname&gt; afterwards (default: True, --no-install to
+                        skip)
+  --no-bootloader       pass --no-bootloader to nixos-install (test VMs without EFI vars)
+  --tui                 force the interactive wizard even when all flags are given
+  --password-file PASSWORD_FILE
+                        read the user password from this file (non-interactive)
 </code></pre>
-<p>The command copies the ISO to the current working directory.</p>
-<p>Alternatively, build the ISO directly with Nix:</p>
-<pre><code class="language-sh">nix build .#internal.iso-mokka
-nix build .#internal.iso-dr460nized
-</code></pre>
-<h2 id="boot"><a class="header" href="#boot">Boot</a></h2>
-<p>Write the ISO to a USB drive:</p>
-<pre><code class="language-sh">sudo dd if=$name.iso of=/dev/$usb bs=4M status=progress oflag=sync
-</code></pre>
-<p>Replace <code>$usb</code> with your USB drive, and <code>$name</code> with the resulting ISO file. This destroys all data on the drive.</p>
-<h2 id="install-from-an-existing-nixos-system"><a class="header" href="#install-from-an-existing-nixos-system">Install from an existing NixOS system</a></h2>
-<p>No ISO needed: <code>install-garuda-nix</code> generates the same Garuda config the Calamares installer writes, on any NixOS host. Available in the dev shell, or via <code>nix run .#install-garuda</code>:</p>
-<pre><code class="language-sh">sudo install-garuda-nix --flavor mokka --feature gaming --feature printing \
-  --hostname mypc --username nico --install
-</code></pre>
-<p>This mounts nothing itself: partition and mount your target at <code>/mnt</code> first (or pass <code>--root</code>), then the command writes the flake config to <code>&lt;root&gt;/etc/nixos</code>, runs <code>nixos-generate-config</code> hardware + <code>nixos-facter</code> GPU/NVIDIA detection, and with <code>--install</code> runs <code>nixos-install --flake &lt;root&gt;/etc/nixos#&lt;hostname&gt;</code> afterwards.</p>
-<h2 id="install-straight-from-the-flake"><a class="header" href="#install-straight-from-the-flake">Install straight from the flake</a></h2>
+<h2 id="install-from-the-flake"><a class="header" href="#install-from-the-flake">Install from the flake</a></h2>
 <p>On any NixOS host with internet, run the installer directly from the published flake:</p>
 <pre><code class="language-sh">sudo nix run gitlab:garuda-linux/garuda-nix-subsystem/stable#install-garuda-nix -- \
-  --flavor mokka --hostname mypc --username nico --install
+  --edition mokka --hostname mypc --username nico --install
 </code></pre>
 <p><code>--flake-ref</code> defaults to that same <code>stable</code> ref, so the generated config already points at it: future rebuilds are just <code>nixos-rebuild switch --flake /etc/nixos#mypc</code>. Pass <code>--flake-ref gitlab:garuda-linux/garuda-nix-subsystem/stable</code> (or any ref) to track a different branch instead.</p>
+<h2 id="module-options"><a class="header" href="#module-options">Module options</a></h2>
+<p>Both installers write a flake config built from the same template; what
+lands in <code>configuration.nix</code> is controlled by the
+<a href="../nixos-module/options.html">module options reference</a>
+(<code>garuda.gaming.enable</code>, <code>garuda.impermanence.*</code>, …). Presets and
+features are just shortcuts that flip those options on.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../nixos-module/options.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../iso/getting.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
+                            <a rel="next prefetch" href="../nixos-module/options.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -232,10 +293,13 @@ nix build .#internal.iso-dr460nized
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../nixos-module/options.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../iso/getting.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
+                    <a rel="next prefetch" href="../nixos-module/options.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
             </nav>
 
         </div>
