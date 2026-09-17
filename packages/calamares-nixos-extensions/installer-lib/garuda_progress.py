@@ -1,61 +1,150 @@
 import json
 import subprocess
 import sys
+import time
+
+SPINNER = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
+
+NOISY_PREFIXES = ("warning: ",)
 
 
 def new_state():
-    return {"active": {}, "done": 0, "current": ""}
+    return {"active": {}, "order": [], "done": 0, "current": "",
+            "started": time.monotonic()}
+
+
+def _clean(text, limit=100):
+    text = " ".join(str(text).split())
+
+    if len(text) > limit:
+        text = text[: limit - 1] + "…"
+
+    return text
 
 
 def update(state, line):
     if not line.startswith("@nix "):
         return None
+
     try:
         event = json.loads(line[5:])
     except ValueError:
         return None
+
     action = event.get("action")
+
     if action == "start":
-        state["active"][str(event.get("id"))] = event.get("text", "")
+        key = str(event.get("id"))
+        state["active"][key] = event.get("text", "")
+
+        if key not in state["order"]:
+            state["order"].append(key)
+
         state["current"] = event.get("text", "")
+
     elif action in ("stop", "result"):
-        if str(event.get("id")) in state["active"]:
-            del state["active"][str(event.get("id"))]
+        key = str(event.get("id"))
+
+        if key in state["active"]:
+            del state["active"][key]
             state["done"] += 1
+
+        for key in reversed(state["order"]):
+            if key in state["active"]:
+                state["current"] = state["active"][key]
+                break
+
+        else:
+            state["current"] = ""
+
     elif action == "msg":
         state["current"] = event.get("msg", "")
+
     else:
         return None
-    current = " ".join(state["current"].split())
-    if len(current) > 100:
-        current = current[:99] + "\u2026"
-    return f"[{state['done']} done] {current}".rstrip()
+
+    return render(state)
 
 
-def run(cmd):
+def render(state, tick=0):
+    active = len(state["active"])
+    elapsed = int(time.monotonic() - state.get("started", time.monotonic()))
+    spin = SPINNER[tick % len(SPINNER)]
+    current = _clean(state.get("current", ""))
+    head = f"{spin} {state['done']} done, {active} active [{elapsed // 60}:{elapsed % 60:02d}]"
+
+    if current:
+        return f"{head} {current}".rstrip()
+
+    return head
+
+
+def _clear_line():
+    sys.stderr.write("\r\x1b[2K")
+
+
+def run(cmd, throttle=0.1):
     state = new_state()
     tty = sys.stderr.isatty()
     shown = ""
+    tick = 0
+    last_draw = 0.0
+
     proc = subprocess.Popen(
         cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
         text=True, errors="replace",
     )
+
+    assert proc.stdout is not None
+
     for line in proc.stdout:
-        status = update(state, line.rstrip("\n"))
+        line = line.rstrip("\n")
+        status = update(state, line)
+        now = time.monotonic()
+
         if status is None:
+            if any(line.lower().startswith(p) for p in NOISY_PREFIXES):
+                continue
+
             if tty:
-                sys.stderr.write("\r" + " " * len(shown) + "\r")
+                _clear_line()
                 shown = ""
-            sys.stderr.write(line)
+
+            sys.stderr.write(line + "\n")
+            sys.stderr.flush()
+
         elif tty:
-            sys.stderr.write("\r" + status + " " * max(0, len(shown) - len(status)))
-            shown = status
+            tick += 1
+
+            if status != shown or now - last_draw >= throttle:
+                _clear_line()
+                status = render(state, tick)
+                sys.stderr.write(status)
+                sys.stderr.flush()
+                shown = status
+                last_draw = now
+
         elif status != shown:
             print(status, flush=True, file=sys.stderr)
             shown = status
+
     proc.wait()
+
+    total = int(time.monotonic() - state["started"])
+
     if tty:
-        sys.stderr.write("\n")
+        _clear_line()
+
+        sys.stderr.write(
+            f"✓ {state['done']} steps finished "
+            f"in {total // 60}:{total % 60:02d} "
+            f"(rc={proc.returncode})\n"
+        )
+
+        sys.stderr.flush()
+
     elif shown:
-        print(f"finished rc={proc.returncode}", flush=True, file=sys.stderr)
+        print(f"finished {state['done']} steps "
+              f"rc={proc.returncode}", flush=True, file=sys.stderr)
+
     return proc.returncode

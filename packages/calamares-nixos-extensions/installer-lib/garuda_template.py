@@ -43,6 +43,15 @@ def check_preset_features(preset, features):
             f"{PRESET_EXCLUDES[preset]} feature"
         )
 
+
+def check_feature_conflicts(features):
+    feats = set(features or [])
+
+    if "performance" in feats and "powersave" in feats:
+        raise ValueError(
+            "features 'performance' and 'powersave' conflict"
+        )
+
 DEFAULT_FLAKE_REF = "gitlab:garuda-linux/garuda-nix-subsystem/stable"
 
 MARKERS = ("@@GARUDA@@", "@@FACTER@@", "@@BOOTLOADER@@", "@@SYSTEM@@", "@@USER@@")
