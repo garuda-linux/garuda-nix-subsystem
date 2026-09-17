@@ -145,6 +145,10 @@ def build_parser():
         help="pass --no-bootloader to nixos-install (test VMs without EFI vars)",
     )
     p.add_argument(
+        "--install-attempts", type=int, default=3,
+        help="install attempts",
+    )
+    p.add_argument(
         "--tui", action="store_true",
         help="force the interactive wizard even when all flags are given",
     )
@@ -426,11 +430,6 @@ def main(argv=None):
 
     if args.install:
         flake = os.path.join(args.root, "etc/nixos") + "#" + args.hostname
-        subprocess.check_call(
-            ["nix", "flake", "lock"],
-            cwd=os.path.join(args.root, "etc/nixos"),
-        )
-        print(f"Running nixos-install --flake {flake} ...")
         cmd = [
             "nixos-install",
             "--flake",
@@ -448,7 +447,28 @@ def main(argv=None):
         if args.no_bootloader:
             cmd.append("--no-bootloader")
 
-        rc = gprog.run(cmd)
+        attempts = max(1, args.install_attempts)
+        rc = 1
+
+        for attempt in range(attempts):
+            try:
+                subprocess.check_call(
+                    ["nix", "flake", "lock"],
+                    cwd=os.path.join(args.root, "etc/nixos"),
+                )
+                print(f"Running nixos-install --flake {flake} ...")
+                rc = gprog.run(cmd)
+            except subprocess.CalledProcessError as e:
+                rc = e.returncode
+
+            if rc == 0:
+                break
+
+            remaining = attempts - attempt - 1
+
+            if remaining:
+                print(f"Install failed, retrying ({remaining} attempt(s) left) ...",
+                      file=sys.stderr)
 
         if rc != 0:
             return rc

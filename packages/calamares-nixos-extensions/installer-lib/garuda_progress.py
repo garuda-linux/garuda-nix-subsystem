@@ -2,6 +2,7 @@ import json
 import subprocess
 import sys
 import time
+from collections import deque
 
 SPINNER = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
 
@@ -22,7 +23,7 @@ def _clean(text, limit=100):
     return text
 
 
-def update(state, line):
+def update(state, line, tail):
     if not line.startswith("@nix "):
         return None
 
@@ -58,7 +59,11 @@ def update(state, line):
             state["current"] = ""
 
     elif action == "msg":
-        state["current"] = event.get("msg", "")
+        msg = event.get("msg", "")
+        state["current"] = msg
+
+        if msg:
+            tail.append(msg)
 
     else:
         return None
@@ -85,6 +90,7 @@ def _clear_line():
 
 def run(cmd, throttle=0.1):
     state = new_state()
+    tail = deque(maxlen=30)
     tty = sys.stderr.isatty()
     shown = ""
     tick = 0
@@ -99,10 +105,12 @@ def run(cmd, throttle=0.1):
 
     for line in proc.stdout:
         line = line.rstrip("\n")
-        status = update(state, line)
+        status = update(state, line, tail)
         now = time.monotonic()
 
         if status is None:
+            tail.append(line)
+
             if any(line.lower().startswith(p) for p in NOISY_PREFIXES):
                 continue
 
@@ -146,5 +154,13 @@ def run(cmd, throttle=0.1):
     elif shown:
         print(f"finished {state['done']} steps "
               f"rc={proc.returncode}", flush=True, file=sys.stderr)
+
+    if proc.returncode != 0 and tail:
+        sys.stderr.write("\nLast output:\n")
+
+        for entry in tail:
+            sys.stderr.write(entry + "\n")
+
+        sys.stderr.flush()
 
     return proc.returncode
