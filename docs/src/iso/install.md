@@ -5,7 +5,7 @@ Two frontends install the same Garuda flake. Pick one:
 ## Calamares (GUI)
 
 The graphical installer keeps it simple on purpose: pick an edition
-(`mokka`, `dr460nized`, `catppuccin`) and pick optional features
+(`mokka`, `dr460nized`) and pick optional features
 (`gaming`, `printing`, …). Further customization can be done after the
 installation is complete.
 
@@ -33,7 +33,7 @@ sudo install-garuda-nix --edition mokka --preset desktop \
 ## All options
 
 ```sh
-usage: install-garuda-nix [-h] [--edition {mokka,dr460nized,catppuccin}] [--preset {desktop,laptop,server,handheld}]
+usage: install-garuda-nix [-h] [--edition {mokka,dr460nized}] [--preset {desktop,laptop,server,handheld}]
                           [--feature FEATURE] [--root ROOT] [--disk DISK]
                           [--schema {ext4,btrfs,luks-ext4,luks-btrfs,btrfs-impermanence,luks-btrfs-impermanence,ext4-impermanence,luks-ext4-impermanence}]
                           [--luks-pass-file LUKS_PASS_FILE] [--yes] [--hostname HOSTNAME] [--username USERNAME]
@@ -48,7 +48,7 @@ Generate a Garuda NixOS config from the shared installer template.
 
 options:
   -h, --help            show this help message and exit
-  --edition {mokka,dr460nized,catppuccin}
+  --edition {mokka,dr460nized}
                         asked interactively when missing
   --preset {desktop,laptop,server,handheld}
   --feature FEATURE     repeatable, one of: btrfs-maintenance, gaming, impermanence, performance, powersave, printing,

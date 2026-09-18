@@ -431,7 +431,7 @@ def run():
 
     picked_edition = gs.value("packagechooser_packagechooser")
     opts = gt.InstallOpts(
-        edition=picked_edition if picked_edition in ("mokka", "dr460nized", "catppuccin") else "dr460nized",
+        edition=picked_edition if picked_edition in ("mokka", "dr460nized") else "dr460nized",
         preset=preset,
         features=features,
         root=root_mount_point,

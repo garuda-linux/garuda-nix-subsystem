@@ -63,7 +63,7 @@ def build_parser():
         prog="install-garuda-nix",
         description="Generate a Garuda NixOS config from the shared installer template.",
     )
-    p.add_argument("--edition", choices=("mokka", "dr460nized", "catppuccin"), default=None,
+    p.add_argument("--edition", choices=("mokka", "dr460nized"), default=None,
                    help="asked interactively when missing")
     p.add_argument("--preset", choices=gt.GARUDA_PRESETS, default=None,
                    help="hardware preset")
@@ -302,7 +302,7 @@ def main(argv=None):
 
         try:
             gtui.run_wizard(questionary, args,
-                            ("mokka", "dr460nized", "catppuccin"),
+                            ("mokka", "dr460nized"),
                             gt.GARUDA_FEATURES, gt.GARUDA_PRESETS,
                             gp.list_disks())
         except gtui.Aborted as e:
