@@ -36,7 +36,7 @@
             const path_to_root = "../";
             const default_light_theme = "mocha";
             const default_dark_theme = "mocha";
-            window.path_to_searchindex_js = "../searchindex-5343f7c5.js";
+            window.path_to_searchindex_js = "../searchindex-eaae9c52.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-6e1911d0.js"></script>
@@ -182,7 +182,7 @@
 <p>Two frontends install the same Garuda flake. Pick one:</p>
 <h2 id="calamares-gui"><a class="header" href="#calamares-gui">Calamares (GUI)</a></h2>
 <p>The graphical installer keeps it simple on purpose: pick an edition
-(<code>mokka</code>, <code>dr460nized</code>, <code>catppuccin</code>) and pick optional features
+(<code>mokka</code>, <code>dr460nized</code>) and pick optional features
 (<code>gaming</code>, <code>printing</code>, …). Further customization can be done after the
 installation is complete.</p>
 <h2 id="install-garuda-nix-cli"><a class="header" href="#install-garuda-nix-cli">install-garuda-nix (CLI)</a></h2>
@@ -208,7 +208,7 @@ installation is complete.</p>
   --disk /dev/sda --schema btrfs --install
 </code></pre>
 <h2 id="all-options"><a class="header" href="#all-options">All options</a></h2>
-<pre><code class="language-sh">usage: install-garuda-nix [-h] [--edition {mokka,dr460nized,catppuccin}] [--preset {desktop,laptop,server,handheld}]
+<pre><code class="language-sh">usage: install-garuda-nix [-h] [--edition {mokka,dr460nized}] [--preset {desktop,laptop,server,handheld}]
                           [--feature FEATURE] [--root ROOT] [--disk DISK]
                           [--schema {ext4,btrfs,luks-ext4,luks-btrfs,btrfs-impermanence,luks-btrfs-impermanence,ext4-impermanence,luks-ext4-impermanence}]
                           [--luks-pass-file LUKS_PASS_FILE] [--yes] [--hostname HOSTNAME] [--username USERNAME]
@@ -223,7 +223,7 @@ Generate a Garuda NixOS config from the shared installer template.
 
 options:
   -h, --help            show this help message and exit
-  --edition {mokka,dr460nized,catppuccin}
+  --edition {mokka,dr460nized}
                         asked interactively when missing
   --preset {desktop,laptop,server,handheld}
   --feature FEATURE     repeatable, one of: btrfs-maintenance, gaming, impermanence, performance, powersave, printing,
