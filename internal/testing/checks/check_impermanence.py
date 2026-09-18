@@ -11,12 +11,11 @@ BASE = """{
   garuda.impermanence.persistentUsers = [ "test" ];
   users.users.test = { isNormalUser = true; };
   boot.loader.grub.enable = false;
-  boot.initrd.systemd.enable = false;
   fileSystems."/" = { device = "/dev/vda1"; fsType = "ext4"; };
 }"""
 
 EXPR = """let
-  f = builtins.getFlake "git+file://{repo}";
+  f = builtins.getFlake "path://{repo}";
   sys = f.lib.garudaSystem {{
     system = "x86_64-linux";
     modules = [ {base} {extra} ];
@@ -28,10 +27,11 @@ in {{
   users = builtins.mapAttrs
     (n: u: map (d: d.dirPath) u.directories)
     persist.users;
+  rollback = sys.config.boot.initrd.systemd.services ? rollback;
 }}"""
 
 TOPLEVEL = """let
-  f = builtins.getFlake "git+file://{repo}";
+  f = builtins.getFlake "path://{repo}";
   sys = f.lib.garudaSystem {{
     system = "x86_64-linux";
     modules = [ {base} {extra} ];
@@ -47,15 +47,13 @@ CHEAP_SERVICES = """{
   services.fprintd.enable = true;
   services.geoclue2.enable = true;
   services.chrony.enable = true;
-  services.zerotierone.enable = true;
   garuda.samba.enable = true;
 }"""
 
 OPT_IN_APPS = (
-    'garuda.impermanence.apps = [ "sops" "secureboot" "mysql" "wireguard"'
-    ' "password-store" "tuwunel" "forgejo" "loki" "prometheus" "traefik"'
-    ' "vaultwarden" "adguardhome" "lldap" "mastodon" "n8n" "vikunja" "wakapi"'
-    ' "cryptpad" "nextcloud" "fail2ban" "acme" ];'
+    'garuda.impermanence.apps = [ "firefox" "thunderbird" "rust"'
+    ' "docker" "podman" "libvirt" "nspawn" "flatpak" "fwupd"'
+    ' "upower" "plasmalogin" "accountsservice" "modemmanager" ];'
 )
 
 CASES = [
@@ -75,8 +73,7 @@ CASES = [
         "dirs": [
             "/var/lib/NetworkManager", "/etc/NetworkManager/system-connections",
             "/var/lib/iwd", "/var/lib/bluetooth", "/etc/cups",
-            "/var/lib/samba", "/var/lib/fprint", "/var/lib/geoclue",
-            "/var/lib/zerotier-one",
+            "/var/lib/samba", "/var/lib/fprint", "/var/lib/geoclue"
         ],
         "user_dirs": [".steam"],
     },
@@ -84,14 +81,12 @@ CASES = [
         "name": "apps-opt-in-services-off",
         "extra": "{ " + OPT_IN_APPS + " }",
         "dirs": [
-            "/var/lib/sops-nix", "/etc/secureboot", "/var/lib/mysql",
-            "/etc/wireguard", "/var/lib/tuwunel", "/var/lib/forgejo",
-            "/var/lib/loki", "/var/lib/prometheus2", "/var/lib/traefik",
-            "/var/lib/vaultwarden", "/var/lib/AdGuardHome", "/var/lib/lldap",
-            "/var/lib/mastodon", "/var/lib/nextcloud", "/var/lib/fail2ban",
-            "/var/lib/acme",
+            "/var/lib/docker", "/var/lib/containers", "/var/lib/libvirt",
+            "/var/lib/machines", "/var/lib/flatpak", "/var/lib/fwupd",
+            "/var/lib/upower", "/var/lib/plasmalogin",
+            "/var/lib/AccountsService", "/var/lib/ModemManager",
         ],
-        "user_dirs": [".password-store"],
+        "user_dirs": [".mozilla", ".thunderbird", ".cargo", ".rustup", ".docker", ".var"],
     },
 ]
 
@@ -103,8 +98,8 @@ def nix_eval(expr):
         capture_output=True, text=True, check=False)
 
 
-def evaluate(extra):
-    r = nix_eval(EXPR.format(repo=REPO_DIR, base=BASE, extra=extra))
+def evaluate(extra, base=BASE):
+    r = nix_eval(EXPR.format(repo=REPO_DIR, base=base, extra=extra))
     assert r.returncode == 0, r.stderr[-2000:]
     return json.loads(r.stdout)
 
@@ -130,6 +125,14 @@ def main():
     r = nix_eval(TOPLEVEL.format(repo=REPO_DIR, base=BASE, extra=""))
     assert r.returncode == 0, r.stderr[-2000:]
     print("PASS tmpfs-root-builds")
+
+    assert not evaluate(BASE)["rollback"], "tmpfs root needs no rollback"
+    print("PASS tmpfs-root-no-rollback")
+
+    btrfs = BASE.replace("  garuda.impermanence.tmpfsRoot = true;\n", "")
+    btrfs = btrfs.replace('fsType = "ext4"', 'fsType = "btrfs"')
+    assert evaluate("", base=btrfs)["rollback"], "btrfs root missing rollback service"
+    print("PASS btrfs-root-rollback")
 
     ext4 = BASE.replace("  garuda.impermanence.tmpfsRoot = true;\n", "")
     r = nix_eval(TOPLEVEL.format(repo=REPO_DIR, base=ext4, extra=""))

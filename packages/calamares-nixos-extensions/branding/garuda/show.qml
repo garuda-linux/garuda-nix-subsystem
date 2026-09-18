@@ -16,7 +16,7 @@ Presentation
     Slide {
         Image {
             anchors.centerIn: parent
-            width: 240; height: 240
+            width: 160; height: 160
             source: "images/garuda.svg"
             fillMode: Image.PreserveAspectFit
             opacity: 0.9

@@ -28,9 +28,9 @@ class TestPlanPartitions(unittest.TestCase):
         self.assertEqual(gp.plan_partitions("luks-btrfs-impermanence")[1][1], "btrfs")
 
     def test_impermanence_mounts(self):
-        self.assertEqual(gp.IMPERMANENCE_SUBVOLS, ("root", "home", "nix", "persist", "log"))
+        self.assertEqual(gp.IMPERMANENCE_SUBVOLS, ("root", "nix", "persist"))
         rels = [rel for _, rel in gp.IMPERMANENCE_MOUNTS]
-        self.assertEqual(rels, ["", "home", "nix", "persist", "var/log"])
+        self.assertEqual(rels, ["", "nix", "persist"])
 
     def test_tmpfs_root_schemas(self):
         self.assertTrue(gp.is_tmpfs_root("ext4-impermanence"))

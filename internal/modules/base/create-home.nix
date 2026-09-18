@@ -54,7 +54,7 @@ with garuda-lib;
                 uid="$(id -u "$2")"
                 gid="$(id -g "$2")"
                 install -d -m 755 -o "$uid" -g "$gid" "$1" "$1/.local/share"
-                "${pkgs.rsync}/bin/rsync" -a --ignore-existing "${cfg.skel}/" "$1/"
+                "${pkgs.rsync}/bin/rsync" -rltpgoD --chmod=u+rwX,go-w --ignore-existing "${cfg.skel}/" "$1/"
                 chown -R "$uid:$gid" "$1"
                 install -m 644 -o "$uid" -g "$gid" /dev/null "$marker"
                 echo "Seeded home directory for $2"

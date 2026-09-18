@@ -245,10 +245,24 @@ def partition_disk_retry(disk, schema, root, **kwargs):
                 raise
 
 
+def run_quiet(cmd, msg=None, **kwargs):
+    if msg is not None:
+        print(msg, flush=True)
+
+    try:
+        subprocess.run(cmd, check=True, stdout=subprocess.PIPE,
+                       stderr=subprocess.STDOUT, text=True, **kwargs)
+    except subprocess.CalledProcessError as e:
+        if e.stdout:
+            print(e.stdout, end="", flush=True)
+
+        raise
+
+
 def set_password(root, username, password):
-    subprocess.run(
+    run_quiet(
         ["nixos-enter", "--root", root, "-c", "chpasswd"],
-        input=f"{username}:{password}\n".encode(), check=True,
+        input=f"{username}:{password}\n",
     )
 
 
@@ -420,13 +434,11 @@ def main(argv=None):
     hooks = gt.Hooks()
     nixos_dir = os.path.join(args.root, "etc/nixos")
     print(f"Generating hardware configuration for {args.root} ...")
-    subprocess.check_call(
-        ["nixos-generate-config", "--root", args.root],
-        stderr=subprocess.STDOUT,
-    )
+    run_quiet(["nixos-generate-config", "--root", args.root])
     template_dir = repo_path("template")
     gt.write_config(template_dir, nixos_dir, opts, hooks)
     print(f"Wrote {nixos_dir}")
+    gt.seed_persist(args.root, nixos_dir, log=print)
 
     if args.install:
         flake = os.path.join(args.root, "etc/nixos") + "#" + args.hostname
@@ -452,10 +464,6 @@ def main(argv=None):
 
         for attempt in range(attempts):
             try:
-                subprocess.check_call(
-                    ["nix", "flake", "lock"],
-                    cwd=os.path.join(args.root, "etc/nixos"),
-                )
                 print(f"Running nixos-install --flake {flake} ...")
                 rc = gprog.run(cmd)
             except subprocess.CalledProcessError as e:
@@ -490,6 +498,8 @@ def main(argv=None):
                 f"Set a password with `nixos-enter --root {args.root} -c "
                 f"'passwd {args.username}'`"
             )
+
+        print(f"Installed {args.hostname}, reboot when ready")
 
         return 0
 

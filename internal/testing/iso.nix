@@ -37,6 +37,7 @@
 
   environment.systemPackages = [
     pkgs.nixos-facter
+    flake-inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.install-garuda-nix
   ];
 
   programs.kdeconnect.enable = false;
@@ -47,6 +48,7 @@
   zramSwap.enable = true;
 
   services.qemuGuest.enable = lib.mkForce true;
+  services.spice-vdagentd.enable = true;
   virtualisation.virtualbox.guest.enable = lib.mkForce true;
 
   services.displayManager.autoLogin = {

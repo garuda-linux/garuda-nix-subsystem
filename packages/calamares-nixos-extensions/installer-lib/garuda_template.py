@@ -520,3 +520,19 @@ def write_config(template_dir, nixos_dir, opts, hooks=None):
         hooks.write_file(path, text)
 
     return os.path.join(nixos_dir, "flake.nix")
+
+
+def seed_persist(root, nixos_dir, log=None):
+    persist = os.path.join(root, "persist")
+    target = os.path.join(persist, "etc/nixos")
+
+    if not os.path.ismount(persist):
+        return None
+
+    shutil.rmtree(target, ignore_errors=True)
+    shutil.copytree(nixos_dir, target, symlinks=True)
+
+    if log is not None:
+        log(f"Wrote {target}")
+
+    return target

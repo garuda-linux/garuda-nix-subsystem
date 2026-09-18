@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.garuda.impermanence;
 
@@ -36,9 +41,23 @@ in
     );
 
     boot.initrd = {
-      postResumeCommands = lib.mkIf cfg.tmpfsRoot (lib.mkAfter (rollbackScript cfg.device));
-      supportedFilesystems = lib.mkIf (!cfg.tmpfsRoot) [ "btrfs" ];
+      supportedFilesystems = [ "btrfs" ];
       systemd.enable = true;
+
+      systemd.services.rollback = lib.mkIf (!cfg.tmpfsRoot) {
+        description = "Rollback btrfs root subvolume";
+        wantedBy = [ "initrd.target" ];
+        after = [ "initrd-root-device.target" ];
+        before = [ "sysroot.mount" ];
+        unitConfig.DefaultDependencies = "no";
+        serviceConfig.Type = "oneshot";
+        path = with pkgs; [
+          btrfs-progs
+          coreutils
+          util-linux
+        ];
+        script = rollbackScript cfg.device;
+      };
     };
 
     assertions = [

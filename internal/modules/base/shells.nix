@@ -8,6 +8,8 @@
 with garuda-lib;
 let
   cfg = config.garuda.shell;
+
+  fastfetchConfig = if config.garuda.system.type == "mokka" then "mokka" else "neofetch";
 in
 {
   options.garuda.shell = {
@@ -135,7 +137,7 @@ in
         };
         shellInit = gDefault ''
           set fish_greeting
-          ${pkgs.fastfetch}/bin/fastfetch
+          ${pkgs.fastfetch}/bin/fastfetch --config ${fastfetchConfig}
         '';
       };
 

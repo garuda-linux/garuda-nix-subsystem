@@ -477,6 +477,8 @@ def run():
         os.path.dirname(os.path.abspath(__file__)), "..", "..", "template"
     )
     gt.write_config(template_dir, nixos_dir, opts, hooks)
+    gt.seed_persist(root_mount_point, nixos_dir,
+                    log=libcalamares.utils.debug)
 
     status = _("Installing NixOS")
     libcalamares.job.setprogress(INSTALL_PROGRESS_START)

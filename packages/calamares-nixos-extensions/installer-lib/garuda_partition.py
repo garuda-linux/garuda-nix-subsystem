@@ -27,13 +27,13 @@ def is_efi(path="/sys/firmware/efi"):
 
 def require_tools():
     tools = ["parted", "mkfs.fat", "mkfs.ext4", "mkfs.btrfs", "btrfs",
-             "cryptsetup", "mount", "umount"]
+             "cryptsetup", "mount", "umount", "udevadm", "wipefs"]
     missing = [t for t in tools if shutil.which(t) is None]
 
     if missing:
         raise PartitionError(
             f"missing tools: {', '.join(missing)} (need parted, dosfstools, "
-            "e2fsprogs, btrfs-progs, cryptsetup)"
+            "e2fsprogs, btrfs-progs, cryptsetup, util-linux)"
         )
 
 
@@ -54,13 +54,11 @@ def plan_partitions(schema, efi=True):
     return [boot, ("root", fs, mountpoint)]
 
 
-IMPERMANENCE_SUBVOLS = ("root", "home", "nix", "persist", "log")
+IMPERMANENCE_SUBVOLS = ("root", "nix", "persist")
 IMPERMANENCE_MOUNTS = (
     ("root", ""),
-    ("home", "home"),
     ("nix", "nix"),
     ("persist", "persist"),
-    ("log", "var/log"),
 )
 
 GARUDA_SUBVOLS = (
@@ -122,12 +120,19 @@ def list_disks():
     return _parse_lsblk(out)
 
 
-def _run(cmd, **kwargs):
-    if "input" in kwargs:
-        subprocess.run(CMD_PREFIX + cmd, check=True, **kwargs)
+def _run(cmd, msg=None, **kwargs):
+    if msg is not None:
+        print(msg, flush=True)
 
-    else:
-        subprocess.check_call(CMD_PREFIX + cmd, **kwargs)
+    try:
+        subprocess.run(CMD_PREFIX + cmd, check=True,
+                       stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                       text=True, **kwargs)
+    except subprocess.CalledProcessError as e:
+        if e.stdout:
+            print(e.stdout, end="", flush=True)
+
+        raise
 
 
 def _mount_ext4_impermanence(root_dev, root):
@@ -289,58 +294,78 @@ def partition_disk(disk, schema, root, efi=None, luks_pass_file=None,
     plan = plan_partitions(schema, efi)
     boot_label, _boot_fs, _boot_mp = plan[0]
 
-    _run(["parted", "-s", disk, "mklabel", "gpt"])
+    _run(["parted", "-s", disk, "mklabel", "gpt"],
+         msg=f"Creating partition table on {disk} ...")
 
     if efi:
         _run(["parted", "-s", disk, "mkpart", "ESP", "fat32",
-              "1MiB", ESP_SIZE, "set", "1", "esp", "on"])
+              "1MiB", ESP_SIZE, "set", "1", "esp", "on"],
+             msg="Creating EFI partition ...")
         _run(["parted", "-s", disk, "mkpart", "root", "ext4",
-              ESP_SIZE, "100%"])
+              ESP_SIZE, "100%"], msg="Creating root partition ...")
 
     else:
         _run(["parted", "-s", disk, "mkpart", "bios-boot",
-              "1MiB", "2MiB", "set", "1", "bios_grub", "on"])
+              "1MiB", "2MiB", "set", "1", "bios_grub", "on"],
+             msg="Creating BIOS boot partition ...")
         _run(["parted", "-s", disk, "mkpart", "root", "ext4",
-              "2MiB", "100%"])
+              "2MiB", "100%"], msg="Creating root partition ...")
 
-    _run(["sleep", "1"])
+    _run(["udevadm", "settle"])
+
     _ = boot_label
 
     boot_part = _disk_part(disk, 1)
     root_part = _disk_part(disk, 2)
+    _run(["wipefs", "-a", root_part])
+
+    if efi:
+        _run(["wipefs", "-a", boot_part])
 
     if luks:
         assert passphrase is not None
         _run(["cryptsetup", "luksFormat", "--batch-mode",
-              "--key-file=-", root_part], input=passphrase.encode())
+              "--key-file=-", root_part], input=passphrase,
+             msg="Encrypting root partition ...")
         _run(["cryptsetup", "open", "--key-file=-", root_part,
-              LUKS_MAPPER_NAME], input=passphrase.encode())
+              LUKS_MAPPER_NAME], input=passphrase,
+             msg="Unlocking encrypted root ...")
         root_dev = f"/dev/mapper/{LUKS_MAPPER_NAME}"
 
     else:
         root_dev = root_part
 
     if efi:
-        _run(["mkfs.fat", "-F32", "-n", "ESP", boot_part])
+        _run(["mkfs.fat", "-F32", "-n", "ESP", boot_part],
+             msg="Formatting EFI partition ...")
+        _run(["udevadm", "settle"])
 
     if "impermanence" in schema:
         os.makedirs(root, exist_ok=True)
 
         if "ext4" in schema:
-            _run(["mkfs.ext4", "-L", "nixos", root_dev])
+            _run(["mkfs.ext4", "-L", "nixos", root_dev],
+                 msg="Formatting root partition ...")
+            _run(["udevadm", "settle"])
             _mount_ext4_impermanence(root_dev, root)
 
         else:
-            _run(["mkfs.btrfs", "-L", "nixos", "-f", root_dev])
+            _run(["mkfs.btrfs", "-L", "nixos", "-f", root_dev],
+                 msg="Formatting root partition ...")
+            _run(["udevadm", "settle"])
             _mount_btrfs_impermanence(root_dev, root)
 
     elif "ext4" in schema:
-        _run(["mkfs.ext4", "-L", "nixos", root_dev])
+        _run(["mkfs.ext4", "-L", "nixos", root_dev],
+             msg="Formatting root partition ...")
+        _run(["udevadm", "settle"])
         os.makedirs(root, exist_ok=True)
         _run(["mount", root_dev, root])
 
     else:
-        _run(["mkfs.btrfs", "-L", "nixos", "-f", root_dev])
+        _run(["mkfs.btrfs", "-L", "nixos", "-f", root_dev],
+             msg="Formatting root partition ...")
+        _run(["udevadm", "settle"])
         os.makedirs(root, exist_ok=True)
         _run(["mount", root_dev, root])
 
