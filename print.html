@@ -37,10 +37,10 @@
             const path_to_root = "";
             const default_light_theme = "mocha";
             const default_dark_theme = "mocha";
-            window.path_to_searchindex_js = "searchindex-3a7e3fdf.js";
+            window.path_to_searchindex_js = "searchindex-c820a877.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-6e1911d0.js"></script>
+        <script src="toc-729dcad2.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -261,6 +261,23 @@ garuda-nix-subsystem install        # trigger the installation process
   };
 }
 </code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="updating-1"><a class="header" href="#updating-1">Updating</a></h1>
+<p>Garuda Nix installs the <code>garuda-update</code> command on GUI systems and on systems managed through <code>garuda-managed.json</code>.
+It is the a convenient way to keep the system up to date.</p>
+<pre><code class="language-sh">garuda-update
+</code></pre>
+<h2 id="what-it-does"><a class="header" href="#what-it-does">What it does</a></h2>
+<ul>
+<li><strong>NixOS flake setups</strong>: updates the flake inputs, rebuilds with <code>nh os switch</code>, and commits the refreshed <code>flake.lock</code> when the flake lives in a Git repository. The flake defaults to <code>/etc/nixos</code> and can be pointed elsewhere with <code>GARUDA_FLAKE</code>.</li>
+<li><strong>Managed systems</strong> (<code>/etc/nixos/garuda-managed.json</code> exists): downloads the latest updater from the <code>stable</code> branch and runs it. This regenerates the managed configuration, updates the flake inputs and rebuilds.</li>
+</ul>
+<h2 id="rolling-back"><a class="header" href="#rolling-back">Rolling back</a></h2>
+<p>Roll back to the previous generation (only on standalone NixOS):</p>
+<pre><code class="language-sh">garuda-update --rollback
+</code></pre>
+<h2 id="subsystem"><a class="header" href="#subsystem">Subsystem</a></h2>
+<p>On a Garuda subsystem, <code>garuda-update</code> runs from inside Garuda Nix with the managed path described above. The update can also be triggered from the Garuda host with <code>sudo garuda-nix-subsystem update</code>.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="getting-the-iso"><a class="header" href="#getting-the-iso">Getting the ISO</a></h1>
 <h2 id="download"><a class="header" href="#download">Download</a></h2>
