@@ -34,7 +34,7 @@ rec {
 
   # Packages that are available in the flake's packages output
   external = {
-    inherit (internal) calamares-nixos-extensions install-garuda-nix garuda-fs-diff;
+    inherit (internal) install-garuda-nix;
     docs =
       pkgs.runCommand "gns-docs"
         # makes the documentation available at ./result/ by running nix build .#docs
