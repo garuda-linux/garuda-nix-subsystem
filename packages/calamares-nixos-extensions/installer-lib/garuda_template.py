@@ -101,6 +101,11 @@ class InstallOpts:
     # User section
     fullname: str | None = None
     autologin: bool = True
+    # yescrypt hash rendered as users.users.<name>.hashedPassword so the
+    # password survives impermanence/rollback instead of living only in /etc/shadow.
+    hashed_password: str | None = None
+    # Same, for users.users.root.
+    hashed_root_password: str | None = None
 
     # Calamares partition list for the btrfs subvol fix, None to skip
     partitions: list | None = None
@@ -336,18 +341,36 @@ def build_system_section(opts):
 
 def build_user_section(opts):
     lines = []
-    lines.append(
-        "  # Define a user account. Don't forget to set a password with ‘passwd’."
-    )
+    if opts.hashed_password:
+        lines.append(
+            "  # Define a user account. The password is set declaratively so it"
+        )
+        lines.append(
+            "  # survives impermanence/rollback; edit this hash to change it."
+        )
+    else:
+        lines.append(
+            "  # Define a user account. Don't forget to set a password with ‘passwd’."
+        )
     lines.append(f'  users.users."{nix_escape(opts.username)}" = {{')
     lines.append("    isNormalUser = true;")
 
     if opts.fullname:
         lines.append(f'    description = "{nix_escape(opts.fullname)}";')
+    if opts.hashed_password:
+        lines.append(f'    hashedPassword = "{nix_escape(opts.hashed_password)}";')
     lines.append('    extraGroups = [ "networkmanager" "wheel" ];')
     lines.append("  };")
     lines.append("")
-    
+
+    if opts.hashed_root_password:
+        lines.append("  # Root password, also set declaratively so it survives")
+        lines.append("  # impermanence/rollback.")
+        lines.append(
+            f'  users.users.root.hashedPassword = "{nix_escape(opts.hashed_root_password)}";'
+        )
+        lines.append("")
+
     if opts.autologin:
         lines.append("  # Enable automatic login for the user.")
         lines.append("  services.displayManager.autoLogin.enable = true;")

@@ -108,7 +108,8 @@ def run_wizard(q, args, editions, features, presets, disks):
 
     if args.disk is not None and not args.yes:
         ok = _ask(q.confirm(f"WIPE {args.disk} with schema "
-                            f"'{args.schema}'?", default=False).ask())
+                            f"'{args.schema}'?", default=False,
+                            auto_enter=False).ask())
 
         if not ok:
             raise Aborted("aborted by user")

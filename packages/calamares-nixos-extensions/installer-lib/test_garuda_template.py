@@ -174,6 +174,27 @@ class TestBuildFacterSection(unittest.TestCase):
         self.assertNotIn("nvidia.enable", lines)
 
 
+class TestBuildUserSection(unittest.TestCase):
+    def test_hashed_password_rendered(self):
+        opts = gt.InstallOpts(username="nico", hashed_password="$y$j9T$abc$def")
+        lines = section_lines(gt.build_user_section, opts)
+        self.assertIn('users.users."nico"', lines)
+        self.assertIn('hashedPassword = "$y$j9T$abc$def";', lines)
+
+    def test_no_password_by_default(self):
+        lines = section_lines(gt.build_user_section, gt.InstallOpts())
+        self.assertNotIn("hashedPassword", lines)
+
+    def test_hashed_root_password_rendered(self):
+        opts = gt.InstallOpts(hashed_root_password="$y$j9T$root$xyz")
+        lines = section_lines(gt.build_user_section, opts)
+        self.assertIn('users.users.root.hashedPassword = "$y$j9T$root$xyz";', lines)
+
+    def test_no_root_password_by_default(self):
+        lines = section_lines(gt.build_user_section, gt.InstallOpts())
+        self.assertNotIn("users.users.root", lines)
+
+
 class TestInstallOpts(unittest.TestCase):
     def test_defaults(self):
         opts = gt.InstallOpts()

@@ -8,6 +8,7 @@
   e2fsprogs,
   btrfs-progs,
   cryptsetup,
+  mkpasswd,
 }:
 
 python3.pkgs.buildPythonApplication {
@@ -36,6 +37,7 @@ python3.pkgs.buildPythonApplication {
           e2fsprogs
           btrfs-progs
           cryptsetup
+          mkpasswd
         ]
       }
     runHook postInstall

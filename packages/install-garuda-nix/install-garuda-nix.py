@@ -153,8 +153,12 @@ def build_parser():
         help="force the interactive wizard even when all flags are given",
     )
     p.add_argument(
-        "--password-file", default=None,
-        help="read the user password from this file (non-interactive)",
+        "--password", default=None,
+        help="set the user password non-interactively",
+    )
+    p.add_argument(
+        "--root-password", default=None,
+        help="set the root password non-interactively",
     )
 
     return p
@@ -259,31 +263,21 @@ def run_quiet(cmd, msg=None, **kwargs):
         raise
 
 
-def set_password(root, username, password):
-    run_quiet(
-        ["nixos-enter", "--root", root, "-c", "chpasswd"],
-        input=f"{username}:{password}\n",
+def hash_password(password):
+    result = subprocess.run(
+        ["mkpasswd", "--method=yescrypt", "--stdin"],
+        input=f"{password}\n",
+        text=True,
+        stdout=subprocess.PIPE,
+        check=True,
     )
+
+    return result.stdout.strip()
 
 
 def main(argv=None):
     args = build_parser().parse_args(argv)
     ensure_root()
-
-    if args.password_file:
-        with open(args.password_file) as f:
-            lines = f.read().splitlines()
-
-        if not lines or not lines[0]:
-            print(f"error: password file {args.password_file} is empty",
-                  file=sys.stderr)
-
-            return 1
-
-        args.password = lines[0]
-
-    else:
-        args.password = None
 
     args.root_mounted = os.path.ismount(args.root)
 
@@ -311,6 +305,12 @@ def main(argv=None):
             return 1
 
         wizard_confirmed = args.disk is not None
+
+    if args.password is None and sys.stdin.isatty():
+        args.password = read_password(args.username)
+
+        if args.password is None:
+            return 1
 
     unknown = [f for f in args.feature if f not in gt.GARUDA_FEATURES]
 
@@ -403,6 +403,16 @@ def main(argv=None):
         if not efi and args.bootloader == "auto" and not args.grub_device:
             args.grub_device = disk
 
+    hashed_password = None
+
+    if args.password:
+        hashed_password = hash_password(args.password)
+
+    hashed_root_password = None
+
+    if args.root_password:
+        hashed_root_password = hash_password(args.root_password)
+
     try:
         opts = gt.InstallOpts(
         edition=args.edition,
@@ -424,6 +434,8 @@ def main(argv=None):
         vconsole=args.vconsole,
         fullname=args.fullname,
         autologin=not args.no_autologin,
+        hashed_password=hashed_password,
+        hashed_root_password=hashed_root_password,
         tmpfs_root=gp.is_tmpfs_root(schema),
     )
     except ValueError as e:
@@ -481,16 +493,7 @@ def main(argv=None):
         if rc != 0:
             return rc
 
-        password = args.password
-
-        if password is None and sys.stdin.isatty():
-            password = read_password(args.username)
-
-            if password is None:
-                return 1
-
-        if password is not None:
-            set_password(args.root, args.username, password)
+        if hashed_password is not None:
             print(f"Password set for {args.username}")
 
         else:
@@ -499,15 +502,23 @@ def main(argv=None):
                 f"'passwd {args.username}'`"
             )
 
+        if hashed_root_password is not None:
+            print("Root password set")
+
         print(f"Installed {args.hostname}, reboot when ready")
 
         return 0
 
     else:
-        print(
-            f"Set a password with `nixos-enter --root {args.root} -c 'passwd {args.username}'`,"
-        )
-        print("then install with:")
+        if hashed_password is None:
+            print(
+                f"Set a password with `nixos-enter --root {args.root} -c 'passwd {args.username}'`,"
+            )
+            print("then install with:")
+
+        else:
+            print("Install with:")
+
         print(
             f"  nixos-install --flake {os.path.join(args.root, 'etc/nixos')}#{args.hostname} --root {args.root} --no-root-passwd"
         )

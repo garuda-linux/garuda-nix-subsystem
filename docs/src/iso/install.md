@@ -18,6 +18,8 @@ The command-line installer covers everything the GUI does, plus:
 - **Partition layouts**
   - Choose from `ext4`, `btrfs`, `luks-ext4`, `luks-btrfs`, `btrfs-impermanence`, `luks-btrfs-impermanence`, `ext4-impermanence`, `luks-ext4-impermanence`
   - Choosing [impermanence](https://github.com/nix-community/impermanence) automatically sets up either btrfs rollback or root on tmpfs
+- **Passwords**
+  - The user (`--password`) and root (`--root-password`) passwords are hashed with yescrypt and written into the generated config, so they survive impermanence/rollback
 
 This can either be done interactively or non-interactively.
 
@@ -42,7 +44,7 @@ usage: install-garuda-nix [-h] [--edition {mokka,dr460nized}] [--preset {desktop
                           [--bootloader {auto,systemd-boot,grub,none}] [--grub-device GRUB_DEVICE]
                           [--kernel {cachyos,lts,latest}] [--flake-ref FLAKE_REF] [--state-version STATE_VERSION]
                           [--allow-unfree | --no-allow-unfree] [--install | --no-install] [--no-bootloader] [--tui]
-                          [--password-file PASSWORD_FILE]
+                          [--password PASSWORD] [--root-password ROOT_PASSWORD]
 
 Generate a Garuda NixOS config from the shared installer template.
 
@@ -84,8 +86,9 @@ options:
                         skip)
   --no-bootloader       pass --no-bootloader to nixos-install (test VMs without EFI vars)
   --tui                 force the interactive wizard even when all flags are given
-  --password-file PASSWORD_FILE
-                        read the user password from this file (non-interactive)
+  --password PASSWORD   set the user password non-interactively
+  --root-password ROOT_PASSWORD
+                        set the root password non-interactively
 ```
 
 ## Install from the flake
