@@ -1,4 +1,4 @@
-# Garuda Nix Subsystem
+# Garuda Nix
 
 [![built with nix](https://img.shields.io/static/v1?logo=nixos&logoColor=white&label=&message=Built%20with%20Nix&color=41439a)](https://builtwithnix.org)
 [![pipeline status](https://gitlab.com/garuda-linux/garuda-nix-subsystem/badges/main/pipeline.svg)](https://gitlab.com/garuda-linux/garuda-nix-subsystem/-/commits/main)
