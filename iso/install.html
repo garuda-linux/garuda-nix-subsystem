@@ -36,7 +36,7 @@
             const path_to_root = "../";
             const default_light_theme = "mocha";
             const default_dark_theme = "mocha";
-            window.path_to_searchindex_js = "../searchindex-eaae9c52.js";
+            window.path_to_searchindex_js = "../searchindex-3a7e3fdf.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-6e1911d0.js"></script>
@@ -199,6 +199,11 @@ installation is complete.</p>
 <li>Choosing <a href="https://github.com/nix-community/impermanence">impermanence</a> automatically sets up either btrfs rollback or root on tmpfs</li>
 </ul>
 </li>
+<li><strong>Passwords</strong>
+<ul>
+<li>The user (<code>--password</code>) and root (<code>--root-password</code>) passwords are hashed with yescrypt and written into the generated config, so they survive impermanence/rollback</li>
+</ul>
+</li>
 </ul>
 <p>This can either be done interactively or non-interactively.</p>
 <p>Example:</p>
@@ -217,7 +222,7 @@ installation is complete.</p>
                           [--bootloader {auto,systemd-boot,grub,none}] [--grub-device GRUB_DEVICE]
                           [--kernel {cachyos,lts,latest}] [--flake-ref FLAKE_REF] [--state-version STATE_VERSION]
                           [--allow-unfree | --no-allow-unfree] [--install | --no-install] [--no-bootloader] [--tui]
-                          [--password-file PASSWORD_FILE]
+                          [--password PASSWORD] [--root-password ROOT_PASSWORD]
 
 Generate a Garuda NixOS config from the shared installer template.
 
@@ -259,8 +264,9 @@ options:
                         skip)
   --no-bootloader       pass --no-bootloader to nixos-install (test VMs without EFI vars)
   --tui                 force the interactive wizard even when all flags are given
-  --password-file PASSWORD_FILE
-                        read the user password from this file (non-interactive)
+  --password PASSWORD   set the user password non-interactively
+  --root-password ROOT_PASSWORD
+                        set the root password non-interactively
 </code></pre>
 <h2 id="install-from-the-flake"><a class="header" href="#install-from-the-flake">Install from the flake</a></h2>
 <p>On any NixOS host with internet, run the installer directly from the published flake:</p>
