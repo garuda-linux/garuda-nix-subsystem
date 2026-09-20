@@ -10,7 +10,7 @@ let
     runtimeInputs = with pkgs; [
       git
       nix
-      nixos-rebuild
+      nh
       coreutils
     ];
     text = ''
@@ -22,7 +22,7 @@ let
 
       if [ "''${1:-}" = "--rollback" ]; then
         echo -e "\033[1;33m-->\033[1;34m Rolling back to previous generation 🍵\033[0m"
-        nixos-rebuild switch --rollback
+        nh os rollback --bypass-root-check
         exit 0
       fi
 
@@ -34,7 +34,7 @@ let
         echo -e "\033[1;33m-->\033[1;34m Updating flake inputs 🍵\033[0m"
         nix flake update --flake "$FLAKE"
         echo -e "\033[1;33m-->\033[1;34m Rebuilding system 🍵\033[0m"
-        if nixos-rebuild switch --flake "$FLAKE"; then
+        if nh os switch --bypass-root-check "$FLAKE"; then
           git -C "$FLAKE" add flake.lock
           git -C "$FLAKE" -c user.name="garuda-update" -c user.email="garuda-update@localhost" commit -m "chore(flake.lock): $(date +%F)" --no-verify --quiet || true
         fi
