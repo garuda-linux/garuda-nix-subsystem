@@ -30,6 +30,7 @@
     ./shells.nix
     ./sound.nix
     ./system_info.nix
+    ./try.nix
     (import ./nix.nix { inherit overlay; })
     inputs."ksv-cachyos-settings-nixos".nixosModules.default
     inputs.impermanence.nixosModules.impermanence
