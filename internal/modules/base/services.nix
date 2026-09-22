@@ -108,7 +108,7 @@ with garuda-lib;
       RuntimeMaxUse = "10M";
     };
     systemd.coredump = {
-      enable = gDefault false;
+      enable = gDefault true;
       settings.Coredump = {
         Storage = "none";
         ProcessSizeMax = 0;

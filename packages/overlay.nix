@@ -1,10 +1,10 @@
 { inputs, lib }:
-_: prev:
+final: prev:
 let
   inherit (prev.stdenv.hostPlatform) system;
   packages = import ./default.nix {
     inherit inputs lib system;
-    pkgs = prev;
+    pkgs = final;
   };
 
   withZenpower =
