@@ -2,6 +2,30 @@ set -e
 
 unset LD_PRELOAD LD_LIBRARY_PATH
 
+if [ -n "${1:-}" ]; then
+  EDITION="$1"
+elif [ -n "${GNS_EDITION:-}" ]; then
+  EDITION="$GNS_EDITION"
+elif [ -t 0 ]; then
+  echo "Select edition:"
+  PS3="Edition [1-2]: "
+  select EDITION in dr460nized mokka; do
+    case "$EDITION" in
+    dr460nized | mokka) break ;;
+    *) echo "Pick 1 for dr460nized or 2 for mokka." ;;
+    esac
+  done
+else
+  EDITION="dr460nized"
+fi
+case "$EDITION" in
+dr460nized | mokka) ;;
+*)
+  echo -e "\033[1;31mError: Unknown edition '$EDITION'. Choose dr460nized or mokka. ❌\033[0m" >&2
+  exit 1
+  ;;
+esac
+
 function createOriginalConfiguration {
   if ! [ -f "$MNT_DIR/etc/nixos/flake.nix" ]; then
     cat >"$MNT_DIR/etc/nixos/flake.nix" <<EOF
@@ -37,7 +61,7 @@ with lib;
     garuda.subsystem.enable = true;
     garuda.managed.config = ./garuda-managed.json;
 
-    garuda.dr460nized.enable = true;
+    garuda.${EDITION}.enable = true;
 
     # This should never be changed unless you know exactly what you are doing.
     # This has no impact on any package updates or OS version.
