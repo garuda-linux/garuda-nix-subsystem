@@ -2,8 +2,18 @@ set -e
 
 unset LD_PRELOAD LD_LIBRARY_PATH
 
-if [ -n "${1:-}" ]; then
-  EDITION="$1"
+FORCE=false
+if [[ ${GNS_FORCE:-false} == "true" ]]; then FORCE=true; fi
+ARGS=()
+for arg in "$@"; do
+  case "$arg" in
+  --force | -f | --reinstall) FORCE=true ;;
+  *) ARGS+=("$arg") ;;
+  esac
+done
+
+if [ -n "${ARGS[0]:-}" ]; then
+  EDITION="${ARGS[0]}"
 elif [ -n "${GNS_EDITION:-}" ]; then
   EDITION="$GNS_EDITION"
 elif [ -t 0 ]; then
@@ -101,6 +111,13 @@ rmdir "$MNT_DIR"
 
 echo -e "\033[1;33m-->\033[1;34m Mounting Garuda Nix Subsystem subvolumes\033[0m"
 MNT_DIR=$(TMPDIR=/run/gns mktemp -d)
+
+cleanup_install_mounts() {
+  umount "$MNT_DIR/nix" 2>/dev/null || true
+  umount "$MNT_DIR" 2>/dev/null || true
+}
+trap cleanup_install_mounts EXIT
+
 mount -o subvol=@nix-subsystem "UUID=$BTRFS_UUID" "$MNT_DIR"
 mkdir -p "$MNT_DIR/nix"
 mount -o subvol=@nix "UUID=$BTRFS_UUID" "$MNT_DIR/nix"
@@ -110,8 +127,16 @@ echo -e "\n\033[1;33m-->\033[1;34m Configuring Garuda Nix Subsystem\033[0m\n"
 mkdir -p "$MNT_DIR"/etc/nixos
 
 if [ -f "$MNT_DIR/etc/nixos/garuda-managed.json" ]; then
-  echo -e "\033[1;31mError: Garuda Nix Subsystem is already installed on this system. ❌\033[0m"
-  exit 1
+  if [ -e "$MNT_DIR/nix/var/nix/profiles/system" ] || [ -e "$MNT_DIR/boot/grub/grub.cfg" ]; then
+    if $FORCE; then
+      echo -e "\033[1;33m-->\033[1;34m Forcing reinstall over existing installation\033[0m"
+    else
+      echo -e "\033[1;31mError: Garuda Nix Subsystem is already installed on this system. Pass --force to reinstall. ❌\033[0m"
+      exit 1
+    fi
+  else
+    echo -e "\033[1;33m-->\033[1;34m Previous incomplete install detected, resuming\033[0m"
+  fi
 fi
 
 createOriginalConfiguration
