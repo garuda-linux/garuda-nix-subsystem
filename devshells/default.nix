@@ -100,5 +100,16 @@ forAllSystems (
 
     release = release.shell;
     ci = ci-shell.shell;
+
+    gns-install = pkgs.mkShell {
+      packages = [
+        gns-install
+        gns-update
+      ];
+    };
+
+    gns-update = pkgs.mkShell {
+      packages = [ gns-update ];
+    };
   }
 )
