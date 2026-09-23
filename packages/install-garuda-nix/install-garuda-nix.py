@@ -17,8 +17,8 @@ def repo_path(name):
         os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             "..",
-            "calamares-nixos-extensions",
-            name,
+            "garuda-installer-lib",
+            name if name == "template" else ".",
         )
     )
 

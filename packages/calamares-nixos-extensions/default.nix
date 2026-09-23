@@ -2,6 +2,7 @@
   glibcLocales,
   stdenv,
   lib,
+  garuda-installer-lib,
 }:
 
 stdenv.mkDerivation {
@@ -14,8 +15,8 @@ stdenv.mkDerivation {
     runHook preInstall
     mkdir -p $out/{etc,lib,share}/calamares
     cp -r modules $out/lib/calamares/
-    cp -r installer-lib $out/lib/calamares/
-    cp -r template $out/lib/calamares/
+    ln -s ${garuda-installer-lib}/share/garuda-installer-lib $out/lib/calamares/installer-lib
+    ln -s ${garuda-installer-lib}/share/garuda-installer-lib/template $out/lib/calamares/template
     cp -r config/* $out/etc/calamares/
     cp -r branding $out/share/calamares/
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Unit tests for garuda_template pure functions (no I/O, no nix store)."""
+
 import unittest
 
 import garuda_template as gt
@@ -35,8 +36,9 @@ class TestDetectGpus(unittest.TestCase):
     def test_cases(self):
         nvidia = nvidia_card()
         amd = {"vendor": {"hex": "1002"}, "sysfs_bus_id": "0000:03:00.0"}
-        drv = nvidia_card(vendor={"hex": "0000"}, driver="nvidia",
-                          sysfs_bus_id="0000:02:00.0")
+        drv = nvidia_card(
+            vendor={"hex": "0000"}, driver="nvidia", sysfs_bus_id="0000:02:00.0"
+        )
         cases = [
             ({"hardware": {"graphics_card": [nvidia]}}, (True, "PCI:1:0:0", None)),
             ({"hardware": {"graphics_card": [drv]}}, (True, "PCI:2:0:0", None)),
@@ -74,28 +76,32 @@ def section_lines(func, *args):
 
 class TestBuildGarudaSection(unittest.TestCase):
     def test_mokka_gaming(self):
-        lines = section_lines(gt.build_garuda_section,
-                              gt.InstallOpts(edition="mokka", features=["gaming"]))
+        lines = section_lines(
+            gt.build_garuda_section,
+            gt.InstallOpts(edition="mokka", features=["gaming"]),
+        )
         self.assertIn("garuda.mokka.enable = true", lines)
         self.assertIn("garuda.gaming.enable = true", lines)
 
     def test_impermanence(self):
-        lines = section_lines(gt.build_garuda_section,
-                              gt.InstallOpts(edition="mokka", features=["impermanence"]))
+        lines = section_lines(
+            gt.build_garuda_section,
+            gt.InstallOpts(edition="mokka", features=["impermanence"]),
+        )
         self.assertIn("garuda.impermanence.enable = true", lines)
 
     def test_impermanence_tmpfs_root(self):
-        opts = gt.InstallOpts(edition="mokka", features=["impermanence"],
-                              tmpfs_root=True, username="nico")
+        opts = gt.InstallOpts(
+            edition="mokka", features=["impermanence"], tmpfs_root=True, username="nico"
+        )
         rendered = section_lines(gt.build_garuda_section, opts)
         self.assertIn("garuda.impermanence.tmpfsRoot = true", rendered)
-        self.assertIn('garuda.impermanence.persistentUsers = [ "nico" ]',
-                      rendered)
-        plain = section_lines(gt.build_garuda_section,
-                              gt.InstallOpts(features=["impermanence"]))
+        self.assertIn('garuda.impermanence.persistentUsers = [ "nico" ]', rendered)
+        plain = section_lines(
+            gt.build_garuda_section, gt.InstallOpts(features=["impermanence"])
+        )
         self.assertNotIn("garuda.impermanence.tmpfsRoot = true", plain)
-        self.assertIn('garuda.impermanence.persistentUsers = [ "garuda" ]',
-                      plain)
+        self.assertIn('garuda.impermanence.persistentUsers = [ "garuda" ]', plain)
 
 
 class TestFixTmpfsRoot(unittest.TestCase):
@@ -113,28 +119,34 @@ class TestFixTmpfsRoot(unittest.TestCase):
         self.assertTrue(fixed.rstrip().endswith("}"))
 
     def test_impermanence_needed_for_boot(self):
-        hw = ('  fileSystems."/" =\n    { device = "/dev/vdb2";\n    };\n'
-              '  fileSystems."/persist" =\n    { device = "/dev/vdb2";\n    };\n')
+        hw = (
+            '  fileSystems."/" =\n    { device = "/dev/vdb2";\n    };\n'
+            '  fileSystems."/persist" =\n    { device = "/dev/vdb2";\n    };\n'
+        )
         fixed = gt.fix_impermanence_needed_for_boot(hw)
         self.assertEqual(fixed.count("neededForBoot = true;"), 2)
 
     def test_performance_wins_over_powersave(self):
         warned = []
-        opts = gt.InstallOpts(edition="dr460nized", features=["performance", "powersave"])
+        opts = gt.InstallOpts(
+            edition="dr460nized", features=["performance", "powersave"]
+        )
         lines = section_lines(gt.build_garuda_section, opts, warned.append)
         self.assertIn("garuda.performance-tweaks.enable = true", lines)
         self.assertNotIn("powersave", lines)
         self.assertTrue(warned)
 
     def test_unknown_edition_and_features(self):
-        lines = section_lines(gt.build_garuda_section,
-                              gt.InstallOpts(edition="nope", features=["bogus"]))
+        lines = section_lines(
+            gt.build_garuda_section, gt.InstallOpts(edition="nope", features=["bogus"])
+        )
         self.assertIn("garuda.dr460nized.enable = true", lines)
         self.assertNotIn("bogus", lines)
 
     def test_preset(self):
-        lines = section_lines(gt.build_garuda_section,
-                              gt.InstallOpts(edition="mokka", preset="laptop"))
+        lines = section_lines(
+            gt.build_garuda_section, gt.InstallOpts(edition="mokka", preset="laptop")
+        )
         self.assertIn('garuda.preset = "laptop"', lines)
 
     def test_no_preset_by_default(self):
@@ -148,11 +160,15 @@ class TestFixTmpfsRoot(unittest.TestCase):
 class TestBuildBootloaderSection(unittest.TestCase):
     def test_cases(self):
         cases = [
-            (gt.InstallOpts(bootloader="systemd-boot"),
-             "boot.loader.systemd-boot.enable = true"),
+            (
+                gt.InstallOpts(bootloader="systemd-boot"),
+                "boot.loader.systemd-boot.enable = true",
+            ),
             (gt.InstallOpts(bootloader="grub"), "boot.loader.grub.enable = false"),
-            (gt.InstallOpts(bootloader="grub", grub_device="/dev/sda"),
-             'boot.loader.grub.device = "/dev/sda"'),
+            (
+                gt.InstallOpts(bootloader="grub", grub_device="/dev/sda"),
+                'boot.loader.grub.device = "/dev/sda"',
+            ),
             (gt.InstallOpts(bootloader="none"), "boot.loader.grub.enable = false"),
         ]
         for opts, want in cases:
@@ -198,8 +214,10 @@ class TestBuildUserSection(unittest.TestCase):
 class TestInstallOpts(unittest.TestCase):
     def test_defaults(self):
         opts = gt.InstallOpts()
-        self.assertEqual((opts.edition, opts.hostname, opts.username, opts.allow_unfree),
-                         ("mokka", "garuda-nix", "garuda", True))
+        self.assertEqual(
+            (opts.edition, opts.hostname, opts.username, opts.allow_unfree),
+            ("mokka", "garuda-nix", "garuda", True),
+        )
 
 
 class TestPresetExcludes(unittest.TestCase):
@@ -210,14 +228,64 @@ class TestPresetExcludes(unittest.TestCase):
         gt.check_preset_features(None, ["powersave"])
 
     def test_clashes(self):
-        for preset, feature in [("desktop", "powersave"),
-                                ("handheld", "powersave"),
-                                ("laptop", "performance")]:
+        for preset, feature in [
+            ("desktop", "powersave"),
+            ("handheld", "powersave"),
+            ("laptop", "performance"),
+        ]:
             with self.subTest(preset=preset, feature=feature):
                 with self.assertRaises(ValueError):
                     gt.check_preset_features(preset, [feature])
                 with self.assertRaises(ValueError):
                     gt.InstallOpts(preset=preset, features=[feature])
+
+
+class TestSubsystem(unittest.TestCase):
+    def test_configuration_reuses_garuda_section(self):
+        text = gt.build_subsystem_configuration(
+            edition="mokka", preset="laptop", features=["gaming"]
+        )
+        self.assertIn("garuda.subsystem.enable = true", text)
+        self.assertIn("garuda.managed.config = ./garuda-managed.json", text)
+        self.assertIn("garuda.mokka.enable = true", text)
+        self.assertIn('garuda.preset = "laptop"', text)
+        self.assertIn("garuda.gaming.enable = true", text)
+        self.assertIn('system.stateVersion = "26.11"', text)
+
+    def test_flake_bakes_hostname(self):
+        text = gt.build_subsystem_flake("myhost")
+        self.assertIn("nixosConfigurations.myhost", text)
+        self.assertIn(
+            'garuda.url = "gitlab:garuda-linux/garuda-nix-subsystem/stable"', text
+        )
+
+    def test_excluded_features_rejected(self):
+        for feature in ("impermanence", "btrfs-maintenance"):
+            with self.subTest(feature=feature):
+                with self.assertRaises(ValueError):
+                    gt.check_subsystem_features([feature])
+                with self.assertRaises(ValueError):
+                    gt.build_subsystem_configuration(features=[feature])
+        gt.check_subsystem_features(["gaming"])
+
+    def test_write_never_overwrites(self):
+        import json
+        import os
+        import tempfile
+
+        d = tempfile.mkdtemp()
+        gt.write_subsystem_config(d, edition="mokka", hostname="h1")
+        with open(os.path.join(d, "configuration.nix"), "w") as f:
+            f.write("edited")
+        gt.write_subsystem_config(d, edition="dr460nized", hostname="h2")
+        with open(os.path.join(d, "configuration.nix")) as f:
+            self.assertEqual(f.read(), "edited")
+        with open(os.path.join(d, "flake.nix")) as f:
+            self.assertIn("h1", f.read())
+        with open(os.path.join(d, "garuda-managed.json")) as f:
+            managed = json.load(f)
+        self.assertEqual(managed["hostname"], "h1")
+        self.assertTrue(managed["v2"]["subsystem"])
 
 
 if __name__ == "__main__":

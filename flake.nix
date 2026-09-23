@@ -103,7 +103,7 @@
       inherit lib internal;
 
       templates.default = {
-        path = ./packages/calamares-nixos-extensions/template;
+        path = ./packages/garuda-installer-lib/template;
         description = "Garuda Nix starter configuration";
       };
 

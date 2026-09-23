@@ -3,7 +3,7 @@ let
   treefmt = treefmt-nix.lib.evalModule pkgs {
     projectRootFile = "flake.nix";
     settings.global.excludes = [
-      "packages/calamares-nixos-extensions/template/**"
+      "packages/garuda-installer-lib/template/**"
     ];
     programs = {
       deadnix.enable = true;

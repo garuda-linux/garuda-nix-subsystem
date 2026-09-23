@@ -30,17 +30,18 @@ GARUDA_FEATURES = {
 
 GARUDA_PRESETS = ("desktop", "laptop", "server", "handheld")
 
-PRESET_EXCLUDES = {"desktop": "powersave", "handheld": "powersave",
-                   "laptop": "performance"}
+PRESET_EXCLUDES = {
+    "desktop": "powersave",
+    "handheld": "powersave",
+    "laptop": "performance",
+}
 
 
 def check_preset_features(preset, features):
     """Raise ValueError when a feature clashes with the preset."""
-    if (preset in PRESET_EXCLUDES
-            and PRESET_EXCLUDES[preset] in (features or [])):
+    if preset in PRESET_EXCLUDES and PRESET_EXCLUDES[preset] in (features or []):
         raise ValueError(
-            f"preset {preset!r} conflicts with the "
-            f"{PRESET_EXCLUDES[preset]} feature"
+            f"preset {preset!r} conflicts with the {PRESET_EXCLUDES[preset]} feature"
         )
 
 
@@ -48,11 +49,21 @@ def check_feature_conflicts(features):
     feats = set(features or [])
 
     if "performance" in feats and "powersave" in feats:
-        raise ValueError(
-            "features 'performance' and 'powersave' conflict"
-        )
+        raise ValueError("features 'performance' and 'powersave' conflict")
+
 
 DEFAULT_FLAKE_REF = "gitlab:garuda-linux/garuda-nix-subsystem/stable"
+
+SUBSYSTEM_EDITIONS = ("dr460nized", "mokka")
+SUBSYSTEM_STATE_VERSION = "26.11"
+SUBSYSTEM_EXCLUDED_FEATURES = frozenset({"impermanence", "btrfs-maintenance"})
+
+
+def check_subsystem_features(features):
+    bad = sorted(set(features or []) & SUBSYSTEM_EXCLUDED_FEATURES)
+    if bad:
+        raise ValueError(f"feature(s) not supported in the subsystem: {', '.join(bad)}")
+
 
 MARKERS = ("@@GARUDA@@", "@@FACTER@@", "@@BOOTLOADER@@", "@@SYSTEM@@", "@@USER@@")
 
@@ -114,7 +125,7 @@ class InstallOpts:
         self.features = list(self.features or [])
         self.encrypted_swap = list(self.encrypted_swap or [])
         if self.preset not in GARUDA_PRESETS:
-            self.preset = None        
+            self.preset = None
         self.extra_locale = dict(self.extra_locale or {})
         self.hostname = self.hostname or "garuda-nix"
         self.username = self.username or "garuda"
@@ -211,11 +222,11 @@ def fix_btrfs_subvolumes(hardware_config, partitions, log=None):
     # Rewrite only bogus values, leave correct ones untouched.
     for mount_point, correct_subvol in subvol_map.items():
         wrong = "|".join(
-            sorted(
-                re.escape(v) for v in {mount_point, "/"} if v != correct_subvol
-            )
+            sorted(re.escape(v) for v in {mount_point, "/"} if v != correct_subvol)
         )
-        pattern = rf'(fileSystems\."{re.escape(mount_point)}"[^\n]*?"subvol=)(?:{wrong})"'
+        pattern = (
+            rf'(fileSystems\."{re.escape(mount_point)}"[^\n]*?"subvol=)(?:{wrong})"'
+        )
         replacement = rf'\g<1>{correct_subvol}"'
         hardware_config = re.sub(pattern, replacement, hardware_config)
 
@@ -265,7 +276,9 @@ def build_bootloader_section(opts):
             lines.append("  boot.loader.grub.enable = false;")
         else:
             lines.append("  boot.loader.grub.enable = true;")
-            lines.append(f'  boot.loader.grub.device = "{nix_escape(opts.grub_device)}";')
+            lines.append(
+                f'  boot.loader.grub.device = "{nix_escape(opts.grub_device)}";'
+            )
             lines.append("  boot.loader.grub.useOSProber = true;")
             if opts.root_is_btrfs:
                 lines.append('  boot.loader.grub.fsIdentifier = "provided";')
@@ -345,9 +358,7 @@ def build_user_section(opts):
         lines.append(
             "  # Define a user account. The password is set declaratively so it"
         )
-        lines.append(
-            "  # survives impermanence/rollback; edit this hash to change it."
-        )
+        lines.append("  # survives impermanence/rollback; edit this hash to change it.")
     else:
         lines.append(
             "  # Define a user account. Don't forget to set a password with ‘passwd’."
@@ -374,9 +385,13 @@ def build_user_section(opts):
     if opts.autologin:
         lines.append("  # Enable automatic login for the user.")
         lines.append("  services.displayManager.autoLogin.enable = true;")
-        lines.append(f'  services.displayManager.autoLogin.user = "{nix_escape(opts.username)}";')
+        lines.append(
+            f'  services.displayManager.autoLogin.user = "{nix_escape(opts.username)}";'
+        )
         lines.append("")
-    lines.append(f'  home-manager.users."{nix_escape(opts.username)}" = import ../home-manager/home.nix;')
+    lines.append(
+        f'  home-manager.users."{nix_escape(opts.username)}" = import ../home-manager/home.nix;'
+    )
     lines.append("")
     return lines
 
@@ -415,14 +430,14 @@ def fix_tmpfs_root(hardware_config):
         '    { device = "none";\n'
         '      fsType = "tmpfs";\n'
         '      options = [ "defaults" "size=25%" "mode=755" ];\n'
-        '    };\n'
+        "    };\n"
     )
     replaced, count = re.subn(
         r'  fileSystems\."/"\s*=\s*\{[^}]*\};\n', tmpfs, hardware_config
     )
     if count:
         return replaced
-    return hardware_config.rstrip()[: -1].rstrip() + "\n\n" + tmpfs + "}\n"
+    return hardware_config.rstrip()[:-1].rstrip() + "\n\n" + tmpfs + "}\n"
 
 
 def fix_impermanence_needed_for_boot(hardware_config):
@@ -559,3 +574,107 @@ def seed_persist(root, nixos_dir, log=None):
         log(f"Wrote {target}")
 
     return target
+
+
+def build_subsystem_flake(hostname, flake_ref=DEFAULT_FLAKE_REF):
+    return (
+        "{\n"
+        '    description = "Garuda Linux Nix Subsystem Flake";\n'
+        "\n"
+        "    inputs = {\n"
+        f'    garuda.url = "{nix_escape(flake_ref)}";\n'
+        "    };\n"
+        "\n"
+        "    outputs = { self, garuda }:\n"
+        "    let\n"
+        '        system = "x86_64-linux";\n'
+        "    in\n"
+        "    {\n"
+        f"        nixosConfigurations.{nix_escape(hostname)} = garuda.lib.garudaSystem {{\n"
+        "        inherit system;\n"
+        "        modules = [ ./configuration.nix ];\n"
+        "        };\n"
+        "    };\n"
+        "}\n"
+    )
+
+
+def build_subsystem_configuration(
+    edition="dr460nized",
+    preset=None,
+    features=(),
+    state_version=SUBSYSTEM_STATE_VERSION,
+    warn=None,
+):
+    check_subsystem_features(features)
+    opts = InstallOpts(
+        edition=edition,
+        preset=preset,
+        features=list(features or []),
+        state_version=state_version,
+    )
+    garuda_lines = "\n".join(
+        "    " + line.strip()
+        for line in build_garuda_section(opts, warn)
+        if line.strip()
+    )
+    return (
+        "{ config, pkgs, lib, ... }:\n"
+        "with lib;\n"
+        "{\n"
+        "    imports = [\n"
+        "    ./hardware-configuration.nix\n"
+        "    ];\n"
+        "    # Do not remove these subsystem settings\n"
+        "    garuda.subsystem.enable = true;\n"
+        "    garuda.managed.config = ./garuda-managed.json;\n"
+        "\n"
+        f"{garuda_lines}\n"
+        "\n"
+        "    # This should never be changed unless you know exactly what you are doing.\n"
+        "    # This has no impact on any package updates or OS version.\n"
+        f'    system.stateVersion = "{nix_escape(opts.state_version)}";\n'
+        "}\n"
+    )
+
+
+def build_managed_skeleton(install_version, hostname):
+    return {
+        "installVersion": int(install_version),
+        "version": int(install_version),
+        "hostname": hostname,
+        "v2": {"subsystem": True},
+    }
+
+
+def write_subsystem_config(
+    nixos_dir,
+    edition="dr460nized",
+    preset=None,
+    features=(),
+    hostname="garuda-nix",
+    state_version=SUBSYSTEM_STATE_VERSION,
+    flake_ref=DEFAULT_FLAKE_REF,
+    install_version=2,
+    hooks=None,
+):
+    hooks = hooks or Hooks()
+    os.makedirs(nixos_dir, exist_ok=True)
+    flake_path = os.path.join(nixos_dir, "flake.nix")
+    conf_path = os.path.join(nixos_dir, "configuration.nix")
+    managed_path = os.path.join(nixos_dir, "garuda-managed.json")
+
+    if not os.path.exists(flake_path):
+        hooks.write_file(flake_path, build_subsystem_flake(hostname, flake_ref))
+    if not os.path.exists(conf_path):
+        hooks.write_file(
+            conf_path,
+            build_subsystem_configuration(
+                edition, preset, features, state_version, hooks.warn
+            ),
+        )
+    if not os.path.exists(managed_path):
+        with open(managed_path, "w") as f:
+            json.dump(build_managed_skeleton(install_version, hostname), f, indent=2)
+            f.write("\n")
+    return nixos_dir
