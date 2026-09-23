@@ -498,6 +498,16 @@ def fix_hardware_config(hw_config, opts, hooks):
         hooks.write_file(hw_config, htxt)
 
 
+def commit_config(nixos_dir, message, hooks):
+    if shutil.which("git") is None:
+        hooks.warn("git not found, skipping /etc/nixos history")
+        return
+
+    import garuda_subsystem as gs
+
+    gs.git_commit(nixos_dir, message, run=hooks.run)
+
+
 def write_config(template_dir, nixos_dir, opts, hooks=None):
     """Copy the template into the target and fill placeholders/sections.
 
@@ -557,6 +567,7 @@ def write_config(template_dir, nixos_dir, opts, hooks=None):
             text = text.replace("allowUnfree = true", "allowUnfree = false")
         hooks.write_file(path, text)
 
+    commit_config(nixos_dir, "Initial Garuda NixOS configuration", hooks)
     return os.path.join(nixos_dir, "flake.nix")
 
 

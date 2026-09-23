@@ -2,6 +2,7 @@
 # Use this to configure your system environment.
 {
   inputs,
+  pkgs,
   ...
 }:
 {
