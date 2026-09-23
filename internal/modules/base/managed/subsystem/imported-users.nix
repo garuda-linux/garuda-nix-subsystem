@@ -16,6 +16,11 @@ let
         type = types.int;
         description = "Numeric UID, kept identical to the Garuda host user.";
       };
+      fullname = mkOption {
+        type = types.str;
+        default = "";
+        description = "Full name of the imported user, from the Garuda host.";
+      };
       wheel = mkOption {
         type = types.bool;
         description = "Whether the imported user gets wheel (sudo) membership.";
@@ -67,6 +72,7 @@ in
     users.users = mapAttrs (_name: value: {
       isNormalUser = true;
       inherit (value) uid;
+      description = lib.mkIf (value.fullname != "") value.fullname;
       initialHashedPassword = value.passwordHash;
       extraGroups = lib.mkIf value.wheel [ "wheel" ];
     }) cfg.users;

@@ -58,11 +58,15 @@ in
         inherit (x) name;
         value = {
           passwordHash = x.hashed_password;
+          fullname = x.fullname or "";
           inherit (x) uid;
           inherit (x) home;
           inherit (x) wheel;
         };
       }) settings.users
+    );
+    users.users.root.hashedPassword = lib.mkIf (settings ? hashed_root_password) (
+      gDefault settings.hashed_root_password
     );
     garuda.subsystem.imported-users.shared-home.uuid = settings.uuid;
     systemd.mounts = [

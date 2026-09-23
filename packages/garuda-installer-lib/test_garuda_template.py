@@ -288,5 +288,40 @@ class TestSubsystem(unittest.TestCase):
         self.assertTrue(managed["v2"]["subsystem"])
 
 
+class TestCommitConfig(unittest.TestCase):
+    @unittest.skipUnless(__import__("shutil").which("git"), "git not installed")
+    def test_commits_files(self):
+        import os
+        import shutil
+        import subprocess
+        import tempfile
+
+        d = tempfile.mkdtemp()
+        try:
+            with open(os.path.join(d, "flake.nix"), "w") as f:
+                f.write('{}\n')
+
+            gt.commit_config(d, "initial", gt.Hooks())
+            log = subprocess.check_output(
+                ["git", "-C", d, "log", "--format=%s"], text=True)
+            self.assertEqual(log.strip(), "initial")
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
+
+    def test_skips_without_git(self):
+        import tempfile
+        from unittest import mock
+
+        warned = []
+
+        class WarnHooks(gt.Hooks):
+            def warn(self, msg):
+                warned.append(msg)
+
+        with mock.patch.object(gt.shutil, "which", return_value=None):
+            gt.commit_config(tempfile.mkdtemp(), "initial", WarnHooks())
+        self.assertTrue(warned)
+
+
 if __name__ == "__main__":
     unittest.main()

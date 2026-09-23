@@ -1,6 +1,7 @@
 import json
 import os
 import select
+import signal
 import subprocess
 import sys
 import time
@@ -115,7 +116,7 @@ def run(cmd, throttle=0.1):
 
     proc = subprocess.Popen(
         cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-        text=True, errors="replace",
+        text=True, errors="replace", start_new_session=True,
     )
 
     assert proc.stdout is not None
@@ -160,30 +161,39 @@ def run(cmd, throttle=0.1):
             print(status, flush=True, file=sys.stderr)
             shown = status
 
-    while True:
-        ready, _, _ = select.select([proc.stdout], [], [], throttle)
+    try:
+        while True:
+            ready, _, _ = select.select([proc.stdout], [], [], throttle)
 
-        if not ready:
-            if tty:
-                if proc.poll() is not None:
-                    for line in proc.stdout:
-                        handle(line)
+            if not ready:
+                if tty:
+                    if proc.poll() is not None:
+                        for line in proc.stdout:
+                            handle(line)
 
-                    break
+                        break
 
-                shown = render(state)
-                _draw(shown)
+                    shown = render(state)
+                    _draw(shown)
 
-            continue
+                continue
 
-        line = proc.stdout.readline()
+            line = proc.stdout.readline()
 
-        if not line:
-            break
+            if not line:
+                break
 
-        handle(line)
+            handle(line)
 
-    proc.wait()
+        proc.wait()
+    finally:
+        if proc.poll() is None:
+            try:
+                os.killpg(proc.pid, signal.SIGKILL)
+            except OSError:
+                pass
+
+            proc.wait()
 
     total = int(time.monotonic() - state["started"])
     mark = "✓" if proc.returncode == 0 else "✗"

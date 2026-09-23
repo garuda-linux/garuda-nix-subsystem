@@ -20,6 +20,15 @@ def run(cmd, **kwargs):
     subprocess.run(cmd, check=True, **kwargs)
 
 
+def step(msg):
+    if sys.stderr.isatty():
+        line = f"\r\x1b[2K\033[1;32m»\033[0m {msg}\n"
+    else:
+        line = f"» {msg}\n"
+    sys.stderr.write(line)
+    sys.stderr.flush()
+
+
 def btrfs_uuid():
     return subprocess.check_output(
         ["findmnt", "-n", "-o", "UUID", "/"], text=True).strip()
@@ -31,7 +40,7 @@ def ensure_subvolume(uuid):
         run(["mount", f"UUID={uuid}", top])
         try:
             if not os.path.isdir(os.path.join(top, "@nix-subsystem")):
-                print("Creating Garuda Nix Subsystem subvolume")
+                step("Creating Garuda Nix Subsystem subvolume")
                 run(["btrfs", "subvolume", "create",
                      os.path.join(top, "@nix-subsystem")])
         finally:
@@ -41,10 +50,15 @@ def ensure_subvolume(uuid):
 
 
 def unmount_subsystem(mnt, remove=False):
-    subprocess.run(["umount", os.path.join(mnt, "nix")], check=False,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    subprocess.run(["umount", mnt], check=False,
-                   stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    for target in (os.path.join(mnt, "nix"), mnt):
+        r = subprocess.run(["umount", target], check=False,
+                           stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL)
+
+        if r.returncode != 0:
+            subprocess.run(["umount", "-l", target], check=False,
+                           stdout=subprocess.DEVNULL,
+                           stderr=subprocess.DEVNULL)
     if remove:
         try:
             os.rmdir(mnt)
@@ -66,3 +80,19 @@ def prepare_dirs():
     os.makedirs("/var/tmp", exist_ok=True)
     os.environ.setdefault("TMPDIR", "/var/tmp")
     os.makedirs("/run/gns", exist_ok=True)
+
+
+def git_commit(repo_dir, message, run=None):
+    run = run or (
+        lambda cmd: subprocess.check_output(
+            cmd, stderr=subprocess.STDOUT, text=True)
+    )
+    if not os.path.isdir(os.path.join(repo_dir, ".git")):
+        run(["git", "init", repo_dir])
+
+    if not run(["git", "-C", repo_dir, "status", "--porcelain"]).strip():
+        return
+
+    run(["git", "-C", repo_dir, "add", "-A"])
+    run(["git", "-C", repo_dir, "-c", "user.name=gns",
+         "-c", "user.email=gns@localhost", "commit", "-m", message])
