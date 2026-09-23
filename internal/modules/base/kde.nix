@@ -18,7 +18,7 @@ in
   options = {
     garuda.kde = {
       ocrLang = lib.mkOption {
-        default = [ "eng" ];
+        default = [ ];
         description = ''
           Tesseract OCR languages bundled into Spectacle (screenshot tool).
         '';
@@ -96,30 +96,31 @@ in
         plasma-browser-integration
         plasma-keyboard
         qtvirtualkeyboard
-        spectacle
       ])
+      ++ lib.optionals (cfg.ocrLang != [ ]) (with pkgs.kdePackages; [ spectacle ])
     );
 
-    environment.systemPackages = [
-      (pkgs.kdePackages.spectacle.override { tesseractLanguages = cfg.ocrLang; })
-    ]
-    ++ gExcludableArray config "defaultpackages" (
-      with pkgs;
-      [
-        ffmpegthumbnailer
-        kdePackages.applet-window-buttons6
-        kdePackages.kdegraphics-thumbnailers
-        kdePackages.kimageformats
-        kdePackages.kio-admin
-        kdePackages.qtstyleplugin-kvantum
-        plasma-panel-colorizer
-        plasma-plugin-blurredwallpaper
-        resvg
-        sshfs
-        vlc
-        xdg-desktop-portal
+    environment.systemPackages =
+      lib.optionals (cfg.ocrLang != [ ]) [
+        (pkgs.kdePackages.spectacle.override { tesseractLanguages = cfg.ocrLang; })
       ]
-    );
+      ++ gExcludableArray config "defaultpackages" (
+        with pkgs;
+        [
+          ffmpegthumbnailer
+          kdePackages.applet-window-buttons6
+          kdePackages.kdegraphics-thumbnailers
+          kdePackages.kimageformats
+          kdePackages.kio-admin
+          kdePackages.qtstyleplugin-kvantum
+          plasma-panel-colorizer
+          plasma-plugin-blurredwallpaper
+          resvg
+          sshfs
+          vlc
+          xdg-desktop-portal
+        ]
+      );
 
     environment.etc."plasmalogin.conf.d/${config.garuda.system.type}.conf".text = ''
       [Greeter][Wallpaper][org.kde.image][General]
