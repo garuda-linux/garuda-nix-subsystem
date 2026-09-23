@@ -19,13 +19,6 @@
     # ./nvim.nix
   ];
 
-  nixpkgs = {
-    overlays = [
-      # You can also add overlays exported from other flakes:
-      # neovim-nightly-overlay.overlays.default
-    ];
-  };
-
   home = {
     username = "@USERNAME@";
     homeDirectory = "/home/@USERNAME@";
