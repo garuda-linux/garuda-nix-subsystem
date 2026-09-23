@@ -2,7 +2,7 @@
   lib,
   makeWrapper,
   python3,
-  calamares-nixos-extensions,
+  garuda-installer-lib,
   parted,
   dosfstools,
   e2fsprogs,
@@ -28,8 +28,8 @@ python3.pkgs.buildPythonApplication {
     cp install-garuda-nix.py $out/bin/install-garuda-nix
     chmod +x $out/bin/install-garuda-nix
     wrapProgram $out/bin/install-garuda-nix \
-      --set GNS_INSTALLER_LIB ${calamares-nixos-extensions}/lib/calamares/installer-lib \
-      --set GNS_TEMPLATE_DIR ${calamares-nixos-extensions}/lib/calamares/template \
+      --set GNS_INSTALLER_LIB ${garuda-installer-lib}/share/garuda-installer-lib \
+      --set GNS_TEMPLATE_DIR ${garuda-installer-lib}/share/garuda-installer-lib/template \
       --prefix PATH : ${
         lib.makeBinPath [
           parted

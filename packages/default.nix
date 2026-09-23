@@ -7,19 +7,23 @@
 rec {
   # Packages that are used internally by Garuda Linux only
   internal = {
-    calamares-nixos-extensions = pkgs.callPackage ./calamares-nixos-extensions { };
+    garuda-installer-lib = pkgs.callPackage ./garuda-installer-lib { };
+    calamares-nixos-extensions = pkgs.callPackage ./calamares-nixos-extensions {
+      inherit (internal) garuda-installer-lib;
+    };
     calamares = pkgs.callPackage ./calamares { };
     garuda-nix-manager = pkgs.qt6Packages.callPackage ./garuda-nix-manager {
       inherit (internal) launch-terminal;
     };
     install-garuda-nix = pkgs.callPackage ./install-garuda-nix {
-      inherit (internal) calamares-nixos-extensions;
+      inherit (internal) garuda-installer-lib;
     };
     garuda-fs-diff = pkgs.callPackage ./garuda-fs-diff { };
     installer = pkgs.callPackage ./gns-management/installer.nix {
       all-packages = pkgs;
       garuda-lib = lib;
       inherit system;
+      inherit (internal) garuda-installer-lib;
     };
     launch-terminal = pkgs.callPackage ./garuda-libs {
       inherit pkgs;
@@ -28,6 +32,7 @@ rec {
       all-packages = pkgs;
       garuda-lib = lib;
       inherit system;
+      inherit (internal) garuda-installer-lib;
       inherit (inputs) self;
     };
   };
@@ -58,6 +63,7 @@ rec {
       garuda-update
       garuda-nix-manager
       launch-terminal
+      garuda-installer-lib
       calamares-nixos-extensions
       install-garuda-nix
       ;

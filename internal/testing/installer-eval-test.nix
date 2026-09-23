@@ -41,8 +41,8 @@ pkgs.testers.runNixOSTest {
     machine.succeed("nix-store --import < /tmp/starship-closure.nar")
 
     machine.succeed("cp -r ${../..} /tmp/repo && chmod -R u+w /tmp/repo")
-    machine.succeed("cp -r ${../..}/packages/calamares-nixos-extensions/template /tmp/tmpl")
-    machine.succeed("cp ${../..}/packages/calamares-nixos-extensions/installer-lib/garuda_template.py /tmp/")
+    machine.succeed("cp -r ${../..}/packages/garuda-installer-lib/template /tmp/tmpl")
+    machine.succeed("cp ${../..}/packages/garuda-installer-lib/garuda_template.py /tmp/")
     machine.succeed("cp ${./checks/check_eval_matrix.py} /tmp/check_eval_matrix.py")
     machine.succeed("cp ${./checks/check_impermanence.py} /tmp/check_impermanence.py")
 
