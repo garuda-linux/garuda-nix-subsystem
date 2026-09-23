@@ -106,16 +106,20 @@ in
             }
           );
           prime = {
-            amdgpuBusId = gDefault cfg.nvidia.amdgpuBusId;
-            nvidiaBusId = gDefault cfg.nvidia.nvidiaBusId;
             offload = {
-              enable = gDefault true;
+              enable = gDefault (cfg.nvidia.amdgpuBusId != null && cfg.nvidia.nvidiaBusId != null);
               enableOffloadCmd = gDefault true;
             };
+          }
+          // lib.optionalAttrs (cfg.nvidia.amdgpuBusId != null) {
+            amdgpuBusId = gDefault cfg.nvidia.amdgpuBusId;
+          }
+          // lib.optionalAttrs (cfg.nvidia.nvidiaBusId != null) {
+            nvidiaBusId = gDefault cfg.nvidia.nvidiaBusId;
           };
           powerManagement = {
             enable = gDefault true;
-            finegrained = gDefault true;
+            finegrained = gDefault (cfg.nvidia.amdgpuBusId != null && cfg.nvidia.nvidiaBusId != null);
           };
         };
       };
