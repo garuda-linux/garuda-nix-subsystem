@@ -113,8 +113,10 @@ rec {
   version = 2;
 
   # Generate /etc/skel from a path. This ensures that certain directories are always available to mount from with the correct permissions.
+  # `excludes` are rsync patterns (relative to the skel root) left out of the
+  # generated skel, e.g. files plasma-manager regenerates when declarative.
   gGenerateSkel =
-    pkgs: skel: name:
+    pkgs: skel: name: excludes:
     derivation {
       name = "skel-${name}";
       src = skel;
@@ -122,7 +124,7 @@ rec {
         PATH="${pkgs.rsync}/bin:${pkgs.coreutils}/bin"
         set -e
         mkdir -p "$out/"{.cache,.config,.local/share}
-        rsync -a "$src/" "$out"
+        rsync -a ${lib.concatMapStringsSep " " (e: "--exclude '${e}'") excludes} "$src/" "$out"
       '';
       inherit (pkgs.stdenv.hostPlatform) system;
     };
