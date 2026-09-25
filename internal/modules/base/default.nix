@@ -24,6 +24,7 @@
     ./nix-manager.nix
     ./nyx.nix
     ./performance.nix
+    ./plasmalogin.nix
     ./powersave.nix
     ./programs.nix
     ./services.nix

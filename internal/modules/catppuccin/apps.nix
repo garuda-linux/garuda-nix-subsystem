@@ -26,10 +26,7 @@ import ../theme/generic-apps.nix
           flavour = [ "mocha" ];
           winDecStyles = [ "classic" ];
         })
-        (catppuccin-papirus-folders.override {
-          accent = "mauve";
-          flavor = "mocha";
-        })
+        tela-circle-icon-theme
         easyeffects
         firedragon-bin
       ];
