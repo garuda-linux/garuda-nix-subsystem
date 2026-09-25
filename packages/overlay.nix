@@ -32,6 +32,23 @@ in
   );
 }
 // {
+  tela-circle-icon-theme = prev.tela-circle-icon-theme.overrideAttrs (old: {
+    version = "unstable-2026-08-16";
+    src = final.fetchFromGitHub {
+      owner = "vinceliuice";
+      repo = "tela-circle-icon-theme";
+      rev = "ee3cf47bcb05c3d99a0860b54254d2ff3d1d2c69";
+      hash = "sha256-kvAJH/ptMvSCjk5Equi+8ZzHjSDKQUURUImNDZZXQcs=";
+    };
+    patches = (old.patches or [ ]) ++ [ ../patches/tela-circle-catppuccin.patch ];
+    installPhase = ''
+      runHook preInstall
+      ./install.sh -d $out/share/icons catppuccin
+      jdupes --quiet --link-soft --recurse $out/share
+      runHook postInstall
+    '';
+  });
+
   kdePackages = prev.kdePackages // {
     applet-window-buttons6 = prev.kdePackages.applet-window-buttons6.overrideAttrs (old: {
       patches = (old.patches or [ ]) ++ [ ../patches/applet-window-buttons6-pr31.patch ];
