@@ -26,18 +26,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    impermanence = {
-      url = "github:nix-community/impermanence";
-      inputs.home-manager.follows = "home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    ksv-cachyos-settings-nixos = {
-      url = "github:vivekanandan-ks/ksv-cachyos-settings-nixos";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.treefmt-nix.follows = "treefmt-nix";
-    };
-
     # Dev tools
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";

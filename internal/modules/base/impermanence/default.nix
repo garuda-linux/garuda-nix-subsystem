@@ -1,9 +1,17 @@
 { lib, ... }:
+let
+  impSrc = fetchTarball {
+    url = "https://github.com/nix-community/impermanence/archive/7b1d382faf603b6d264f58627330f9faa5cba149.tar.gz";
+    sha256 = "sha256-03+JxvzmfwRu+5JafM0DLbxgHttOQZkUtDWBmeUkN8Y=";
+  };
+  impMod = import (impSrc + "/nixos.nix");
+in
 {
   imports = [
     ./rollback.nix
     ./persistence.nix
     ./apps.nix
+    impMod
   ];
 
   options.garuda.impermanence = {

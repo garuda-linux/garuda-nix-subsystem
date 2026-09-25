@@ -22,11 +22,6 @@ with garuda-lib;
   };
 
   config = lib.mkIf cfg.enable {
-    cachyos.settings = {
-      enable = gDefault true;
-      enableGaming = gDefault true;
-    };
-
     programs.gamemode.enable = gDefault true;
 
     programs.steam = {
