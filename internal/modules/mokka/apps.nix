@@ -11,8 +11,11 @@ import ../theme/generic-apps.nix
     themePackages =
       pkgs: with pkgs; [
         applet-window-title
-        catppuccin-cursors
-        catppuccin-gtk
+        catppuccin-cursors.mochaMauve
+        (catppuccin-gtk.override {
+          accents = [ "mauve" ];
+          variant = "mocha";
+        })
         (catppuccin.override {
           accent = "mauve";
           variant = "mocha";

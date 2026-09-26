@@ -17,7 +17,7 @@ let
         font = "Inter,10,-1,5,75,0,0,0,0,0,Bold";
         fixed = "Liberation Mono,10,-1,5,75,0,0,0,0,0,Bold";
         activeFont = "Inter,10,-1,5,75,0,0,0,0,0,Bold";
-        icons = "Tela-circle-dracula-dark";
+        icons = "Tela-circle-catppuccin-dark";
         cursor = "catppuccin-mocha-mauve-cursors";
         kvantum = "Mokka";
       }

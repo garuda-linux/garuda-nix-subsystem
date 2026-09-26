@@ -129,6 +129,7 @@ in
 
     garuda.create-home.skel = gDefault "${gGenerateSkel pkgs "${cfg.themePackage}/skel"
       config.garuda.system.type
+      [ ]
     }";
 
     fonts = {

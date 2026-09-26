@@ -47,6 +47,9 @@ in
       jdupes --quiet --link-soft --recurse $out/share
       runHook postInstall
     '';
+
+    # Upstream rev ships dangling symlinks
+    dontCheckForBrokenSymlinks = true;
   });
 
   kdePackages = prev.kdePackages // {
