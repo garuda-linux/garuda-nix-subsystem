@@ -7,13 +7,6 @@ let
     pkgs = final;
   };
 
-  withZenpower =
-    lfinal:
-    lfinal.extend (
-      lpFinal: _lpPrev: {
-        zenpower = lpFinal.callPackage ./zenpower5 { };
-      }
-    );
 in
 {
   inherit (packages.internal)
@@ -26,11 +19,18 @@ in
     "calamares-nixos-extensions" = packages.internal.calamares-nixos-extensions;
   };
 
-  linuxPackagesFor = kernel: withZenpower (prev.linuxPackagesFor kernel);
-  linuxPackages_cachyos = withZenpower (
-    prev.linuxPackages_cachyos or (prev.linuxPackagesFor prev.linuxPackages.kernel)
-  );
+  linuxPackages_cachyos =
+    (prev.linuxPackages_cachyos or (prev.linuxPackagesFor prev.linuxPackages.kernel)).extend
+      (
+        lpFinal: lpPrev:
+        lib.optionalAttrs (lpPrev ? zenpower) {
+          zenpower = lpPrev.zenpower.overrideAttrs (old: {
+            patches = (old.patches or [ ]) ++ [ ../patches/zenpower-clang-fixes.patch ];
+          });
+        }
+      );
 }
+// zenpowerSets
 // {
   tela-circle-icon-theme = prev.tela-circle-icon-theme.overrideAttrs (old: {
     version = "unstable-2026-08-16";
