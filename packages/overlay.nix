@@ -18,6 +18,7 @@ in
 {
   inherit (packages.internal)
     calamares-nixos-extensions
+    garuda-inxi
     garuda-nix-manager
     ;
 

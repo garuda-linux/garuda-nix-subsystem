@@ -19,6 +19,7 @@ rec {
       inherit (internal) garuda-installer-lib;
     };
     garuda-fs-diff = pkgs.callPackage ./garuda-fs-diff { };
+    garuda-inxi = pkgs.callPackage ./garuda-inxi { };
     installer = pkgs.callPackage ./gns-management/installer.nix {
       all-packages = pkgs;
       garuda-lib = lib;
@@ -39,7 +40,10 @@ rec {
 
   # Packages that are available in the flake's packages output
   external = {
-    inherit (internal) install-garuda-nix;
+    inherit (internal)
+      install-garuda-nix
+      garuda-inxi
+      ;
     docs =
       pkgs.runCommand "gns-docs"
         # makes the documentation available at ./result/ by running nix build .#docs
@@ -60,6 +64,7 @@ rec {
   cached = {
     inherit (internal)
       installer
+      garuda-inxi
       garuda-update
       garuda-nix-manager
       launch-terminal
