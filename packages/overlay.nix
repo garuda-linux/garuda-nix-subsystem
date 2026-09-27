@@ -44,7 +44,7 @@ in
     patches = (old.patches or [ ]) ++ [ ../patches/tela-circle-catppuccin.patch ];
     installPhase = ''
       runHook preInstall
-      ./install.sh -d $out/share/icons catppuccin
+      ./install.sh -d $out/share/icons standard catppuccin
       jdupes --quiet --link-soft --recurse $out/share
       runHook postInstall
     '';

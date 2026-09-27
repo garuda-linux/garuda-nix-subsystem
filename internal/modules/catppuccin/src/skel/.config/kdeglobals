@@ -129,7 +129,7 @@ smallestReadableFont=Inter,8,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 toolBarFont=Inter,10,-1,5,700,0,0,0,0,0,0,0,0,0,0,1,Bold
 
 [Icons]
-Theme=Papirus-Dark
+Theme=Tela-circle-catppuccin-dark
 
 [KDE]
 DefaultDarkLookAndFeel=Catppuccin-Mocha-Mauve
