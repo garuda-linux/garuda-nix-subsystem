@@ -12,6 +12,7 @@
     ./fonts.nix
     ./flatpak.nix
     ./gaming.nix
+    ./garuda-inxi.nix
     ./garuda-update.nix
     ./hardware.nix
     ./impermanence

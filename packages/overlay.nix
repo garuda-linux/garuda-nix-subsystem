@@ -11,6 +11,7 @@ in
 {
   inherit (packages.internal)
     calamares-nixos-extensions
+    garuda-inxi
     garuda-nix-manager
     ;
 
@@ -22,7 +23,7 @@ in
   linuxPackages_cachyos =
     (prev.linuxPackages_cachyos or (prev.linuxPackagesFor prev.linuxPackages.kernel)).extend
       (
-        lpFinal: lpPrev:
+        _lpFinal: lpPrev:
         lib.optionalAttrs (lpPrev ? zenpower) {
           zenpower = lpPrev.zenpower.overrideAttrs (old: {
             patches = (old.patches or [ ]) ++ [ ../patches/zenpower-clang-fixes.patch ];
@@ -30,7 +31,6 @@ in
         }
       );
 }
-// zenpowerSets
 // {
   tela-circle-icon-theme = prev.tela-circle-icon-theme.overrideAttrs (old: {
     version = "unstable-2026-08-16";
@@ -57,4 +57,22 @@ in
       patches = (old.patches or [ ]) ++ [ ../patches/applet-window-buttons6-pr31.patch ];
     });
   };
+}
+// lib.optionalAttrs (prev ? mokka-kde-theme) {
+  # TODO: remove once merged in Nyx upstream
+  mokka-kde-theme = prev.mokka-kde-theme.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      substituteInPlace \
+        usr/share/plasma/look-and-feel/Mokka/contents/defaults \
+        usr/share/plasma/look-and-feel/MokkaKitty/contents/defaults \
+        usr/share/plasma/look-and-feel/MokkaKitty/contents/layouts/org.kde.plasma.desktop-layout.js \
+        etc/skel/.config/gtk-3.0/settings.ini \
+        etc/skel/.config/gtk-4.0/settings.ini \
+        --replace "Tela-circle-dracula-dark" "Tela-circle-catppuccin-dark" \
+        --replace "Tela-circle-dark" "Tela-circle-catppuccin-dark" \
+        --replace "Catppuccin-Mocha-Mauve-Cursors" "catppuccin-mocha-mauve-cursors"
+      substituteInPlace etc/skel/.icons/default/index.theme \
+        --replace "Catppuccin-Mokka-Mauve" "catppuccin-mocha-mauve-cursors"
+    '';
+  });
 }
