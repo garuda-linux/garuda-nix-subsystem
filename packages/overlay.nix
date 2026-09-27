@@ -7,13 +7,6 @@ let
     pkgs = final;
   };
 
-  withZenpower =
-    lfinal:
-    lfinal.extend (
-      lpFinal: _lpPrev: {
-        zenpower = lpFinal.callPackage ./zenpower5 { };
-      }
-    );
 in
 {
   inherit (packages.internal)
@@ -27,10 +20,16 @@ in
     "calamares-nixos-extensions" = packages.internal.calamares-nixos-extensions;
   };
 
-  linuxPackagesFor = kernel: withZenpower (prev.linuxPackagesFor kernel);
-  linuxPackages_cachyos = withZenpower (
-    prev.linuxPackages_cachyos or (prev.linuxPackagesFor prev.linuxPackages.kernel)
-  );
+  linuxPackages_cachyos =
+    (prev.linuxPackages_cachyos or (prev.linuxPackagesFor prev.linuxPackages.kernel)).extend
+      (
+        _lpFinal: lpPrev:
+        lib.optionalAttrs (lpPrev ? zenpower) {
+          zenpower = lpPrev.zenpower.overrideAttrs (old: {
+            patches = (old.patches or [ ]) ++ [ ../patches/zenpower-clang-fixes.patch ];
+          });
+        }
+      );
 }
 // {
   kdePackages = prev.kdePackages // {
