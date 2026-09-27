@@ -30,7 +30,7 @@ in
     };
     root-uuid = mkOption {
       default = null;
-      type = types.str;
+      type = types.nullOr types.str;
       example = "f498b189-79c7-40e4-859e-fadc1496ee8e";
       description = ''
         Provide the UUID of the Garuda root partition
@@ -38,7 +38,7 @@ in
     };
     boot-uuid = mkOption {
       default = null;
-      type = types.str;
+      type = types.nullOr types.str;
       example = "D9CB-2B11";
       description = ''
         Provide the UUID of the Garuda boot partition
@@ -46,7 +46,7 @@ in
     };
     user = mkOption {
       default = null;
-      type = types.str;
+      type = types.nullOr types.str;
       example = "garuda";
       description = ''
         The default user of the Garuda / NixOS subsystem

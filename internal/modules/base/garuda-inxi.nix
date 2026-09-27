@@ -9,10 +9,21 @@ let
   inherit (pkgs) garuda-inxi;
 
   isSimple = v: lib.isBool v || lib.isInt v || lib.isString v;
+  isWalkable = v: lib.isAttrs v && !lib.isDerivation v;
   filterAttrsRecursive =
     attrs:
-    lib.mapAttrs (_: v: if lib.isAttrs v then filterAttrsRecursive v else v) (
-      lib.filterAttrs (_: v: isSimple v || lib.isAttrs v) attrs
+    let
+      pairs = map (n: {
+        inherit n;
+        r = builtins.tryEval attrs.${n};
+      }) (lib.attrNames attrs);
+      good = lib.filter (p: p.r.success && (isSimple p.r.value || isWalkable p.r.value)) pairs;
+    in
+    lib.listToAttrs (
+      map (p: {
+        name = p.n;
+        value = if isWalkable p.r.value then filterAttrsRecursive p.r.value else p.r.value;
+      }) good
     );
   enabledOptions = filterAttrsRecursive config.garuda;
 in

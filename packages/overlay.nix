@@ -2,6 +2,7 @@
 final: prev:
 let
   inherit (prev.stdenv.hostPlatform) system;
+  nixlib = inputs.nixpkgs.lib;
   packages = import ./default.nix {
     inherit inputs lib system;
     pkgs = final;
@@ -24,7 +25,7 @@ in
     (prev.linuxPackages_cachyos or (prev.linuxPackagesFor prev.linuxPackages.kernel)).extend
       (
         _lpFinal: lpPrev:
-        lib.optionalAttrs (lpPrev ? zenpower) {
+        nixlib.optionalAttrs (lpPrev ? zenpower) {
           zenpower = lpPrev.zenpower.overrideAttrs (old: {
             patches = (old.patches or [ ]) ++ [ ../patches/zenpower-clang-fixes.patch ];
           });
@@ -58,7 +59,7 @@ in
     });
   };
 }
-// lib.optionalAttrs (prev ? mokka-kde-theme) {
+// nixlib.optionalAttrs (prev ? mokka-kde-theme) {
   # TODO: remove once merged in Nyx upstream
   mokka-kde-theme = prev.mokka-kde-theme.overrideAttrs (old: {
     postPatch = (old.postPatch or "") + ''
