@@ -31,7 +31,8 @@ in
   options.garuda.managed = {
     config = mkOption {
       type = types.nullOr types.path;
-      default = null;
+      default =
+        if builtins.pathExists /etc/nixos/garuda-managed.json then /etc/nixos/garuda-managed.json else null;
       description = ''
         Path to garuda-managed.json, written by garuda-nix-manager.
         It carries the managed settings — hostname, locale, timezone,
