@@ -183,8 +183,6 @@ def build_rebuild_cmd(mnt, hostname):
         "--no-nom",
         "--log-format",
         "internal-json",
-        "-j",
-        "auto",
         "-H",
         hostname,
         f"{mnt}/etc/nixos",

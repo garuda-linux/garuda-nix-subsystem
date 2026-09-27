@@ -92,6 +92,7 @@ class TestCmds(unittest.TestCase):
         self.assertIn("internal-json", cmd)
         self.assertIn("host", cmd)
         self.assertIn("/mnt/etc/nixos", cmd)
+        self.assertNotIn("-j", cmd)
 
 
 if __name__ == "__main__":

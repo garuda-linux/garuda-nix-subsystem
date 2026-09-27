@@ -28,7 +28,7 @@ let
 
       if [ -f /etc/nixos/garuda-managed.json ]; then
         echo -e "\033[1;33m-->\033[1;34m Downloading the latest version of the updater 🍵\033[0m"
-        nix run --accept-flake-config gitlab:garuda-linux/garuda-nix-subsystem/stable?dir=internal/updater#nix -- develop --refresh --accept-flake-config gitlab:garuda-linux/garuda-nix-subsystem/stable#gns-update -c "gns-update"
+        nix run --refresh --accept-flake-config gitlab:garuda-linux/garuda-nix-subsystem/stable?dir=internal/updater#nix -- develop --refresh --accept-flake-config gitlab:garuda-linux/garuda-nix-subsystem/stable#gns-update -c "gns-update"
       else
         FLAKE="''${GARUDA_FLAKE:-/etc/nixos}"
         echo -e "\033[1;33m-->\033[1;34m Updating flake inputs 🍵\033[0m"
