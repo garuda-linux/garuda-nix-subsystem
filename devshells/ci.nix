@@ -24,6 +24,20 @@ let
       nix build .#internal.ci-bare -o result-bare
       nix build .#internal.ci-full -o result-full
       drv installer-test installer-test
+      eval_matrix
+      iso_eval
+    }
+
+    eval_matrix() {
+      PYTHONPATH="$PWD/packages/garuda-installer-lib" \
+        python3 internal/testing/checks/check_eval_matrix.py \
+          "$PWD/packages/garuda-installer-lib/template" "$PWD"
+    }
+
+    iso_eval() {
+      nix eval .#internal --apply 'i: i.iso-mokka.drvPath' >/dev/null
+      nix eval .#internal --apply 'i: i.iso-dr460nized.drvPath' >/dev/null
+      nix eval .#internal --apply 'i: i.iso-catppuccin.drvPath' >/dev/null
     }
 
     heavy() {
@@ -80,6 +94,7 @@ in
     packages = [
       ci
       flake-update
+      pkgs.python3
     ];
   };
 }

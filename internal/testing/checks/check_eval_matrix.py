@@ -27,10 +27,12 @@ COMBOS = [
 
 
 class SkipFacterScan(gt.Hooks):
-    """No hardware prober in this VM: pretend the facter scan failed."""
+    """No hardware prober in this environment: pretend the facter scan failed."""
 
     def run(self, cmd):
-        raise OSError("skip facter scan")
+        if "facter" in cmd[0]:
+            raise OSError("skip facter scan")
+        return super().run(cmd)
 
 
 def main():
