@@ -11,8 +11,6 @@ import ../theme/generic-apps.nix
     themePackages =
       pkgs: with pkgs; [
         applet-window-title
-        catppuccin-cursors
-        catppuccin-gtk
         (catppuccin.override {
           accent = "mauve";
           variant = "mocha";
@@ -21,6 +19,11 @@ import ../theme/generic-apps.nix
             "btop"
             "kvantum"
           ];
+        })
+        catppuccin-cursors.mochaMauve
+        (catppuccin-gtk.override {
+          accents = [ "mauve" ];
+          variant = "mocha";
         })
         (catppuccin-kde.override {
           accents = [ "mauve" ];

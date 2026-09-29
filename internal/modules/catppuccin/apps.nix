@@ -21,17 +21,18 @@ import ../theme/generic-apps.nix
           ];
         })
         catppuccin-cursors.mochaMauve
+        (catppuccin-gtk.override {
+          accents = [ "mauve" ];
+          variant = "mocha";
+        })
         (catppuccin-kde.override {
           accents = [ "mauve" ];
           flavour = [ "mocha" ];
           winDecStyles = [ "classic" ];
         })
-        (catppuccin-papirus-folders.override {
-          accent = "mauve";
-          flavor = "mocha";
-        })
         easyeffects
-        firedragon-bin
+        firedragon-catppuccin-bin
+        tela-circle-icon-theme
       ];
   }
   {
