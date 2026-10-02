@@ -42,7 +42,9 @@ with garuda-lib;
 
       # Users allowed to use Nix
       allowed-users = gDefault [ "@wheel" ];
-      trusted-users = gDefault [ "@wheel" ];
+
+      # Show more build log lines on failure
+      log-lines = gDefault 20;
 
       # Max number of parallel jobs
       max-jobs = gDefault "auto";

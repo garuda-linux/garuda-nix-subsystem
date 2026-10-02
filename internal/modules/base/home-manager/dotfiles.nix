@@ -78,19 +78,11 @@ with garuda-lib;
     extraOptions = gDefault ''
       warn-dirty = false
     '';
-    settings.builders-use-substitutes = gDefault true;
 
     settings.experimental-features = gDefault [
       "nix-command"
       "flakes"
     ];
-
-    settings.extra-substituters = gDefault [ "https://nyx-cache.chaotic.cx/" ];
-    settings.extra-trusted-public-keys = gDefault [
-      "nyx-cache.chaotic.cx:dJxTrgMC3V3cFfyIiBQDQorG6k1LsqurH/srpMSq7qk="
-    ];
-
-    settings.log-lines = gDefault 20;
 
     settings.max-jobs = gDefault "auto";
   };
