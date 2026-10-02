@@ -19,6 +19,8 @@ with garuda-lib;
 
     systemd.services.flatpak-add-flathub = {
       wantedBy = gDefault [ "multi-user.target" ];
+      wants = [ "network-online.target" ];
+      after = [ "network-online.target" ];
       serviceConfig.Type = gDefault "oneshot";
       script = gDefault ''
         ${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists flathub \
