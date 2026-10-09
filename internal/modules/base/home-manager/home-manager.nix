@@ -9,7 +9,6 @@ with garuda-lib;
 let
   cfg = config.garuda.home-manager;
   state_version = config.system.stateVersion;
-  users = lib.attrsets.filterAttrs (_name: user: user.isNormalUser) config.users.users;
 in
 {
   options.garuda = {
@@ -29,29 +28,31 @@ in
     home-manager = {
       # Make home-manager use the same Nixpkgs as the rest of the system
       useGlobalPkgs = true;
-      useUserPackages = gDefault false;
+
+      # Install home.packages into /etc/profiles/per-user, part of the system closure
+      useUserPackages = gDefault true;
       extraSpecialArgs = { inherit garuda-lib; };
-      # Maps each user to a home-manager configuration
-      users = builtins.mapAttrs (
-        username: user:
-        { ... }:
+
+      # Defaults for every configured user. Shared modules rather than a
+      # home-manager.users mapping over users.users: with useUserPackages,
+      # home-manager defines users.users.<name>.packages from home-manager.users,
+      # so deriving the user set from users.users recurses infinitely.
+      sharedModules = [
         {
-          home.homeDirectory = user.home;
           home.stateVersion = state_version;
-          home.username = username;
 
           imports = cfg.modules;
         }
-      ) users;
+      ];
     };
 
-    # Creates a systemd service for each user that runs home-manager
+    # Orders each configured user's home-manager service after home creation
     systemd.services = lib.mapAttrs' (
       username: _user:
       lib.nameValuePair "home-manager-${utils.escapeSystemdPath username}" {
         after = [ "create-homedirs.service" ];
       }
-    ) users;
+    ) config.home-manager.users;
 
     # This is the default home-manager configuration
     garuda.home-manager.modules = gExcludableArray config "home-manager-modules" [
