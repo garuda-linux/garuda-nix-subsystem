@@ -172,6 +172,44 @@ in
         Capability = "all";
         PrivateUsers = 0;
         ResolvConf = "copy-host";
+
+        # The container shares the host network namespace (Private = false) and runs with
+        # all capabilities, so daemons that drive interfaces, hardware or global kernel
+        # state would fight the host's own. systemd in a container reads PID 1 argv as
+        # its kernel command line.
+        Parameters = gDefault (
+          concatMapStringsSep " " (unit: "systemd.mask=${unit}") [
+            # Network: same interfaces, ports and tun devices as the host
+            "NetworkManager.service"
+            "NetworkManager-wait-online.service"
+            "NetworkManager-dispatcher.service"
+            "wpa_supplicant.service"
+            "iwd.service"
+            "systemd-networkd.service"
+            "tailscaled.service"
+            "ModemManager.service"
+            "avahi-daemon.service"
+            "avahi-daemon.socket"
+            # Docker adds its own docker0 bridge and iptables rules to the shared netns
+            "docker.service"
+            "docker.socket"
+            "containerd.service"
+            # Hardware: the HCI adapter, platform profile, backlight and IRQ affinity
+            "bluetooth.service"
+            "power-profiles-daemon.service"
+            "systemd-backlight@.service"
+            "irqbalance.service"
+            # Global kernel state: clock and sysctl tuning
+            "systemd-timesyncd.service"
+            "bpftune.service"
+            # Display: the host owns the seat
+            "display-manager.service"
+            # Resource managers the host already runs
+            "ananicy-cpp.service"
+            "systemd-oomd.service"
+            "systemd-oomd.socket"
+          ]
+        );
         Environment = lib.mkIf cfg.wayland [
           "XDG_RUNTIME_DIR=/run/garuda-host"
           "WAYLAND_DISPLAY=${cfg.waylandSocket}"
