@@ -25,7 +25,11 @@ let
       else
         acc
     ) { } attrs;
-  enabledOptions = filterAttrsRecursive config.garuda;
+
+  # Skip renamed-option aliases: reading them traces an "Obsolete option" warning
+  enabledOptions = filterAttrsRecursive (
+    config.garuda // { subsystem = removeAttrs config.garuda.subsystem [ "config" ]; }
+  );
 in
 {
   config = {
