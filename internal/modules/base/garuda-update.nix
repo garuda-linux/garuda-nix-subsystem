@@ -12,6 +12,7 @@ let
       nix
       nh
       coreutils
+      garuda-nix-subsystem
     ];
     text = ''
       unset LD_PRELOAD LD_LIBRARY_PATH
@@ -27,8 +28,7 @@ let
       fi
 
       if [ -f /etc/nixos/garuda-managed.json ]; then
-        echo -e "\033[1;33m-->\033[1;34m Downloading the latest version of the updater 🍵\033[0m"
-        nix run --refresh --accept-flake-config gitlab:garuda-linux/garuda-nix-subsystem/stable?dir=internal/updater#nix -- develop --refresh --accept-flake-config gitlab:garuda-linux/garuda-nix-subsystem/stable#gns-update -c "gns-update"
+        exec garuda-nix-subsystem update "$@"
       else
         FLAKE="''${GARUDA_FLAKE:-/etc/nixos}"
         echo -e "\033[1;33m-->\033[1;34m Updating flake inputs 🍵\033[0m"
@@ -44,8 +44,12 @@ let
 in
 {
   config = {
-    environment.systemPackages = lib.mkIf (
-      config.garuda.system.isGui || config.garuda.managed.config != null
-    ) [ garuda-update ];
+    environment.systemPackages =
+      lib.mkIf (config.garuda.system.isGui || config.garuda.managed.config != null) [
+        garuda-update
+      ]
+      ++ lib.optionals (config.garuda.managed.config != null) [
+        pkgs.garuda-nix-subsystem
+      ];
   };
 }

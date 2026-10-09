@@ -17,6 +17,7 @@ in
     calamares-nixos-extensions
     garuda-inxi
     garuda-nix-manager
+    garuda-nix-subsystem
     ;
 
   calamares-nixos = prev.calamares-nixos.override {
