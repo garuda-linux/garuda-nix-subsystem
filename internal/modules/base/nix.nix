@@ -50,11 +50,11 @@ with garuda-lib;
       max-jobs = gDefault "auto";
 
       # https://github.com/NixOS/nix/issues/8890#issuecomment-1703988345
-      nix-path = nixPath;
+      # Also makes legacy nix commands consistent with the pinned registry
+      nix-path = gDefault (
+        lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry
+      );
     };
-
-    # Make legacy nix commands consistent as well
-    nixPath = gDefault (lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry);
 
     # Automtaically pin registries based on inputs
     registry = gDefault (lib.mapAttrs (_: v: { flake = v; }) flake-inputs);

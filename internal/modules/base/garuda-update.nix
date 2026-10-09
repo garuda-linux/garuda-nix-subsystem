@@ -45,7 +45,7 @@ in
 {
   config = {
     environment.systemPackages =
-      lib.mkIf (config.garuda.system.isGui || config.garuda.managed.config != null) [
+      lib.optionals (config.garuda.system.isGui || config.garuda.managed.config != null) [
         garuda-update
       ]
       ++ lib.optionals (config.garuda.managed.config != null) [

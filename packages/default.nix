@@ -37,15 +37,10 @@ rec {
       inherit (inputs) self;
     };
     garuda-nix-subsystem =
-      pkgs.callPackage ./garuda-nix-subsystem
-        {
-          all-packages = pkgs;
-          garuda-lib = lib;
-          inherit system;
-          inherit (internal) garuda-installer-lib;
-          inherit (inputs) self;
-        }
-        .cli;
+      (pkgs.callPackage ./garuda-nix-subsystem {
+        all-packages = pkgs;
+        gns-update = internal.garuda-update;
+      }).cli;
   };
 
   # Packages that are available in the flake's packages output

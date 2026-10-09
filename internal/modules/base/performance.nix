@@ -37,6 +37,12 @@ in
       rulesProvider = pkgs.ananicy-rules-cachyos_git;
     };
 
+    # A crashed instance leaves its /dev/shm/AnanicyCppMutex behind and every later
+    # start then exits with "already running"; systemd already guarantees one instance
+    systemd.services.ananicy-cpp.serviceConfig.ExecStartPre = mkIf (
+      cfg.enable && config.services.ananicy.enable
+    ) "-${lib.getExe' config.services.ananicy.package "ananicy-cpp"} --force-remove-semaphore";
+
     services.irqbalance.enable = mkIf cfg.enable (gDefault true);
 
     powerManagement.cpuFreqGovernor = mkIf cfg.enable (gDefault "performance");
