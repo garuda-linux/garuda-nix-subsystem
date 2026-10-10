@@ -1,7 +1,7 @@
 # Garuda Nix
 
 [![built with nix](https://img.shields.io/static/v1?logo=nixos&logoColor=white&label=&message=Built%20with%20Nix&color=41439a)](https://builtwithnix.org)
-[![pipeline status](https://gitlab.com/garuda-linux/garuda-nix-subsystem/badges/main/pipeline.svg)](https://gitlab.com/garuda-linux/garuda-nix-subsystem/-/commits/main)
+[![pipeline status](https://gitlab.com/garuda-linux/garuda-nix/badges/main/pipeline.svg)](https://gitlab.com/garuda-linux/garuda-nix/-/commits/main)
 
 ## General information
 
@@ -18,16 +18,16 @@ Prefer a graphical install? The flake also builds an [installer ISO](./iso/build
 ## Devshell and how to enter it
 
 This NixOS flake provides a devshell which contains all deployment tools as well as handy aliases for common tasks.
-The only requirement for using it is having the Nix package manager available. It can be installed on various distributions via the package manager or the following script ([click me for more information](https://zero-to-nix.com/start/install)):
+The only requirement for using it is having the Lix package manager available. It can be installed on various distributions via the package manager or the following script:
 
 ```sh
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix -o nix-install.sh
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.lix.systems/lix -o lix-install.sh
 
 # Check script content before running
-sh ./nix-install.sh install --diagnostic-endpoint=""
+sh ./lix-install.sh install
 ```
 
-This installs the Nix packages with flakes already pre-enabled. After that, the shell can be invoked as follows:
+This installs the Lix packages with flakes already pre-enabled. After that, the shell can be invoked as follows:
 
 ```sh
 nix develop # The intended way to use the devshell

@@ -9,5 +9,5 @@ title = "Garuda Nix ❄️ documentation"
 additional-css = ["./theme/catppuccin.css"]
 default-theme = "mocha"
 preferred-dark-theme = "mocha"
-git-repository-url = "https://gitlab.com/garuda-linux/garuda-nix-subsystem"
+git-repository-url = "https://gitlab.com/garuda-linux/garuda-nix"
 site-url = "https://nix.garudalinux.org"

@@ -52,7 +52,7 @@ def check_feature_conflicts(features):
         raise ValueError("features 'performance' and 'powersave' conflict")
 
 
-DEFAULT_FLAKE_REF = "gitlab:garuda-linux/garuda-nix-subsystem/stable"
+DEFAULT_FLAKE_REF = "gitlab:garuda-linux/garuda-nix/stable"
 
 SUBSYSTEM_EDITIONS = ("dr460nized", "mokka")
 SUBSYSTEM_STATE_VERSION = "26.11"

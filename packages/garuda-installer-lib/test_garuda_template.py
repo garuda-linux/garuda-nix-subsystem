@@ -256,7 +256,7 @@ class TestSubsystem(unittest.TestCase):
         text = gt.build_subsystem_flake("myhost")
         self.assertIn("nixosConfigurations.myhost", text)
         self.assertIn(
-            'garuda.url = "gitlab:garuda-linux/garuda-nix-subsystem/stable"', text
+            'garuda.url = "gitlab:garuda-linux/garuda-nix/stable"', text
         )
 
     def test_excluded_features_rejected(self):

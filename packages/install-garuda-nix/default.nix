@@ -45,7 +45,7 @@ python3.pkgs.buildPythonApplication {
 
   meta = with lib; {
     description = "Generate a Garuda NixOS system config from the CLI";
-    homepage = "https://gitlab.com/garuda-linux/garuda-nix-subsystem";
+    homepage = "https://gitlab.com/garuda-linux/garuda-nix";
     license = licenses.gpl3Only;
     platforms = platforms.linux;
     mainProgram = "install-garuda-nix";

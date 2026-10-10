@@ -28,7 +28,7 @@ stdenv.mkDerivation {
 
   meta = with lib; {
     description = "Calamares modules for Garuda Nix";
-    homepage = "https://gitlab.com/garuda-linux/garuda-nix-subsystem";
+    homepage = "https://gitlab.com/garuda-linux/garuda-nix";
     license = with licenses; [
       gpl3
       mit

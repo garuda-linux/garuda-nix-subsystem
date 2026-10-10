@@ -12,4 +12,4 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           message: This is a read only mirror of the Garuda Nix Subsystem. Thank you! 😊
-            Please submit pull requests at https://gitlab.com/garuda-linux/garuda-nix-subsystem.
+            Please submit pull requests at https://gitlab.com/garuda-linux/garuda-nix.

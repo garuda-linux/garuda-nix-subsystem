@@ -6,7 +6,7 @@ To make use of this flake, you can use it as follows - [we assume flakes to be e
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    garuda.url = "gitlab:garuda-linux/garuda-nix-subsystem/stable";
+    garuda.url = "gitlab:garuda-linux/garuda-nix/stable";
   };
 
   outputs = { garuda, nixpkgs, ... }: {

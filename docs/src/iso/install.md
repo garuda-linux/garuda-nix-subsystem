@@ -96,11 +96,11 @@ options:
 On any NixOS host with internet, run the installer directly from the published flake:
 
 ```sh
-sudo nix run gitlab:garuda-linux/garuda-nix-subsystem/stable#install-garuda-nix -- \
+sudo nix run gitlab:garuda-linux/garuda-nix/stable#install-garuda-nix -- \
   --edition mokka --hostname mypc --username nico --install
 ```
 
-`--flake-ref` defaults to that same `stable` ref, so the generated config already points at it: future rebuilds are just `nixos-rebuild switch --flake /etc/nixos#mypc`. Pass `--flake-ref gitlab:garuda-linux/garuda-nix-subsystem/stable` (or any ref) to track a different branch instead.
+`--flake-ref` defaults to that same `stable` ref, so the generated config already points at it: future rebuilds are just `nixos-rebuild switch --flake /etc/nixos#mypc`. Pass `--flake-ref gitlab:garuda-linux/garuda-nix/stable` (or any ref) to track a different branch instead.
 
 ## Module options
 
