@@ -42,4 +42,10 @@ in
       patches = (old.patches or [ ]) ++ [ ../patches/applet-window-buttons6-pr31.patch ];
     });
   };
+
+  mokka-kde-theme = prev.mokka-kde-theme.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      grep -rl "Tela-circle-catppuccin-dark" . | xargs -r sed -i "s/Tela-circle-catppuccin-dark/Tela-circle-dark/g"
+    '';
+  });
 }
