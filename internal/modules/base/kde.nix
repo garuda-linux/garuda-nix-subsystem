@@ -180,6 +180,7 @@ in
 
     programs = {
       kdeconnect.enable = gDefault true;
+      kde-pim.enable = gDefault false;
       partition-manager.enable = gDefault true;
     };
 
