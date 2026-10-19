@@ -91,7 +91,6 @@ in
       ++ (with pkgs.kdePackages; [
         elisa
         khelpcenter
-        kwin-x11
         oxygen
         plasma-browser-integration
         plasma-keyboard
