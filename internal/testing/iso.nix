@@ -12,6 +12,7 @@
   ];
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.supportedFilesystems.zfs = lib.mkForce false;
 
   services.xserver.enable = lib.mkForce false;
 
