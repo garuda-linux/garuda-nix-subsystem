@@ -43,7 +43,7 @@ in
     ];
 
     environment.variables = {
-      GTK_THEME = gDefault "Catppuccin-Mocha-Standard-Mauve-Dark";
+      GTK_THEME = gDefault "catppuccin-mocha-mauve-standard";
       QT_STYLE_OVERRIDE = gDefault "kvantum";
     };
 
