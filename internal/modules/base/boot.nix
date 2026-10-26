@@ -9,11 +9,6 @@ with garuda-lib;
 
   config.boot = {
     consoleLogLevel = gDefault 0;
-    # Make use of the systemd initrd
-    initrd = {
-      systemd.enable = gDefault true;
-      verbose = gDefault false;
-    };
     # Make it quiet by default
     kernelParams = gExcludableArray config "kernelparameters" [
       "acpi_call"
