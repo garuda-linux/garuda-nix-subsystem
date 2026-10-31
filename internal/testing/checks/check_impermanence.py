@@ -61,8 +61,12 @@ CASES = [
         "name": "base",
         "extra": "",
         "dirs": [
-            "/etc/nixos", "/var/lib/systemd", "/var/lib/nixos",
-            "/var/lib/alsa", "/var/lib/colord", "/var/spool",
+            "/etc/nixos",
+            "/var/lib/systemd",
+            "/var/lib/nixos",
+            "/var/lib/alsa",
+            "/var/lib/colord",
+            "/var/spool",
         ],
         "files": ["/etc/machine-id", "/etc/adjtime", "/etc/ssh/ssh_host_ed25519_key"],
         "user_dirs": [".config", ".local/share", ".local/state", ".ssh", ".gnupg"],
@@ -71,9 +75,14 @@ CASES = [
         "name": "services-auto",
         "extra": CHEAP_SERVICES,
         "dirs": [
-            "/var/lib/NetworkManager", "/etc/NetworkManager/system-connections",
-            "/var/lib/iwd", "/var/lib/bluetooth", "/etc/cups",
-            "/var/lib/samba", "/var/lib/fprint", "/var/lib/geoclue"
+            "/var/lib/NetworkManager",
+            "/etc/NetworkManager/system-connections",
+            "/var/lib/iwd",
+            "/var/lib/bluetooth",
+            "/etc/cups",
+            "/var/lib/samba",
+            "/var/lib/fprint",
+            "/var/lib/geoclue",
         ],
         "user_dirs": [".steam"],
     },
@@ -81,21 +90,45 @@ CASES = [
         "name": "apps-opt-in-services-off",
         "extra": "{ " + OPT_IN_APPS + " }",
         "dirs": [
-            "/var/lib/docker", "/var/lib/containers", "/var/lib/libvirt",
-            "/var/lib/machines", "/var/lib/flatpak", "/var/lib/fwupd",
-            "/var/lib/upower", "/var/lib/plasmalogin",
-            "/var/lib/AccountsService", "/var/lib/ModemManager",
+            "/var/lib/docker",
+            "/var/lib/containers",
+            "/var/lib/libvirt",
+            "/var/lib/machines",
+            "/var/lib/flatpak",
+            "/var/lib/fwupd",
+            "/var/lib/upower",
+            "/var/lib/plasmalogin",
+            "/var/lib/AccountsService",
+            "/var/lib/ModemManager",
         ],
-        "user_dirs": [".mozilla", ".thunderbird", ".cargo", ".rustup", ".docker", ".var"],
+        "user_dirs": [
+            ".mozilla",
+            ".thunderbird",
+            ".cargo",
+            ".rustup",
+            ".docker",
+            ".var",
+        ],
     },
 ]
 
 
 def nix_eval(expr):
     return subprocess.run(
-        ["nix", "--extra-experimental-features", "nix-command flakes",
-         "eval", "--impure", "--json", "--expr", expr],
-        capture_output=True, text=True, check=False)
+        [
+            "nix",
+            "--extra-experimental-features",
+            "nix-command flakes",
+            "eval",
+            "--impure",
+            "--json",
+            "--expr",
+            expr,
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
 
 
 def evaluate(extra, base=BASE):
@@ -112,13 +145,17 @@ def main():
         missing = [fl for fl in case.get("files", []) if fl not in got["files"]]
         assert not missing, f"{case['name']}: missing files {missing}"
         user_dirs = got["users"]["test"]
-        missing = [d for d in case.get("user_dirs", [])
-                   if not any(d in u for u in user_dirs)]
+        missing = [
+            d for d in case.get("user_dirs", []) if not any(d in u for u in user_dirs)
+        ]
         assert not missing, f"{case['name']}: missing user dirs {missing}"
         print(f"PASS {case['name']}")
 
-    r = nix_eval(EXPR.format(repo=REPO_DIR, base=BASE,
-                             extra='{ garuda.impermanence.apps = [ "nope" ]; }'))
+    r = nix_eval(
+        EXPR.format(
+            repo=REPO_DIR, base=BASE, extra='{ garuda.impermanence.apps = [ "nope" ]; }'
+        )
+    )
     assert r.returncode != 0, "bogus app name evaluated successfully"
     print("PASS bogus-app-rejected")
 

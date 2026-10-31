@@ -21,11 +21,12 @@ class TestGitCommit(unittest.TestCase):
         d = tempfile.mkdtemp()
         try:
             with open(os.path.join(d, "flake.nix"), "w") as f:
-                f.write('{}\n')
+                f.write("{}\n")
 
             gs.git_commit(d, "initial")
             log = subprocess.check_output(
-                ["git", "-C", d, "log", "--format=%s"], text=True)
+                ["git", "-C", d, "log", "--format=%s"], text=True
+            )
             self.assertEqual(log.strip(), "initial")
         finally:
             shutil.rmtree(d, ignore_errors=True)
@@ -34,12 +35,13 @@ class TestGitCommit(unittest.TestCase):
         d = tempfile.mkdtemp()
         try:
             with open(os.path.join(d, "flake.nix"), "w") as f:
-                f.write('{}\n')
+                f.write("{}\n")
 
             gs.git_commit(d, "initial")
             gs.git_commit(d, "second")
             log = subprocess.check_output(
-                ["git", "-C", d, "log", "--format=%s"], text=True)
+                ["git", "-C", d, "log", "--format=%s"], text=True
+            )
             self.assertEqual(log.strip().splitlines(), ["initial"])
         finally:
             shutil.rmtree(d, ignore_errors=True)

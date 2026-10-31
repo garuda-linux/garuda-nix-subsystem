@@ -37,11 +37,12 @@ except ImportError:
 def ensure_root():
     if os.geteuid() != 0:
         print("need root, re-running with sudo ...")
-        carry = [f"{k}={os.environ[k]}" for k in
-                 ("GNS_INSTALLER_LIB", "GNS_TEMPLATE_DIR", "PATH")
-                 if k in os.environ]
-        os.execvp("sudo", ["sudo", "env"] + carry +
-                  [sys.argv[0]] + sys.argv[1:])
+        carry = [
+            f"{k}={os.environ[k]}"
+            for k in ("GNS_INSTALLER_LIB", "GNS_TEMPLATE_DIR", "PATH")
+            if k in os.environ
+        ]
+        os.execvp("sudo", ["sudo", "env"] + carry + [sys.argv[0]] + sys.argv[1:])
 
 
 def host_timezone():
@@ -63,10 +64,15 @@ def build_parser():
         prog="install-garuda-nix",
         description="Generate a Garuda NixOS config from the shared installer template.",
     )
-    p.add_argument("--edition", choices=("mokka", "dr460nized"), default=None,
-                   help="asked interactively when missing")
-    p.add_argument("--preset", choices=gt.GARUDA_PRESETS, default=None,
-                   help="hardware preset")
+    p.add_argument(
+        "--edition",
+        choices=("mokka", "dr460nized"),
+        default=None,
+        help="asked interactively when missing",
+    )
+    p.add_argument(
+        "--preset", choices=gt.GARUDA_PRESETS, default=None, help="hardware preset"
+    )
     p.add_argument(
         "--feature",
         action="append",
@@ -75,23 +81,31 @@ def build_parser():
         help=f"repeatable, one of: {', '.join(sorted(gt.GARUDA_FEATURES))}",
     )
     p.add_argument("--root", default="/mnt", help="target mount point (default: /mnt)")
-    p.add_argument("--disk", default=None,
-                   help="wipe and partition this disk before installing "
-                        "(e.g. /dev/sda). If not specified and <root> is not "
-                        "mounted, pick from a list")
-    p.add_argument("--schema", choices=gp.SCHEMAS, default=None,
-                   help="partitioning schema for --disk "
-                        f"(asked when missing, default: {gp.DEFAULT_SCHEMA})")
-    p.add_argument("--luks-pass-file", default=None,
-                   help="file with the LUKS passphrase (else prompted)")
-    p.add_argument("--yes", action="store_true",
-                   help="skip the disk-wipe confirmation (dangerous)")
-    p.add_argument("--hostname", default="garuda-nix",
-                   help="system hostname")
-    p.add_argument("--username", default="garuda",
-                   help="primary username")
-    p.add_argument("--fullname", default=None,
-                   help="primary user full name")
+    p.add_argument(
+        "--disk",
+        default=None,
+        help="wipe and partition this disk before installing "
+        "(e.g. /dev/sda). If not specified and <root> is not "
+        "mounted, pick from a list",
+    )
+    p.add_argument(
+        "--schema",
+        choices=gp.SCHEMAS,
+        default=None,
+        help="partitioning schema for --disk "
+        f"(asked when missing, default: {gp.DEFAULT_SCHEMA})",
+    )
+    p.add_argument(
+        "--luks-pass-file",
+        default=None,
+        help="file with the LUKS passphrase (else prompted)",
+    )
+    p.add_argument(
+        "--yes", action="store_true", help="skip the disk-wipe confirmation (dangerous)"
+    )
+    p.add_argument("--hostname", default="garuda-nix", help="system hostname")
+    p.add_argument("--username", default="garuda", help="primary username")
+    p.add_argument("--fullname", default=None, help="primary user full name")
     p.add_argument(
         "--no-autologin", action="store_true", help="disable display-manager autologin"
     )
@@ -100,14 +114,10 @@ def build_parser():
         default=host_timezone(),
         help="default: host's /etc/localtime zone",
     )
-    p.add_argument("--locale", default=None,
-                   help="system locale")
-    p.add_argument("--xkb-layout", default=None,
-                   help="keyboard layout")
-    p.add_argument("--xkb-variant", default=None,
-                   help="keyboard variant")
-    p.add_argument("--vconsole", default=None,
-                   help="console keymap")
+    p.add_argument("--locale", default=None, help="system locale")
+    p.add_argument("--xkb-layout", default=None, help="keyboard layout")
+    p.add_argument("--xkb-variant", default=None, help="keyboard variant")
+    p.add_argument("--vconsole", default=None, help="console keymap")
     p.add_argument(
         "--bootloader",
         choices=("auto", "systemd-boot", "grub", "none"),
@@ -117,15 +127,18 @@ def build_parser():
     p.add_argument(
         "--grub-device", default=None, help="e.g. /dev/sda for BIOS installs"
     )
-    p.add_argument("--kernel", choices=("cachyos", "lts", "latest"), default="cachyos",
-                   help="kernel flavor")
+    p.add_argument(
+        "--kernel",
+        choices=("cachyos", "lts", "latest"),
+        default="cachyos",
+        help="kernel flavor",
+    )
     p.add_argument(
         "--flake-ref",
         default=os.environ.get("GNS_FLAKE_REF", gt.DEFAULT_FLAKE_REF),
         help="source flake",
     )
-    p.add_argument("--state-version", default=None,
-                   help="NixOS state version")
+    p.add_argument("--state-version", default=None, help="NixOS state version")
     p.add_argument(
         "--allow-unfree",
         action=argparse.BooleanOptionalAction,
@@ -137,7 +150,7 @@ def build_parser():
         action=argparse.BooleanOptionalAction,
         default=True,
         help="run nixos-install --flake <root>/etc/nixos#<hostname> "
-             "afterwards (default: True, --no-install to skip)",
+        "afterwards (default: True, --no-install to skip)",
     )
     p.add_argument(
         "--no-bootloader",
@@ -145,19 +158,24 @@ def build_parser():
         help="pass --no-bootloader to nixos-install (test VMs without EFI vars)",
     )
     p.add_argument(
-        "--install-attempts", type=int, default=3,
+        "--install-attempts",
+        type=int,
+        default=3,
         help="install attempts",
     )
     p.add_argument(
-        "--tui", action="store_true",
+        "--tui",
+        action="store_true",
         help="force the interactive wizard even when all flags are given",
     )
     p.add_argument(
-        "--password", default=None,
+        "--password",
+        default=None,
         help="set the user password non-interactively",
     )
     p.add_argument(
-        "--root-password", default=None,
+        "--root-password",
+        default=None,
         help="set the root password non-interactively",
     )
 
@@ -168,8 +186,7 @@ def pick_disk(root):
     disks = gp.list_disks()
 
     if not disks:
-        print(f"error: {root} is not mounted and no disks found",
-              file=sys.stderr)
+        print(f"error: {root} is not mounted and no disks found", file=sys.stderr)
         raise SystemExit(1)
 
     if len(disks) == 1:
@@ -182,8 +199,7 @@ def pick_disk(root):
             print(f"  {i}) {dev}  ({label})")
 
         try:
-            choice = input(
-                f"Pick a disk [1-{len(disks)}] (empty to abort): ").strip()
+            choice = input(f"Pick a disk [1-{len(disks)}] (empty to abort): ").strip()
         except (EOFError, KeyboardInterrupt):
             raise SystemExit(1)
 
@@ -193,8 +209,10 @@ def pick_disk(root):
         print("error: no disk selected", file=sys.stderr)
         raise SystemExit(1)
 
-    print(f"error: {root} is not mounted, pick one: " +
-          ", ".join(d for d, _ in disks), file=sys.stderr)
+    print(
+        f"error: {root} is not mounted, pick one: " + ", ".join(d for d, _ in disks),
+        file=sys.stderr,
+    )
     raise SystemExit(1)
 
 
@@ -215,8 +233,11 @@ def read_password(username, attempts=3):
         remaining = attempts - attempt - 1
 
         if remaining > 0:
-            print(f"error: passwords do not match or are empty "
-                  f"({remaining} attempt(s) left)", file=sys.stderr)
+            print(
+                f"error: passwords do not match or are empty "
+                f"({remaining} attempt(s) left)",
+                file=sys.stderr,
+            )
 
     print("error: passwords do not match or are empty", file=sys.stderr)
 
@@ -241,8 +262,7 @@ def partition_disk_retry(disk, schema, root, **kwargs):
     while True:
         try:
             return _gp.partition_disk(disk, schema, root, **kwargs)
-        except (_gp.PartitionError, subprocess.CalledProcessError,
-                OSError) as e:
+        except (_gp.PartitionError, subprocess.CalledProcessError, OSError) as e:
             _gp._cleanup_partial(root)
 
             if not _ask_retry(e):
@@ -254,8 +274,14 @@ def run_quiet(cmd, msg=None, **kwargs):
         print(msg, flush=True)
 
     try:
-        subprocess.run(cmd, check=True, stdout=subprocess.PIPE,
-                       stderr=subprocess.STDOUT, text=True, **kwargs)
+        subprocess.run(
+            cmd,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            **kwargs,
+        )
     except subprocess.CalledProcessError as e:
         if e.stdout:
             print(e.stdout, end="", flush=True)
@@ -282,23 +308,33 @@ def main(argv=None):
     args.root_mounted = os.path.ismount(args.root)
 
     wizard_confirmed = False
-    needs = (args.edition is None or args.disk is None or
-             args.schema is None or args.password is None)
+    needs = (
+        args.edition is None
+        or args.disk is None
+        or args.schema is None
+        or args.password is None
+    )
 
     if args.tui or (needs and sys.stdin.isatty()):
         if questionary is None:
-            print("error: questionary is not installed, pass all flags "
-                  "explicitly", file=sys.stderr)
+            print(
+                "error: questionary is not installed, pass all flags explicitly",
+                file=sys.stderr,
+            )
 
             return 1
 
         import garuda_tui as gtui
 
         try:
-            gtui.run_wizard(questionary, args,
-                            ("mokka", "dr460nized"),
-                            gt.GARUDA_FEATURES, gt.GARUDA_PRESETS,
-                            gp.list_disks())
+            gtui.run_wizard(
+                questionary,
+                args,
+                ("mokka", "dr460nized"),
+                gt.GARUDA_FEATURES,
+                gt.GARUDA_PRESETS,
+                gp.list_disks(),
+            )
         except gtui.Aborted as e:
             print(f"error: {e}", file=sys.stderr)
 
@@ -357,9 +393,7 @@ def main(argv=None):
 
     if state_version is None:
         try:
-            out = subprocess.check_output(
-                ["nixos-version"], text=True
-            ).split(".")[:2]
+            out = subprocess.check_output(["nixos-version"], text=True).split(".")[:2]
             state_version = ".".join(out)[:5] or "26.11"
         except (subprocess.CalledProcessError, OSError):
             state_version = "26.11"
@@ -374,7 +408,11 @@ def main(argv=None):
     if disk is not None and schema is None:
         schema = pick_schema(args.feature)
 
-    if schema is not None and "impermanence" in schema and "impermanence" not in args.feature:
+    if (
+        schema is not None
+        and "impermanence" in schema
+        and "impermanence" not in args.feature
+    ):
         args.feature = [*args.feature, "impermanence"]
         print("enabling feature 'impermanence' for impermanence schema")
 
@@ -383,19 +421,23 @@ def main(argv=None):
 
     if disk is not None and schema is not None:
         if "impermanence" in args.feature and "impermanence" not in schema:
-            print(f"error: schema '{schema}' has no impermanence layout, "
-                  f"choose from: {', '.join(gp.schemas_for_features(args.feature))}",
-                  file=sys.stderr)
+            print(
+                f"error: schema '{schema}' has no impermanence layout, "
+                f"choose from: {', '.join(gp.schemas_for_features(args.feature))}",
+                file=sys.stderr,
+            )
 
             return 1
 
         try:
             efi = partition_disk_retry(
-                disk, schema, args.root,
+                disk,
+                schema,
+                args.root,
                 luks_pass_file=args.luks_pass_file,
-                assume_yes=args.yes or wizard_confirmed)
-        except (gp.PartitionError, subprocess.CalledProcessError,
-                OSError) as e:
+                assume_yes=args.yes or wizard_confirmed,
+            )
+        except (gp.PartitionError, subprocess.CalledProcessError, OSError) as e:
             print(f"error: {e}", file=sys.stderr)
 
             return 1
@@ -415,29 +457,29 @@ def main(argv=None):
 
     try:
         opts = gt.InstallOpts(
-        edition=args.edition,
-        preset=args.preset,
-        features=args.feature,
-        root=args.root,
-        hostname=args.hostname,
-        username=args.username,
-        state_version=state_version,
-        flake_ref=args.flake_ref,
-        allow_unfree=args.allow_unfree,
-        bootloader=bootloader,
-        grub_device=args.grub_device,
-        kernel=args.kernel,
-        timezone=args.timezone,
-        locale=args.locale,
-        xkb_layout=args.xkb_layout,
-        xkb_variant=args.xkb_variant,
-        vconsole=args.vconsole,
-        fullname=args.fullname,
-        autologin=not args.no_autologin,
-        hashed_password=hashed_password,
-        hashed_root_password=hashed_root_password,
-        tmpfs_root=gp.is_tmpfs_root(schema),
-    )
+            edition=args.edition,
+            preset=args.preset,
+            features=args.feature,
+            root=args.root,
+            hostname=args.hostname,
+            username=args.username,
+            state_version=state_version,
+            flake_ref=args.flake_ref,
+            allow_unfree=args.allow_unfree,
+            bootloader=bootloader,
+            grub_device=args.grub_device,
+            kernel=args.kernel,
+            timezone=args.timezone,
+            locale=args.locale,
+            xkb_layout=args.xkb_layout,
+            xkb_variant=args.xkb_variant,
+            vconsole=args.vconsole,
+            fullname=args.fullname,
+            autologin=not args.no_autologin,
+            hashed_password=hashed_password,
+            hashed_root_password=hashed_root_password,
+            tmpfs_root=gp.is_tmpfs_root(schema),
+        )
     except ValueError as e:
         print(f"error: {e}", file=sys.stderr)
 
@@ -487,8 +529,10 @@ def main(argv=None):
             remaining = attempts - attempt - 1
 
             if remaining:
-                print(f"Install failed, retrying ({remaining} attempt(s) left) ...",
-                      file=sys.stderr)
+                print(
+                    f"Install failed, retrying ({remaining} attempt(s) left) ...",
+                    file=sys.stderr,
+                )
 
         if rc != 0:
             return rc

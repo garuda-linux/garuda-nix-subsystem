@@ -431,7 +431,9 @@ def run():
 
     picked_edition = gs.value("packagechooser_packagechooser")
     opts = gt.InstallOpts(
-        edition=picked_edition if picked_edition in ("mokka", "dr460nized") else "dr460nized",
+        edition=picked_edition
+        if picked_edition in ("mokka", "dr460nized")
+        else "dr460nized",
         preset=preset,
         features=features,
         root=root_mount_point,
@@ -477,8 +479,7 @@ def run():
         os.path.dirname(os.path.abspath(__file__)), "..", "..", "template"
     )
     gt.write_config(template_dir, nixos_dir, opts, hooks)
-    gt.seed_persist(root_mount_point, nixos_dir,
-                    log=libcalamares.utils.debug)
+    gt.seed_persist(root_mount_point, nixos_dir, log=libcalamares.utils.debug)
 
     status = _("Installing NixOS")
     libcalamares.job.setprogress(INSTALL_PROGRESS_START)

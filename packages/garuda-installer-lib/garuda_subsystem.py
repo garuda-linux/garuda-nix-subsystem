@@ -5,9 +5,19 @@ import subprocess
 import sys
 import tempfile
 
-ENV_KEYS = ("GNS_INSTALLER_LIB", "GNS_FORCE", "GNS_EDITION", "GNS_FLAKE_REF",
-            "GNS_VERSION", "GNS_SELF", "GNS_MNT_DIR", "GNS_BTRFS_UUID",
-            "GNS_FROM_HOST", "GNS_INSTALLING", "PATH")
+ENV_KEYS = (
+    "GNS_INSTALLER_LIB",
+    "GNS_FORCE",
+    "GNS_EDITION",
+    "GNS_FLAKE_REF",
+    "GNS_VERSION",
+    "GNS_SELF",
+    "GNS_MNT_DIR",
+    "GNS_BTRFS_UUID",
+    "GNS_FROM_HOST",
+    "GNS_INSTALLING",
+    "PATH",
+)
 
 
 def ensure_root():
@@ -31,7 +41,8 @@ def step(msg):
 
 def btrfs_uuid():
     return subprocess.check_output(
-        ["findmnt", "-n", "-o", "UUID", "/"], text=True).strip()
+        ["findmnt", "-n", "-o", "UUID", "/"], text=True
+    ).strip()
 
 
 def ensure_subvolume(uuid):
@@ -41,8 +52,14 @@ def ensure_subvolume(uuid):
         try:
             if not os.path.isdir(os.path.join(top, "@nix-subsystem")):
                 step("Creating Garuda Nix Subsystem subvolume")
-                run(["btrfs", "subvolume", "create",
-                     os.path.join(top, "@nix-subsystem")])
+                run(
+                    [
+                        "btrfs",
+                        "subvolume",
+                        "create",
+                        os.path.join(top, "@nix-subsystem"),
+                    ]
+                )
         finally:
             subprocess.run(["umount", top], check=False)
     finally:
@@ -51,14 +68,20 @@ def ensure_subvolume(uuid):
 
 def unmount_subsystem(mnt, remove=False):
     for target in (os.path.join(mnt, "nix"), mnt):
-        r = subprocess.run(["umount", target], check=False,
-                           stdout=subprocess.DEVNULL,
-                           stderr=subprocess.DEVNULL)
+        r = subprocess.run(
+            ["umount", target],
+            check=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
 
         if r.returncode != 0:
-            subprocess.run(["umount", "-l", target], check=False,
-                           stdout=subprocess.DEVNULL,
-                           stderr=subprocess.DEVNULL)
+            subprocess.run(
+                ["umount", "-l", target],
+                check=False,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
     if remove:
         try:
             os.rmdir(mnt)
@@ -71,8 +94,7 @@ def mount_subsystem(uuid):
     atexit.register(unmount_subsystem, mnt, True)
     run(["mount", "-o", "subvol=@nix-subsystem", f"UUID={uuid}", mnt])
     os.makedirs(os.path.join(mnt, "nix"), exist_ok=True)
-    run(["mount", "-o", "subvol=@nix", f"UUID={uuid}",
-         os.path.join(mnt, "nix")])
+    run(["mount", "-o", "subvol=@nix", f"UUID={uuid}", os.path.join(mnt, "nix")])
     return mnt
 
 
@@ -84,8 +106,7 @@ def prepare_dirs():
 
 def git_commit(repo_dir, message, run=None):
     run = run or (
-        lambda cmd: subprocess.check_output(
-            cmd, stderr=subprocess.STDOUT, text=True)
+        lambda cmd: subprocess.check_output(cmd, stderr=subprocess.STDOUT, text=True)
     )
     if not os.path.isdir(os.path.join(repo_dir, ".git")):
         run(["git", "init", repo_dir])
@@ -94,5 +115,17 @@ def git_commit(repo_dir, message, run=None):
         return
 
     run(["git", "-C", repo_dir, "add", "-A"])
-    run(["git", "-C", repo_dir, "-c", "user.name=gns",
-         "-c", "user.email=gns@localhost", "commit", "-m", message])
+    run(
+        [
+            "git",
+            "-C",
+            repo_dir,
+            "-c",
+            "user.name=gns",
+            "-c",
+            "user.email=gns@localhost",
+            "commit",
+            "-m",
+            message,
+        ]
+    )

@@ -6,6 +6,7 @@ import sys
 
 STORE_PREFIX = re.compile(r"^/nix/store/[^-]+-source/")
 
+
 def fmt(value):
     if value is None:
         return None

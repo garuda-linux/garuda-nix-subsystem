@@ -9,6 +9,7 @@
 Usage:
   python3 /tmp/check_installer_template.py /tmp/tmpl
 """
+
 import shutil
 import subprocess
 import sys
@@ -56,21 +57,34 @@ def main():
         flake = (out_dir / "flake.nix").read_text()
         label = f"{edition}/{bootloader}"
 
-        check(label + " no-markers",
-              all(m not in text and m not in flake for m in gt.MARKERS), text[-800:])
+        check(
+            label + " no-markers",
+            all(m not in text and m not in flake for m in gt.MARKERS),
+            text[-800:],
+        )
 
-        check(label + " edition",
-              f"garuda.{edition}.enable = true" in text, text[-800:])
-              
+        check(
+            label + " edition", f"garuda.{edition}.enable = true" in text, text[-800:]
+        )
+
         for fname in ("nixos/configuration.nix", "flake.nix"):
-            r = subprocess.run(["nix-instantiate", "--parse", str(out_dir / fname)],
-                               capture_output=True, text=True, check=False)
+            r = subprocess.run(
+                ["nix-instantiate", "--parse", str(out_dir / fname)],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
             check(label + f" {fname} parses", r.returncode == 0, r.stderr)
     assert not failures, "\n".join(failures)
     print("all-combos OK")
 
-    report = {"hardware": {"graphics_card": [
-        {"vendor": {"hex": "10de"}, "sysfs_bus_id": "0000:01:00.0"}]}}
+    report = {
+        "hardware": {
+            "graphics_card": [
+                {"vendor": {"hex": "10de"}, "sysfs_bus_id": "0000:01:00.0"}
+            ]
+        }
+    }
     lines = "\n".join(gt.build_facter_section(report))
     assert "garuda.hardware.autoDriver.reportPath" in lines, lines
     assert "garuda.hardware.nvidia.enable = true" in lines, lines

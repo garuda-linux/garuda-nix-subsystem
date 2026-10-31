@@ -14,8 +14,13 @@ NOISY_PREFIXES = ("warning: ",)
 
 
 def new_state():
-    return {"active": {}, "order": [], "done": 0, "current": "",
-            "started": time.monotonic()}
+    return {
+        "active": {},
+        "order": [],
+        "done": 0,
+        "current": "",
+        "started": time.monotonic(),
+    }
 
 
 def _clean(text, limit=100):
@@ -115,8 +120,12 @@ def run(cmd, throttle=0.1):
     last_draw = 0.0
 
     proc = subprocess.Popen(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-        text=True, errors="replace", start_new_session=True,
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        errors="replace",
+        start_new_session=True,
     )
 
     assert proc.stdout is not None
@@ -197,7 +206,11 @@ def run(cmd, throttle=0.1):
 
     total = int(time.monotonic() - state["started"])
     ok = proc.returncode == 0
-    mark = ("\033[1;32m✓\033[0m" if ok else "\033[1;31m✗\033[0m") if tty else ("✓" if ok else "✗")
+    mark = (
+        ("\033[1;32m✓\033[0m" if ok else "\033[1;31m✗\033[0m")
+        if tty
+        else ("✓" if ok else "✗")
+    )
 
     if tty:
         _clear_line()
@@ -211,8 +224,11 @@ def run(cmd, throttle=0.1):
         sys.stderr.flush()
 
     elif shown:
-        print(f"{mark} finished {state['done']} steps "
-              f"rc={proc.returncode}", flush=True, file=sys.stderr)
+        print(
+            f"{mark} finished {state['done']} steps rc={proc.returncode}",
+            flush=True,
+            file=sys.stderr,
+        )
 
     if proc.returncode != 0 and tail:
         sys.stderr.write("\nLast output:\n")

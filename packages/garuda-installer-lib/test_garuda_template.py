@@ -300,11 +300,12 @@ class TestCommitConfig(unittest.TestCase):
         d = tempfile.mkdtemp()
         try:
             with open(os.path.join(d, "flake.nix"), "w") as f:
-                f.write('{}\n')
+                f.write("{}\n")
 
             gt.commit_config(d, "initial", gt.Hooks())
             log = subprocess.check_output(
-                ["git", "-C", d, "log", "--format=%s"], text=True)
+                ["git", "-C", d, "log", "--format=%s"], text=True
+            )
             self.assertEqual(log.strip(), "initial")
         finally:
             shutil.rmtree(d, ignore_errors=True)

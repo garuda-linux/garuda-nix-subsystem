@@ -10,8 +10,10 @@ import sys
 
 def repo_path():
     env = os.environ.get("GNS_INSTALLER_LIB")
+
     if env:
         return env
+
     return os.path.normpath(
         os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
@@ -46,6 +48,7 @@ def detect_virt():
         out = subprocess.check_output(["systemd-detect-virt"], text=True).strip()
     except (OSError, subprocess.CalledProcessError):
         return "none"
+
     return out or "none"
 
 
@@ -57,21 +60,25 @@ def shadow_hash(user):
                     return line.rstrip("\n").split(":")[1]
     except OSError:
         pass
+
     return ""
 
 
 def groups_of(user, gid):
     groups = {g.gr_name for g in grp.getgrall() if user in g.gr_mem}
+
     try:
         groups.add(grp.getgrgid(gid).gr_name)
     except KeyError:
         pass
+
     return groups
 
 
 def collect_host():
     host = {}
     users = []
+
     for entry in pwd.getpwall():
         if entry.pw_uid >= 1000 and entry.pw_dir.startswith("/home/"):
             admin = bool(groups_of(entry.pw_name, entry.pw_gid) & {"sudo", "wheel"})
@@ -85,11 +92,15 @@ def collect_host():
                     "wheel": admin,
                 }
             )
+
     if users:
         host["users"] = users
+
     root_hash = shadow_hash("root")
+
     if root_hash:
         host["hashed_root_password"] = root_hash
+
     try:
         with open("/etc/locale.conf") as f:
             locale = dict(
@@ -99,8 +110,10 @@ def collect_host():
             )
     except OSError:
         locale = {}
+
     if locale:
         host["locale"] = locale
+
     try:
         with open("/etc/vconsole.conf") as f:
             keymap = next(
@@ -113,15 +126,19 @@ def collect_host():
             )
     except OSError:
         keymap = ""
+
     if keymap:
         host["keymap"] = keymap
+
     try:
         with open("/etc/timezone") as f:
             timezone = f.read().strip()
     except OSError:
         timezone = ""
+
     if timezone:
         host["timezone"] = timezone
+
     try:
         installed = subprocess.check_output(
             ["pacman", "-Qq", "garuda-nvidia-config", "garuda-nvidia-prime-config"],
@@ -130,28 +147,35 @@ def collect_host():
         ).split()
     except (OSError, subprocess.CalledProcessError):
         installed = []
+
     if "garuda-nvidia-prime-config" in installed:
         host.setdefault("hardware", {})["nvidia"] = "prime"
     elif "garuda-nvidia-config" in installed:
         host.setdefault("hardware", {})["nvidia"] = "nvidia"
+
     return host
 
 
 def apply_managed(config, host, uuid, virt, version):
     config = dict(config)
     v2 = dict(config.get("v2", {}))
+
     if (config.get("version") or 0) < 2:
         if host is None:
             raise UpdateError(
                 "Garuda Nix Subsystem must be updated from the "
                 'host system. Run "garuda-nix-subsystem update"'
             )
+
         config.pop("v1", None)
         v2["subsystem"] = True
+
     if host is not None:
         v2.pop("host", None)
+
         if host:
             v2["host"] = host
+
     v2.pop("auto", None)
     v2["auto"] = {"uuid": uuid, "hardware": {"virt": virt}}
     config["v2"] = v2
@@ -192,6 +216,7 @@ def build_rebuild_cmd(mnt, hostname):
 def write_grub_entry():
     with open("/etc/grub.d/25-garudanix", "w") as f:
         f.write(GRUB_ENTRY)
+
     os.chmod("/etc/grub.d/25-garudanix", 0o755)
     gs.run(["/usr/bin/update-grub"])
 
@@ -204,8 +229,10 @@ def main(argv=None):
 
     uuid = os.environ.get("GNS_BTRFS_UUID") or gs.btrfs_uuid()
     mnt = None
+
     if from_host:
         reuse = os.environ.get("GNS_MNT_DIR", "")
+
         if (
             reuse
             and os.path.ismount(reuse)
@@ -226,11 +253,14 @@ def main(argv=None):
             file=sys.stderr,
         )
         return 1
+
     with open(managed_path) as f:
         config = json.load(f)
+
     hostname = config.get("hostname", "")
 
     gs.step("Configuring Garuda Nix Subsystem")
+
     try:
         config = apply_managed(
             config,
@@ -242,6 +272,7 @@ def main(argv=None):
     except UpdateError as e:
         print(f"error: {e}", file=sys.stderr)
         return 1
+
     with open(managed_path, "w") as f:
         json.dump(config, f, indent=2)
         f.write("\n")
@@ -252,9 +283,11 @@ def main(argv=None):
         else "Updating Garuda Nix Subsystem 🍵"
     )
     gns_self = os.environ.get("GNS_SELF", "")
+
     if not gns_self:
         print("error: GNS_SELF is not set", file=sys.stderr)
         return 1
+
     try:
         subprocess.run(
             [
@@ -275,6 +308,7 @@ def main(argv=None):
         print(e.stdout, end="")
         print(e.stderr, end="", file=sys.stderr)
         return e.returncode
+
     if from_host:
         rc = gprog.run(build_install_cmd(mnt, hostname))
     elif not installing:
@@ -282,6 +316,7 @@ def main(argv=None):
     else:
         print("error: ..What?", file=sys.stderr)
         return 1
+
     if rc != 0:
         return rc
 
@@ -291,6 +326,7 @@ def main(argv=None):
         gs.step("Unmounting Garuda Nix Subsystem subvolumes")
         gs.unmount_subsystem(mnt, remove=True)
         write_grub_entry()
+
     return 0
 
 
