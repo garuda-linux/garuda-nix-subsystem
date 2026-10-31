@@ -1,0 +1,30 @@
+{
+  "installVersion": 2,
+  "hostname": "garuda-lima-nix",
+  "version": 2,
+  "v2": {
+    "subsystem": true,
+    "host": {
+      "users": [
+        {
+          "name": "garuda",
+          "uid": 1500,
+          "hashed_password": "$6$TDHyAT/yYQk2MYQY$wzU/1Idm3YPeSODmPXvJRluw1ID8o9wdAZgpLUyezbuq1Eu7XJk4l138fC8ZIGiocS2Cva6.e7r5XFZtWoKYo.",
+          "home": "/home/garuda",
+          "wheel": true
+        }
+      ],
+      "locale": {
+        "LANG": "en_US.UTF-8"
+      },
+      "keymap": "us",
+      "timezone": "UTC"
+    },
+    "auto": {
+      "uuid": "@BTRFS_UUID@",
+      "hardware": {
+        "virt": "kvm"
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+# NixOS guest from nixos-lima, used for the flake, fallback and managed scenarios.
+# limatest adds the mounts (/mnt/src and /mnt/lima) when it creates the instance.
+minimumLimaVersion: 2.0.0
+
+images:
+  - location: "https://github.com/nixos-lima/nixos-lima/releases/download/v0.2.2/nixos-lima-v0.2.2-x86_64.qcow2"
+    arch: "x86_64"
+    digest: "sha256:b43bf03d6e6cbd6af441ec66e8778442eb448616fc1371a08b4996b30c90f856"
+  - location: "https://github.com/nixos-lima/nixos-lima/releases/download/v0.2.2/nixos-lima-v0.2.2-aarch64.qcow2"
+    arch: "aarch64"
+    digest: "sha256:dc40482a45929e4cf86ad57425e1c6ac1b376fd81111cc93ba3c9b34e7f900b6"
+
+cpus: 4
+memory: 8GiB
+disk: 60GiB
+
+mountType: 9p
+mounts: []
+
+portForwards:
+  # Keep Lima from intercepting DHCP on NixOS, see nixos-lima/nixos-lima#50
+  - proto: udp
+    guestPort: 68
+    guestIP: 0.0.0.0
+    ignore: true
+
+containerd:
+  system: false
+  user: false

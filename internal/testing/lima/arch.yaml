@@ -1,0 +1,17 @@
+# Arch guest as a Garuda-like host for the subsystem (host) scenario.
+# limatest adds the mounts (/mnt/src and /mnt/lima) when it creates the instance.
+minimumLimaVersion: 2.0.0
+
+base:
+  - template:_images/archlinux
+
+cpus: 4
+memory: 8GiB
+disk: 80GiB
+
+mountType: 9p
+mounts: []
+
+containerd:
+  system: false
+  user: false
