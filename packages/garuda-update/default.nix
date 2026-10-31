@@ -33,12 +33,8 @@ in
 
     nativeBuildInputs = [ makeWrapper ];
 
-    doCheck = true;
-    checkPhase = ''
-      runHook preCheck
-      ${python}/bin/python3 -m unittest discover -s . -p 'test_*.py'
-      runHook postCheck
-    '';
+    # Users build this on install, the tests run as a flake check instead
+    doCheck = false;
 
     installPhase = ''
       runHook preInstall

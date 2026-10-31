@@ -63,6 +63,18 @@ forAllSystems (
       exec "$out/bin/run-nixos-vm"
     '';
 
+    limatest = pkgs.writeShellApplication {
+      name = "limatest";
+      runtimeInputs = with pkgs; [
+        coreutils
+        git
+        gnugrep
+        gnused
+        lima
+      ];
+      text = builtins.readFile ../internal/testing/lima/limatest.sh;
+    };
+
     gendocs = pkgs.writeShellScriptBin "gendocs" ''
       set -euo pipefail
       out=$(nix build ".#internal.options-doc" --no-link --print-out-paths)
@@ -78,24 +90,46 @@ forAllSystems (
 
     release = import ./release.nix { inherit pkgs; };
     ci-shell = import ./ci.nix { inherit pkgs; };
+
+    tools = [
+      buildiso
+      docs
+      gendocs
+      gns-install
+      gns-update
+      limatest
+      runvm
+    ];
+
+    deps = [
+      "limactl"
+      "mdbook"
+      "treefmt"
+    ];
   in
   {
     default = pkgs.mkShell {
-      inherit shellHook;
+      shellHook = ''
+        ${shellHook}
+
+        if [[ -z ''${CI:-} ]]; then
+          printf '\033[1;35mGaruda Nix devshell\033[0m ❄️\n'
+          printf '  \033[2mtools:\033[0m %s\n' "${pkgs.lib.concatMapStringsSep " " pkgs.lib.getName tools}"
+          printf '  \033[2mdeps: \033[0m %s\n' "${pkgs.lib.concatStringsSep " " deps}"
+        fi
+      '';
 
       buildInputs = [
         self.formatter.${system}
       ];
 
-      packages = enabledPackages ++ [
-        buildiso
-        docs
-        gendocs
-        gns-install
-        gns-update
-        pkgs.mdbook
-        runvm
-      ];
+      packages =
+        enabledPackages
+        ++ tools
+        ++ [
+          pkgs.lima
+          pkgs.mdbook
+        ];
     };
 
     release = release.shell;

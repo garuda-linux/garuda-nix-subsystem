@@ -109,9 +109,13 @@
 
       packages = forAllSystems (pkgs: (mkPackages pkgs.stdenv.hostPlatform.system).external);
 
-      checks = forAllSystems (pkgs: {
-        pre-commit = mkPreCommitCheck pkgs;
-      });
+      checks = forAllSystems (
+        pkgs:
+        {
+          pre-commit = mkPreCommitCheck pkgs;
+        }
+        // import ./internal/testing/python-tests.nix { inherit pkgs; }
+      );
 
       devShells = import ./devshells {
         inherit self forAllSystems mkPackages;

@@ -5,8 +5,17 @@ if [ "$EUID" -ne 0 ]; then
   exec sudo --preserve-env=GARUDA_FLAKE,GARUDA_UPDATE_REF,GARUDA_UPDATE_NO_NIX,GARUDA_UPDATE_REPO "$0" "$@"
 fi
 
+# Same style as the steps of runner.py
+step() {
+  if [ -t 2 ]; then
+    echo -e "\033[1;32m»\033[0m $*" >&2
+  else
+    echo "» $*" >&2
+  fi
+}
+
 if [ "${1:-}" = "--rollback" ]; then
-  echo -e "\033[1;33m-->\033[1;34m Rolling back to previous generation 🍵\033[0m"
+  step "Rolling back to previous generation 🍵"
   nh os rollback --bypass-root-check
   exit 0
 fi
@@ -15,7 +24,7 @@ fi
 REPO="${GARUDA_UPDATE_REPO:-https://gitlab.com/garuda-linux/garuda-nix.git}"
 REF="${GARUDA_UPDATE_REF:-stable}"
 
-echo -e "\033[1;33m-->\033[1;34m Fetching the latest garuda-update 🍵\033[0m"
+step "Fetching the latest garuda-update 🍵"
 
 if [ "${GARUDA_UPDATE_NO_NIX:-}" != "1" ] &&
   runner="$(nix build --extra-experimental-features "nix-command flakes" --accept-flake-config \
@@ -24,7 +33,7 @@ if [ "${GARUDA_UPDATE_NO_NIX:-}" != "1" ] &&
 fi
 
 # Same runner without Nix, for the case that Nix itself can not fetch it
-echo -e "\033[1;33m-->\033[1;34m Nix could not fetch garuda-update, trying git instead\033[0m"
+step "Nix could not fetch garuda-update, trying git instead"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import contextlib
+import io
 import os
 import subprocess
 import sys
@@ -10,6 +12,12 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fixes
 import nixedit
 import runner
+
+
+def setUpModule():
+    # The runner reports its steps on stderr, keep them out of the test output
+    unittest.enterModuleContext(contextlib.redirect_stderr(io.StringIO()))
+
 
 try:
     nixedit.parse(b"{ }")
@@ -273,6 +281,14 @@ class TestRunner(FixCase):
             ),
             b">> done",
         )
+
+    def test_step_matches_gns_update_style(self):
+        err = io.StringIO()
+
+        with contextlib.redirect_stderr(err):
+            runner.step("Updating 🍵")
+
+        self.assertEqual(err.getvalue(), "» Updating 🍵\n")
 
     def test_gns_backend_prefers_wrapped_binary(self):
         cmd, env = runner.gns_backend({"GNS_UPDATE_BIN": "/x/gns-update", "A": "1"})

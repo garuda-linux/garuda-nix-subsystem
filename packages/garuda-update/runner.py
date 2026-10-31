@@ -29,7 +29,8 @@ QUIET = {"stdout": subprocess.DEVNULL, "stderr": subprocess.DEVNULL}
 
 
 def step(msg):
-    print(f"\033[1;33m-->\033[1;34m {msg}\033[0m", file=sys.stderr, flush=True)
+    prefix = "\033[1;32m»\033[0m" if sys.stderr.isatty() else "»"
+    print(f"{prefix} {msg}", file=sys.stderr, flush=True)
 
 
 def sibling(*parts):
