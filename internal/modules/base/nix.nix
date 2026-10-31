@@ -4,6 +4,7 @@
   garuda-lib,
   flake-inputs,
   lib,
+  pkgs,
   ...
 }:
 with garuda-lib;
@@ -55,10 +56,10 @@ with garuda-lib;
       );
     };
 
-    # Automtaically pin registries based on inputs
+    # Automatically pin registries based on inputs
     registry = gDefault (lib.mapAttrs (_: v: { flake = v; }) flake-inputs);
 
-    #package = gDefault pkgs.lixPackageSets.git.lix;
+    package = gDefault pkgs.lixPackageSets.stable.lix;
   };
 
   # Apply our overlay after chaotic's (cache-friendly overlay)
@@ -66,17 +67,17 @@ with garuda-lib;
     (
       _final: prev:
       let
-        lixGit = prev.lixPackageSets.git;
+        lix = prev.lixPackageSets.stable;
       in
       {
-        nixpkgs-review = prev.nixpkgs-review.override { nix = lixGit.lix; };
-        inherit (lixGit) nix-eval-jobs;
+        nixpkgs-review = prev.nixpkgs-review.override { nix = lix.lix; };
+        inherit (lix) nix-eval-jobs;
         nix-fast-build = prev.nix-fast-build.override {
-          inherit (lixGit) nix-eval-jobs;
+          inherit (lix) nix-eval-jobs;
         };
         colmena = prev.colmena.override {
-          nix = lixGit.lix;
-          inherit (lixGit) nix-eval-jobs;
+          nix = lix.lix;
+          inherit (lix) nix-eval-jobs;
         };
       }
     )

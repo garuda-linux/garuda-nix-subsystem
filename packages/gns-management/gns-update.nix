@@ -46,7 +46,9 @@ python3.pkgs.buildPythonApplication {
             git
             nixos.nixos-install
             nh
-            nix
+            # Same Nix as the Arch host daemon (Lix installer). nixos-install
+            # with CppNix crashes with SIGBUS on the shared @nix store.
+            lixPackageSets.stable.lix
           ]
         )
       }

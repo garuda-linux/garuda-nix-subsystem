@@ -29,17 +29,27 @@ rec {
     launch-terminal = pkgs.callPackage ./garuda-libs {
       inherit pkgs;
     };
-    garuda-update = pkgs.callPackage ./gns-management/gns-update.nix {
+    gns-update = pkgs.callPackage ./gns-management/gns-update.nix {
       all-packages = pkgs;
       garuda-lib = lib;
       inherit system;
       inherit (internal) garuda-installer-lib;
       inherit (inputs) self;
     };
+    # The runner garuda-update-launcher fetches from the stable branch
+    inherit
+      (pkgs.callPackage ./garuda-update {
+        all-packages = pkgs;
+        garuda-lib = lib;
+        inherit (internal) garuda-installer-lib gns-update;
+      })
+      garuda-update-runner
+      garuda-update-launcher
+      ;
     garuda-nix-subsystem =
       (pkgs.callPackage ./garuda-nix-subsystem {
         all-packages = pkgs;
-        gns-update = internal.garuda-update;
+        garuda-update = internal.garuda-update-launcher;
       }).cli;
   };
 
@@ -48,6 +58,8 @@ rec {
     inherit (internal)
       install-garuda-nix
       garuda-inxi
+      garuda-update-runner
+      garuda-update-launcher
       ;
     docs =
       pkgs.runCommand "gns-docs"
@@ -70,7 +82,9 @@ rec {
     inherit (internal)
       installer
       garuda-inxi
-      garuda-update
+      gns-update
+      garuda-update-runner
+      garuda-update-launcher
       garuda-nix-subsystem
       garuda-nix-manager
       launch-terminal

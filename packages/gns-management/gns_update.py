@@ -183,6 +183,11 @@ def apply_managed(config, host, uuid, virt, version):
     return config
 
 
+def nixos_dir(mnt):
+    """/etc/nixos of the system mounted at mnt, an empty mnt is the running system."""
+    return os.path.join(mnt or "/", "etc/nixos")
+
+
 def build_install_cmd(mnt, hostname):
     return [
         "nixos-install",
@@ -192,7 +197,7 @@ def build_install_cmd(mnt, hostname):
         "--root",
         mnt,
         "--flake",
-        f"{mnt}/etc/nixos#{hostname}",
+        f"{nixos_dir(mnt)}#{hostname}",
         "--log-format",
         "internal-json",
     ]
@@ -209,7 +214,7 @@ def build_rebuild_cmd(mnt, hostname):
         "internal-json",
         "-H",
         hostname,
-        f"{mnt}/etc/nixos",
+        nixos_dir(mnt),
     ]
 
 
@@ -243,9 +248,12 @@ def main(argv=None):
             gs.step("Mounting Garuda Nix Subsystem subvolumes")
             gs.ensure_subvolume(uuid)
             mnt = gs.mount_subsystem(uuid)
-    mnt = mnt or os.environ.get("GNS_MNT_DIR", "")
 
-    managed_path = os.path.join(mnt, "etc/nixos/garuda-managed.json")
+    # Inside a managed system the running system is the one to update
+    mnt = mnt or os.environ.get("GNS_MNT_DIR") or "/"
+
+    managed_path = os.path.join(nixos_dir(mnt), "garuda-managed.json")
+
     if not os.path.exists(managed_path):
         print(
             "error: Garuda Nix Subsystem is not configured for automatic "
@@ -295,7 +303,7 @@ def main(argv=None):
                 "flake",
                 "update",
                 "--flake",
-                f"{mnt}/etc/nixos",
+                nixos_dir(mnt),
                 "--override-input",
                 "garuda",
                 gns_self,
@@ -320,11 +328,14 @@ def main(argv=None):
     if rc != 0:
         return rc
 
-    gs.git_commit(os.path.join(mnt, "etc/nixos"), "gns-update")
+    gs.git_commit(nixos_dir(mnt), "gns-update")
 
     if from_host:
-        gs.step("Unmounting Garuda Nix Subsystem subvolumes")
-        gs.unmount_subsystem(mnt, remove=True)
+        # garuda-update keeps the mount for its post-update fixes
+        if os.environ.get("GNS_KEEP_MOUNT", "false") != "true":
+            gs.step("Unmounting Garuda Nix Subsystem subvolumes")
+            gs.unmount_subsystem(mnt, remove=True)
+
         write_grub_entry()
 
     return 0

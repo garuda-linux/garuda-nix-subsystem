@@ -1,9 +1,9 @@
 {
   all-packages,
-  gns-update,
+  garuda-update,
 }:
 {
   cli = all-packages.callPackage ./cli.nix {
-    inherit all-packages gns-update;
+    inherit all-packages garuda-update;
   };
 }

@@ -71,14 +71,13 @@ let
   flake-update = pkgs.writeShellScriptBin "flake-update" ''
     set -euo pipefail
     nix flake update
-    nix flake update --flake ./internal/updater --inputs-from . --override-input nixpkgs "nixpkgs"
     if git diff --exit-code; then
       echo "No changes to flake.lock"
       exit 0
     fi
     git config --global user.name "$GIT_AUTHOR_NAME"
     git config --global user.email "$GIT_AUTHOR_EMAIL"
-    git add flake.lock internal/updater/flake.lock
+    git add flake.lock
     git commit -m 'chore(flake.lock): bump flakes'
     git push "$CI_REPOSITORY_URL" HEAD:main
     nix run nixpkgs#curl -- -X POST \

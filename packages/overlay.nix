@@ -19,6 +19,7 @@ in
     garuda-nix-manager
     garuda-nix-subsystem
     ;
+  garuda-update = packages.internal.garuda-update-launcher;
 
   calamares-nixos = prev.calamares-nixos.override {
     calamares = packages.internal.calamares;

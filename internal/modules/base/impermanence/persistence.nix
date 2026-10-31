@@ -39,6 +39,7 @@ in
           "/var/lib/nixos"
           "/var/lib/alsa"
           "/var/lib/colord"
+          "/var/lib/garuda"
           "/var/spool"
         ];
         files = [

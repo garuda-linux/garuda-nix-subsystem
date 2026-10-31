@@ -43,7 +43,8 @@ python3.pkgs.buildPythonApplication {
             coreutils
             git
             nixos.nixos-generate-config
-            nix
+            # Same Nix as the Arch host daemon (Lix installer), see gns-update.nix
+            lixPackageSets.stable.lix
           ]
         )
       }

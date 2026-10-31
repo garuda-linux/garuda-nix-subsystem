@@ -50,10 +50,5 @@ in
       GTK_THEME = gDefault "Sweet-Dark";
       QT_STYLE_OVERRIDE = gDefault "kvantum";
     };
-
-    catppuccin = {
-      autoEnable = gDefault false;
-      enable = gDefault false;
-    };
   };
 }

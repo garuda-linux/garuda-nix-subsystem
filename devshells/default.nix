@@ -20,7 +20,7 @@ forAllSystems (
     '';
 
     gns-update = pkgs.writeShellScriptBin "gns-update" ''
-      exec ${packages.internal."garuda-update"}/bin/gns-update "$@"
+      exec ${packages.internal.garuda-update-runner}/bin/garuda-update-runner "$@"
     '';
 
     buildiso = pkgs.writeShellScriptBin "buildiso" ''

@@ -46,10 +46,5 @@ in
       GTK_THEME = gDefault "catppuccin-mocha-mauve-standard";
       QT_STYLE_OVERRIDE = gDefault "kvantum";
     };
-
-    catppuccin = {
-      autoEnable = gDefault false;
-      enable = gDefault false;
-    };
   };
 }

@@ -50,33 +50,39 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    assertions = [
-      {
-        assertion = !config.garuda.mokka.enable;
-        message = "garuda.catppuccin and garuda.mokka cannot be enabled at the same time.";
-      }
-      {
-        assertion = !config.garuda.dr460nized.enable;
-        message = "garuda.catppuccin and garuda.dr460nized cannot be enabled at the same time.";
-      }
-    ];
+  config = lib.mkMerge [
+    # Every system imports catppuccin/nix. Without autoEnable set it warns
+    # about auto enrolling ports. The gDefault of the edition below overrides it.
+    { catppuccin.autoEnable = lib.mkDefault false; }
 
-    garuda.system.type = "catppuccin";
+    (lib.mkIf cfg.enable {
+      assertions = [
+        {
+          assertion = !config.garuda.mokka.enable;
+          message = "garuda.catppuccin and garuda.mokka cannot be enabled at the same time.";
+        }
+        {
+          assertion = !config.garuda.dr460nized.enable;
+          message = "garuda.catppuccin and garuda.dr460nized cannot be enabled at the same time.";
+        }
+      ];
 
-    garuda.kde.themePackage = catppuccin-settings;
+      garuda.system.type = "catppuccin";
 
-    garuda.home-manager.modules = [
-      (import ./dotfiles.nix {
-        hmModule = inputs.catppuccin.homeModules.catppuccin;
-      })
-    ];
+      garuda.kde.themePackage = catppuccin-settings;
 
-    environment.systemPackages = [ catppuccin-settings ];
+      garuda.home-manager.modules = [
+        (import ./dotfiles.nix {
+          hmModule = inputs.catppuccin.homeModules.catppuccin;
+        })
+      ];
 
-    catppuccin = {
-      autoEnable = gDefault true;
-      enable = gDefault true;
-    };
-  };
+      environment.systemPackages = [ catppuccin-settings ];
+
+      catppuccin = {
+        autoEnable = gDefault true;
+        enable = gDefault true;
+      };
+    })
+  ];
 }

@@ -70,6 +70,7 @@ class TestCollectHost(unittest.TestCase):
             ("nico", "x", 1000, 1000, "Nico Garuda,,,", "/home/nico", "/bin/bash")
         )
         hashes = {"nico": "$y$j9T$user", "root": "$y$j9T$root"}
+
         with (
             mock.patch.object(gu.pwd, "getpwall", return_value=[entry]),
             mock.patch.object(gu.grp, "getgrall", return_value=[]),
@@ -79,6 +80,7 @@ class TestCollectHost(unittest.TestCase):
             mock.patch.object(gu.subprocess, "check_output", side_effect=OSError),
         ):
             host = gu.collect_host()
+
         self.assertEqual(host["users"][0]["fullname"], "Nico Garuda")
         self.assertEqual(host["hashed_root_password"], "$y$j9T$root")
 
@@ -107,6 +109,13 @@ class TestCmds(unittest.TestCase):
         self.assertIn("host", cmd)
         self.assertIn("/mnt/etc/nixos", cmd)
         self.assertNotIn("-j", cmd)
+
+    def test_running_system_paths_are_absolute(self):
+        # Managed systems update themselves without GNS_MNT_DIR, from any cwd
+        self.assertEqual(gu.nixos_dir(""), "/etc/nixos")
+        self.assertEqual(gu.nixos_dir("/"), "/etc/nixos")
+        self.assertIn("/etc/nixos", gu.build_rebuild_cmd("/", "host"))
+        self.assertIn("/mnt/etc/nixos#host", gu.build_install_cmd("/mnt", "host"))
 
 
 if __name__ == "__main__":

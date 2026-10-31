@@ -1,18 +1,18 @@
 {
   all-packages,
-  gns-update,
+  garuda-update,
 }:
 all-packages.writeShellApplication {
   name = "garuda-nix-subsystem";
   runtimeInputs = with all-packages; [
-    gns-update
+    garuda-update
     coreutils
   ];
   text = ''
     case "''${1:-}" in
       update)
         shift
-        exec gns-update "$@"
+        exec garuda-update "$@"
         ;;
       *)
         echo "garuda-nix-subsystem - Garuda NixOS Subsystem management tool"
