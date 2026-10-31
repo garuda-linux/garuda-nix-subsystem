@@ -167,7 +167,7 @@ in
     systemd.targets.machines.enable = gDefault true;
     systemd.nspawn."garuda" = {
       enable = gDefault true;
-      execConfig = {
+      settings.Exec = {
         Boot = "yes";
         Capability = "all";
         PrivateUsers = 0;
@@ -215,7 +215,7 @@ in
           "WAYLAND_DISPLAY=${cfg.waylandSocket}"
         ];
       };
-      filesConfig = {
+      settings.Files = {
         Bind = [
           "/dev/dri"
           "/dev/input"
@@ -249,7 +249,7 @@ in
           "/run/user/1000/${cfg.waylandSocket}:/run/garuda-host/${cfg.waylandSocket}"
         ];
       };
-      networkConfig = {
+      settings.Network = {
         Private = false;
       };
     };
