@@ -5,14 +5,11 @@ let
     step=''${1:-all}
     edition=''${2:-all}
 
+    # Runs the VM test as a build in the nix-daemon. The daemon has /dev/kvm,
+    # the CI job itself does not (unprivileged runner).
     drv() {
       local attr=$1 name=$2
-      # nixos-test-driver puts VM state (qcow2 images, sockets) under
-      # XDG_RUNTIME_DIR, which is tmpfs on most systems and too small.
-      export XDG_RUNTIME_DIR="''${XDG_STATE_HOME:-$HOME/.local/state}/nixos-test"
-      mkdir -p "$XDG_RUNTIME_DIR"
-      nix build ".#internal.$attr.driver" -o "result-$name"
-      "./result-$name/bin/nixos-test-driver"
+      nix build -L ".#internal.$attr" -o "result-$name"
     }
 
     boot_test_all() {
